@@ -94,6 +94,7 @@ void main_task(intptr_t unused) {
         integral = error + integral * 0.5;
         float steer = 0.07 * error + 0.3 * integral + 1 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 10, steer);
+        lasterror = error;
         tslp_tsk(1);
     }
 }
