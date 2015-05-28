@@ -373,7 +373,7 @@ kernel_cfg.timestamp: $(APPL_CFG) \
 	@$(OBJCOPY) -O srec -S $(CFG1_OUT) cfg1_out.srec
 	$(call print_cmd, "CFG[2]", $@)
 	@$(CFG) --pass 2 --kernel hrp2 $(INCLUDES) \
-				-T $(TARGETDIR)/target.tf $(CFG_TABS) $<
+				-T $(EV3RT_SDK_COM_DIR)/build_ev3rt_img.tf $(CFG_TABS) $<
 	touch -r kernel_cfg.c kernel_cfg.timestamp
 
 #

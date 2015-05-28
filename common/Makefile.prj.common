@@ -2,6 +2,7 @@
 # This Makefile includes the common part to build an EV3RT project.
 #
 # Output:
+# $(EV3RT_SDK_COM_DIR)
 # $(EV3RT_SDK_API_DIR)
 # $(EV3RT_SDK_LIB_DIR)
 # $(APPL_DIR) (update)
@@ -12,9 +13,11 @@ this_abs_dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 get_relpath = $(shell perl -MFile::Spec -e "print File::Spec->abs2rel(q($1),q($2))")
 
 #
+# $(EV3RT_SDK_COM_DIR)
 # app_common.cfg
 #
-INCLUDES += -I$(call get_relpath, $(this_abs_dir), $(PWD))
+EV3RT_SDK_COM_DIR := $(call get_relpath, $(this_abs_dir), $(PWD))
+INCLUDES += -I$(EV3RT_SDK_COM_DIR)
 
 #
 # EV3RT C Language API
