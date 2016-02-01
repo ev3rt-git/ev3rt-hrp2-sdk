@@ -58,6 +58,7 @@ void connect_sensor(intptr_t unused) {
 		{ .key = '2', .title = "Gyro sensor", .exinf = GYRO_SENSOR },
 		{ .key = '3', .title = "Touch sensor", .exinf = TOUCH_SENSOR },
 		{ .key = '4', .title = "Color sensor", .exinf = COLOR_SENSOR },
+		{ .key = '5', .title = "HT Acc. sensor", .exinf = HT_NXT_ACCEL_SENSOR },
 		{ .key = 'N', .title = "Not connected", .exinf = NONE_SENSOR },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
@@ -343,6 +344,32 @@ void test_color_sensor(sensor_port_t port) {
 	}
 }
 
+static
+void test_ht_nxt_accel_sensor(sensor_port_t port) {
+	// Draw title
+	char msgbuf[100];
+	ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+	ev3_lcd_draw_string("Test Sensor", (EV3_LCD_WIDTH - strlen("Test Sensor") * MENU_FONT_WIDTH) / 2, 0);
+	sprintf(msgbuf, "Type: HT Acc.");
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
+	sprintf(msgbuf, "Port: %c", '1' + port);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+
+	int16_t axes[3];
+
+	VIEW_SENSOR({
+		bool_t val = ht_nxt_accel_sensor_measure(port, axes);
+		assert(val);
+		sprintf(msgbuf, "X: %-4d", axes[0]);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+		sprintf(msgbuf, "Y: %-4d", axes[1]);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 4);
+		sprintf(msgbuf, "Z: %-4d", axes[2]);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 5);
+		tslp_tsk(10);
+	});
+}
+
 void test_sensor(intptr_t unused) {
 	const CliMenuEntry* cme_port = NULL;
 	while(cme_port == NULL) {
@@ -365,6 +392,9 @@ void test_sensor(intptr_t unused) {
 		break;
 	case COLOR_SENSOR:
 		test_color_sensor(cme_port->exinf);
+		break;
+	case HT_NXT_ACCEL_SENSOR:
+		test_ht_nxt_accel_sensor(cme_port->exinf);
 		break;
 	case NONE_SENSOR: {
 		char msgbuf[100];

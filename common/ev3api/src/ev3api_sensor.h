@@ -42,12 +42,13 @@ typedef enum {
  * \brief サポートするセンサタイプ
  */
 typedef enum {
-    NONE_SENSOR = 0,   //!< \~English Not connected			 \~Japanese センサ未接続
-    ULTRASONIC_SENSOR, //!< \~English Ultrasonic sensor 	 \~Japanese 超音波センサ
-    GYRO_SENSOR,	   //!< \~English Gyroscope sensor 		 \~Japanese ジャイロセンサ
-    TOUCH_SENSOR,	   //!< \~English Touch sensor			 \~Japanese タッチセンサ
-    COLOR_SENSOR,	   //!< \~English Color sensor			 \~Japanese カラーセンサ
-    TNUM_SENSOR_TYPE   //!< \~English Number of sensor types \~Japanese センサタイプの数
+    NONE_SENSOR = 0,     //!< \~English Not connected			 		  \~Japanese センサ未接続
+    ULTRASONIC_SENSOR,   //!< \~English Ultrasonic sensor 	 			  \~Japanese 超音波センサ
+    GYRO_SENSOR,	     //!< \~English Gyroscope sensor 		 		  \~Japanese ジャイロセンサ
+    TOUCH_SENSOR,	     //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
+    COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
+	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
+    TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
 } sensor_type_t;
 
 /**
@@ -226,6 +227,23 @@ bool_t ev3_ultrasonic_sensor_listen(sensor_port_t port);
  * \retval false 押されていない状態
  */
 bool_t ev3_touch_sensor_is_pressed(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief 	   Measure acceleration with a HiTechnic NXT acceleration sensor.
+ * \param port Sensor port to be inquired
+ * \param axes Array to store the x/y/z axes data
+ * \return     \a true (axes[] is updated), \a false (axes[] is unchanged due to I2C busy)
+ *
+ * \~Japanese
+ * \brief 	     加速度センサ（HiTechnic社製）で加速度を測定する．
+ * \details      不正のセンサポート番号を指定した場合，常に \a false を返す（エラーログが出力される）．
+ * \param  port  センサポート番号
+ * \param  axes  x軸、y軸、z軸の3方向の加速度を格納するための配列
+ * \retval true  axes[]は更新された
+ * \retval false axes[]は変更されなかった（前回のI2C操作が完成していない）
+ */
+bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]);
 
 /**
  * @} // End of group

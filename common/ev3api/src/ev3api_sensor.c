@@ -26,6 +26,7 @@ static sensor_type_t sensors[TNUM_SENSOR_PORT];
 
 static const uart_data_t *pUartSensorData = NULL;
 static const analog_data_t *pAnalogSensorData = NULL;
+static const i2c_data_t *pI2CSensorData = NULL;
 
 /**
  * Functions to get data from analog sensor
@@ -75,8 +76,10 @@ void _initialize_ev3api_sensor() {
 		assert(ercd == E_OK);
 		pUartSensorData = brickinfo.uart_sensors;
 		pAnalogSensorData = brickinfo.analog_sensors;
+		pI2CSensorData = brickinfo.i2c_sensors;
 		assert(pUartSensorData != NULL);
 		assert(pAnalogSensorData != NULL);
+		assert(pI2CSensorData != NULL);
 	}
 }
 
@@ -103,6 +106,10 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
         // Wait UART sensor to finish initialization
 //    	while(!uart_sensor_data_ready(port));
 		break;
+
+    case HT_NXT_ACCEL_SENSOR:
+        // TODO: configure I2C sensor
+        break;
 
 	default:
 		API_ERROR("Invalid sensor type %d", type);
@@ -293,6 +300,28 @@ bool_t ev3_touch_sensor_is_pressed(sensor_port_t port) {
 error_exit:
     syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
     return false;
+}
+
+bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]) {
+	ER ercd;
+
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == HT_NXT_ACCEL_SENSOR, E_OBJ);
+	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+
+	for (int i = 0; i < 3; i++) {
+		axes[i] = pI2CSensorData[port].raw[i];
+		axes[i] = ((axes[i] < 128 ? axes[i] : axes[i] - 256) << 2) | (pI2CSensorData[port].raw[i + 3] & 0x3);
+	}
+
+	ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 6);
+	assert(ercd == E_OK);
+
+	return true;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return false;
 }
 
 #if 0 // Legacy code
