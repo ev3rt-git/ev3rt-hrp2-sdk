@@ -72,6 +72,19 @@ typedef enum {
 
 /**
  * \~English
+ * \brief Structure for an RGB raw value
+ *
+ * \~Japanese
+ * \brief RGB Raw値を格納する構造体
+ */
+typedef struct {
+    uint16_t r; //!< \~English Red value   \~Japanese 赤
+    uint16_t g; //!< \~English Green value \~Japanese 緑
+    uint16_t b; //!< \~English Blue value  \~Japanese 青
+} rgb_raw_t;
+
+/**
+ * \~English
  * \brief 	   Configure a sensor port.
  * \param port Sensor port to be configured
  * \param type Sensor type for the specified sensor port
@@ -142,6 +155,20 @@ uint8_t ev3_color_sensor_get_reflect(sensor_port_t port);
  * \return      環境光の強さ（0〜100）
  */
 uint8_t ev3_color_sensor_get_ambient(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief 	   Get the RGB raw value by a color sensor.
+ * \param port Sensor port to be inquired
+ * \param val  Pointer for storing sensor value
+ *
+ * \~Japanese
+ * \brief 	    カラーセンサでRGB Raw値を測定する．
+ * \details     不正のセンサポート番号を指定した場合，valは更新しない（エラーログが出力される）．
+ * \param port  センサポート番号
+ * \param val   取得した値を格納する変数のポインタ
+ */
+void ev3_color_sensor_get_rgb_raw(sensor_port_t port, rgb_raw_t *val);
 
 /**
  * \~English

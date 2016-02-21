@@ -255,6 +255,7 @@ typedef enum {
 	COL_REFLECT = 0,
 	COL_AMBIENT = 1,
 	COL_COLOR   = 2,
+    COL_RGBRAW  = 4,
 } COLOR_SENSOR_MODES;
 
 static
@@ -274,6 +275,7 @@ void test_color_sensor(sensor_port_t port) {
 		{ .key = '1', .title = "Reflect", .exinf = COL_REFLECT },
 		{ .key = '2', .title = "Ambient", .exinf = COL_AMBIENT },
 		{ .key = '3', .title = "Color", .exinf = COL_COLOR },
+		{ .key = '4', .title = "RGB", .exinf = COL_RGBRAW },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
 
@@ -335,6 +337,20 @@ void test_color_sensor(sensor_port_t port) {
 //				fio_clear_line();
 				sprintf(msgbuf, "Color: %-7s", colorstr[val]);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				tslp_tsk(10);
+			});
+			break;
+		case COL_RGBRAW:
+			VIEW_SENSOR({
+				rgb_raw_t val;
+                ev3_color_sensor_get_rgb_raw(port, &val);
+//				fio_clear_line();
+				sprintf(msgbuf, "Red:   %-4d", val.r);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				sprintf(msgbuf, "Green: %-4d", val.g);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 4);
+				sprintf(msgbuf, "Blue:  %-4d", val.b);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 5);
 				tslp_tsk(10);
 			});
 			break;

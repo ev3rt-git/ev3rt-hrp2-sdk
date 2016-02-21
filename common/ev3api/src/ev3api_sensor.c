@@ -138,6 +138,7 @@ typedef enum {
 	COL_REFLECT = 0,
 	COL_AMBIENT = 1,
 	COL_COLOR   = 2,
+	COL_RGBRAW  = 4,
 } COLOR_SENSOR_MODES;
 
 colorid_t ev3_color_sensor_get_color(sensor_port_t port) {
@@ -187,6 +188,21 @@ uint8_t ev3_color_sensor_get_ambient(sensor_port_t port) {
 error_exit:
     syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
     return 0;
+}
+
+void ev3_color_sensor_get_rgb_raw(sensor_port_t port, rgb_raw_t *val) {
+	ER ercd;
+
+//	lazy_initialize();
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == COLOR_SENSOR, E_OBJ);
+
+	uart_sensor_fetch_data(port, COL_RGBRAW, val, sizeof(rgb_raw_t));
+
+    return;
+
+error_exit:
+    syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
 }
 
 typedef enum {
