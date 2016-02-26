@@ -48,6 +48,7 @@ typedef enum {
     TOUCH_SENSOR,	     //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
     COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
 	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
+	NXT_TEMP_SENSOR,     //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
     TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
 } sensor_type_t;
 
@@ -271,6 +272,23 @@ bool_t ev3_touch_sensor_is_pressed(sensor_port_t port);
  * \retval false axes[]は変更されなかった（前回のI2C操作が完成していない）
  */
 bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]);
+
+/**
+ * \~English
+ * \brief 	   Measure temperature with a NXT temperature sensor (9749).
+ * \param port Sensor port to be inquired
+ * \param temp Variable to store the temperature value
+ * \return     \a true (temp is updated), \a false (temp is unchanged due to I2C busy)
+ *
+ * \~Japanese
+ * \brief 	     NXT温度センサ（9749）で温度を測定する．
+ * \details      不正のセンサポート番号を指定した場合，常に \a false を返す（エラーログが出力される）．
+ * \param  port  センサポート番号
+ * \param  temp  温度データ（°C）を格納するための変数へのポインタ
+ * \retval true  tempは更新された
+ * \retval false tempは変更されなかった（前回のI2C操作が完成していない）
+ */
+bool_t nxt_temp_sensor_measure(sensor_port_t port, float *temp);
 
 /**
  * @} // End of group

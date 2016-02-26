@@ -53,12 +53,14 @@ void connect_sensor(intptr_t unused) {
 
 	if(cme_port->exinf == -1) return;
 
+#define I2C_SENSOR (TNUM_SENSOR_TYPE+1)
+
 	static const CliMenuEntry entry_tab[] = {
 		{ .key = '1', .title = "Ultrasonic", .exinf = ULTRASONIC_SENSOR },
 		{ .key = '2', .title = "Gyro sensor", .exinf = GYRO_SENSOR },
 		{ .key = '3', .title = "Touch sensor", .exinf = TOUCH_SENSOR },
 		{ .key = '4', .title = "Color sensor", .exinf = COLOR_SENSOR },
-		{ .key = '5', .title = "HT Acc. sensor", .exinf = HT_NXT_ACCEL_SENSOR },
+		{ .key = '5', .title = "I2C sensor", .exinf = I2C_SENSOR },
 		{ .key = 'N', .title = "Not connected", .exinf = NONE_SENSOR },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
@@ -76,6 +78,28 @@ void connect_sensor(intptr_t unused) {
 //		fprintf(fio, ">>> %s\n", cme_port->title);
 		show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
 		cme_type = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
+
+        // Sub-menu for I2C sensor
+        if (cme_type->exinf == I2C_SENSOR) {
+	        static const CliMenuEntry entry_tab[] = {
+		        { .key = '1', .title = "HT Acc. sensor", .exinf = HT_NXT_ACCEL_SENSOR },
+		        { .key = '2', .title = "NXT Temp. sensor", .exinf = NXT_TEMP_SENSOR },
+		        { .key = 'Q', .title = "Cancel", .exinf = -1 },
+	        };
+
+	        static const CliMenu climenu = {
+		        .title     = "Select Type",
+		        .entry_tab = entry_tab,
+		        .entry_num = sizeof(entry_tab) / sizeof(CliMenuEntry),
+	        };
+
+            cme_type = NULL;
+            while (cme_type == NULL) {
+		        show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
+		        cme_type = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
+            }
+            if (cme_type->exinf == -1) cme_type = NULL;
+        }
 	}
 
 	if(cme_type->exinf == -1) return;
@@ -386,6 +410,27 @@ void test_ht_nxt_accel_sensor(sensor_port_t port) {
 	});
 }
 
+static
+void test_nxt_temp_sensor(sensor_port_t port) {
+	// Draw title
+	char msgbuf[100];
+	ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+	ev3_lcd_draw_string("Test Sensor", (EV3_LCD_WIDTH - strlen("Test Sensor") * MENU_FONT_WIDTH) / 2, 0);
+	sprintf(msgbuf, "Type: NXT Temp.");
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
+	sprintf(msgbuf, "Port: %c", '1' + port);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+
+    float temp;
+
+	VIEW_SENSOR({
+		bool_t val = nxt_temp_sensor_measure(port, &temp);
+		assert(val);
+		sprintf(msgbuf, "Temp.: %8.4f", temp);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+		tslp_tsk(10);
+	});
+}
 void test_sensor(intptr_t unused) {
 	const CliMenuEntry* cme_port = NULL;
 	while(cme_port == NULL) {
@@ -411,6 +456,9 @@ void test_sensor(intptr_t unused) {
 		break;
 	case HT_NXT_ACCEL_SENSOR:
 		test_ht_nxt_accel_sensor(cme_port->exinf);
+		break;
+	case NXT_TEMP_SENSOR:
+		test_nxt_temp_sensor(cme_port->exinf);
 		break;
 	case NONE_SENSOR: {
 		char msgbuf[100];

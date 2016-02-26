@@ -41,6 +41,30 @@ void main_task(intptr_t unused) {
     ev3_sta_cyc(TEST_EV3_CYC2);
     tslp_tsk(5000);
     ev3_stp_cyc(TEST_EV3_CYC2);
+
+    syslog(LOG_NOTICE, "TEST DTQ");
+    intptr_t data = 0xdeadbeef;
+    assert(snd_dtq(DTQ1, data) == E_OK);
+    data = 0;
+    assert(rcv_dtq(DTQ1, &data) == E_OK);
+    assert(data == 0xdeadbeef);
+
+    syslog(LOG_NOTICE, "TEST PDQ");
+    data = 0xdeadbeef;
+    assert(snd_pdq(PDQ1, data, 1) == E_OK);
+    data = 0xdeadbee2;
+    assert(snd_pdq(PDQ1, data, 2) == E_OK);
+    PRI datapri;
+    assert(rcv_pdq(PDQ1, &data, &datapri) == E_OK);
+    assert(data == 0xdeadbeef && datapri == 1);
+    assert(rcv_pdq(PDQ1, &data, &datapri) == E_OK);
+    assert(data == 0xdeadbee2 && datapri == 2);
+
+    syslog(LOG_NOTICE, "TEST MTX");
+    assert(loc_mtx(MTX1) == E_OK);
+    assert(unl_mtx(MTX1) == E_OK);
+
+    syslog(LOG_NOTICE, "TEST DONE");
 #if 0
     // Register button handlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);

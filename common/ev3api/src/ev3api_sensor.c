@@ -108,7 +108,9 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
 		break;
 
     case HT_NXT_ACCEL_SENSOR:
-        // TODO: configure I2C sensor
+    case NXT_TEMP_SENSOR:
+    	ercd = uart_sensor_config(port, 0xFF /* TODO:MODE_NONE_UART_SENSOR */);
+    	assert(ercd == E_OK);
         break;
 
 	default:
@@ -331,6 +333,28 @@ bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]) {
 	}
 
 	ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 6);
+	assert(ercd == E_OK);
+
+	return true;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return false;
+}
+
+bool_t nxt_temp_sensor_measure(sensor_port_t port, float *temp) {
+	ER ercd;
+
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == NXT_TEMP_SENSOR, E_OBJ);
+	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+
+    //syslog(LOG_EMERG, "TEMP RAW: 0x%x 0x%x", pI2CSensorData[port].raw[0], pI2CSensorData[port].raw[1]);
+    int16_t raw = pI2CSensorData[port].raw[0];
+    raw = ((raw < 128 ? raw : raw - 256) << 4) | ((pI2CSensorData[port].raw[1] >> 4) & 0xF);
+    *temp = raw * 0.0625f;
+
+	ercd = start_i2c_transaction(port, 0x4c, "\x0", 1, 2);
 	assert(ercd == E_OK);
 
 	return true;
