@@ -5,7 +5,9 @@
 #
 # Include configurations of EV3RT SDK
 #
-include ../Makefile.sdk.conf
+SDKDIR = ..
+WSPDIR = $(basename $(PWD))
+include $(SDKDIR)/Makefile.sdk.conf
 
 # Configuration
 SRCLANG := c
@@ -19,10 +21,10 @@ get_relpath = $(shell perl -MFile::Spec -e "print File::Spec->abs2rel(q($1),q($2
 #
 # Paths
 #
-KERNELDIR    := $(PWD)/../$(EV3RT_BASE_DIR)
-OBJDIR       := $(PWD)/../$(EV3RT_PRJ_OBJ_DIR)
-LIBKERNELDIR := $(PWD)/../$(EV3RT_LIBKERNEL_DIR)
-TARGETDIR    := $(KERNELDIR)/target/ev3_gcc
+KERNELDIR    := $(PWD)/$(SDKDIR)/$(EV3RT_BASE_DIR)
+OBJDIR       := $(PWD)/$(SDKDIR)/$(EV3RT_PRJ_OBJ_DIR)
+LIBKERNELDIR := $(PWD)/$(SDKDIR)/$(EV3RT_LIBKERNEL_DIR)
+TARGETDIR    := $(PWD)/$(KERNELDIR)/target/ev3_gcc
 
 # Object files
 OBJFILENAME := $(KERNEL)
@@ -48,7 +50,7 @@ MKFILENAME := Makefile.app
 endif
 MKFILE_DIR := $(APPLDIR)
 ifeq (,$(wildcard $(mkfile_dir)/$(MKFILENAME)))
-MKFILE_DIR := $(PWD)/../common
+MKFILE_DIR := $(SDKDIR)/common
 endif
 
 
