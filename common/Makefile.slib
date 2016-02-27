@@ -10,7 +10,7 @@ CURRENT_DIR := $(EV3RT_SDK_LIB_DIR)/$(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH
 
 THIS_LIB_SRC_DIR   := $(CURRENT_DIR)/src
 #THIS_LIB_OBJ_DIR   := $(CURRENT_DIR)/OBJ
-THIS_LIB_OBJ_DIR   := $(PWD)/static-lib/$(THIS_LIB_NAME)
+THIS_LIB_OBJ_DIR   := static-lib/$(THIS_LIB_NAME)
 ifdef BUILD_LOADABLE_MODULE
 THIS_LIB_ARC_FILE  := $(CURRENT_DIR)/$(THIS_LIB_NAME)-loadable.a
 else
