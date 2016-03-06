@@ -93,9 +93,12 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
 
 	switch (type) {
 	case NONE_SENSOR:
-	case TOUCH_SENSOR:
-		// Do nothing for analog sensor or no sensor
+        // Do nothing
 		break;
+
+	case TOUCH_SENSOR:
+        // It seems analog sensor can't work correctly in I2C mode
+        /* fallthrough */
 
     case ULTRASONIC_SENSOR:
     case GYRO_SENSOR:
