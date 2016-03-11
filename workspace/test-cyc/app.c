@@ -9,12 +9,6 @@
 #include "ev3api.h"
 #include "app.h"
 
-#if defined(BUILD_MODULE)
-#include "module_cfg.h"
-#else
-#include "kernel_cfg.h"
-#endif
-
 static int fontw, fonth;
 
 static int count[10];

@@ -127,11 +127,9 @@ extern int32_t default_menu_font_height;
  * Tasks
  */
 
-extern void	task(intptr_t exinf);
 extern void	main_task(intptr_t exinf);
-extern void balance_task(intptr_t exinf);
-extern void idle_task(intptr_t exinf);
+extern void bluetooth_echo_task(intptr_t exinf);
 
-extern void	gpio_irq_dispatcher(intptr_t exinf);
+// extern void	gpio_irq_dispatcher(intptr_t exinf);
 
 #endif /* TOPPERS_MACRO_ONLY */

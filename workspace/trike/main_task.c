@@ -11,12 +11,6 @@
 #include "nxtrike.h"
 #include "ev3api.h"
 
-#if defined(BUILD_MODULE)
-#include "module_cfg.h"
-#else
-#include "kernel_cfg.h"
-#endif
-
 /*
  * 走行エッジの切り替え
  * デフォルトはラインの右端走行モード

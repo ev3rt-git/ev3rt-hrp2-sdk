@@ -4,12 +4,6 @@
 #include "syssvc/serial.h"
 #include "syssvc/syslog.h"
 
-#if defined(BUILD_MODULE)
-#include "module_cfg.h"
-#else
-#include "kernel_cfg.h"
-#endif
-
 //#include "nxt_avr.h"
 //#include "sensors.h"
 //#include "i2c.h"

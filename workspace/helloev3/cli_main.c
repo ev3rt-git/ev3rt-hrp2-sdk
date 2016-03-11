@@ -293,6 +293,66 @@ void test_battery(intptr_t unused) {
 	}
 }
 
+void bluetooth_echo_task(intptr_t unused) {
+    FILE *bt = ev3_serial_open_file(EV3_SERIAL_BT);
+    fprintf(bt, "\r\nEcho test is started.\r\n");
+
+    char buf;
+    ER_UINT erlen;
+    while (1) {
+        erlen = serial_rea_dat(SIO_PORT_BT, &buf, 1);
+        if (erlen != 1) {
+            assert(!ev3_bluetooth_is_connected());
+            return;
+        }
+        erlen = serial_wri_dat(SIO_PORT_BT, &buf, 1);
+        if (buf == '\r') serial_wri_dat(SIO_PORT_BT, "\n", 1);
+        if (erlen != 1) {
+            assert(!ev3_bluetooth_is_connected());
+            return;
+        }
+    }
+}
+
+static
+void test_bluetooth(intptr_t unused) {
+	// Clear menu area
+	ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
+
+	// Draw title
+	const char *title = "Bluetooth";
+	int offset_x = 0, offset_y = 0;
+	if (EV3_LCD_WIDTH - offset_x > strlen(title) * MENU_FONT_WIDTH)
+		offset_x += (EV3_LCD_WIDTH - offset_x - strlen(title) * MENU_FONT_WIDTH) / 2;
+	ev3_lcd_draw_string(title, offset_x, offset_y);
+
+	// Draw name
+	offset_x = 0;
+	offset_y += MENU_FONT_HEIGHT;
+	ev3_lcd_draw_string("Connected: ", offset_x, offset_y + MENU_FONT_HEIGHT * 0);
+
+	// Draw status
+	char lcdstr[100];
+    bool_t connected = false;
+	while (1) {
+        if (connected != ev3_bluetooth_is_connected()) { // Status changed
+            connected = !connected;
+            if (connected)
+                act_tsk(BT_ECHO_TASK);
+            else
+                ter_tsk(BT_ECHO_TASK);
+        }
+		sprintf(lcdstr, "%c", connected ? 'Y' : 'N');
+		ev3_lcd_draw_string(lcdstr, offset_x + strlen("Connected: ") * MENU_FONT_WIDTH, offset_y + MENU_FONT_HEIGHT * 0);
+		if (ev3_button_is_pressed(BACK_BUTTON)) {
+			while(ev3_button_is_pressed(BACK_BUTTON));
+			break;
+		}
+        tslp_tsk(10);
+	}
+    ter_tsk(BT_ECHO_TASK);
+}
+
 static void connect_device(intptr_t unused) {
 	static const CliMenuEntry entry_tab[] = {
 		{ .key = '1', .title = "Connect sensor", .handler = connect_sensor },
@@ -324,6 +384,7 @@ static void test_brick(intptr_t unused) {
 		{ .key = '6', .title = "Test buttons", .handler = test_button },
 		{ .key = '7', .title = "Test speaker", .handler = test_speaker },
 		{ .key = '8', .title = "Battery", .handler = test_battery },
+		{ .key = '9', .title = "Bluetooth", .handler = test_bluetooth },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
 
