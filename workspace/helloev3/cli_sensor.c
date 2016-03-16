@@ -475,23 +475,3 @@ void test_sensor(intptr_t unused) {
 
 }
 
-#if 0 // Legacy code
-#define VIEW_SENSOR(func) do { \
-	fprintf(fio, "Press 'c' to change mode, 'q' to cancel.\n"); \
-	while(1) { \
-		{func;} \
-		T_SERIAL_RPOR rpor; \
-		serial_ref_por(SIO_PORT_DEFAULT, &rpor); \
-		if(rpor.reacnt > 0) { \
-			unsigned char c = fgetc(fio); \
-			if(toupper(c) == 'Q') { \
-				change_mode = false; \
-				break; \
-			} else if(toupper(c) == 'C') { \
-				change_mode = true; \
-				break; \
-			} \
-		} \
-	} \
-} while(0)
-#endif

@@ -120,7 +120,6 @@ void test_normal_motor(ID port) {
 #endif
 		if(cme_op == NULL) continue;
 		if(cme_op->exinf == (intptr_t)ev3_motor_set_power) {
-#if 1
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
 			while (1) {
@@ -140,46 +139,10 @@ void test_normal_motor(ID port) {
 					break;
 				}
 			}
-#else
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF | IOCTL_ECHO));
-	    	int speed;
-	    	while(1) {
-	    		fprintf(fio, "Enter speed (integer, [-100,100]): ");
-	    		fscanf(fio, "%d", &speed);
-	    		if(speed >= -100 && speed <= 100)
-	    			break;
-	    		else {
-	    			fprintf(fio, "Invalid speed %d entered, please enter again.", speed);
-	    		}
-	    	}
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF));
-	    	fprintf(fio, ">>> Set speed to %d.", speed);
-	    	ev3_motor_set_power(port, speed);
-	    	tslp_tsk(500);
-#endif
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_rotate) {
-#if 0
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF | IOCTL_ECHO));
-	    	int speed;
-	    	while(1) {
-	    		fprintf(fio, "Enter speed (integer, [1,100]): ");
-	    		fscanf(fio, "%d", &speed);
-	    		if(speed >= 1 && speed <= 100)
-	    			break;
-	    		else {
-	    			fprintf(fio, "Invalid speed %d entered, please enter again.", speed);
-	    		}
-	    	}
-	    	int degrees;
-    		fprintf(fio, "Enter degrees (signed integer): ");
-    		fscanf(fio, "%d", &degrees);
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF));
-	    	fprintf(fio, ">>> Rotate for %d degrees at speed %d.", degrees, speed);
-#endif
 	    	ev3_motor_rotate(port, 90, 30, false);
 	    	show_message_box("Rotate Motor", "Motor is rotated for 90 degrees at 30% power.");
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_stop) {
-#if 1
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
 			ev3_lcd_draw_string("ENTER: Brake.", 0, MENU_FONT_HEIGHT);
@@ -201,22 +164,7 @@ void test_normal_motor(ID port) {
 					break;
 				}
 			}
-#else
-	    	fprintf(fio, "Stop mode ('y' for brake, others for coast): ");
-	    	unsigned char c = fgetc(fio);
-	    	fputc(c, fio);
-	    	fputc('\n', fio);
-	    	if(toupper(c) == 'Y') {
-	    		fprintf(fio, ">>> Brake motor.");
-	    		ev3_motor_stop(port, true);
-	    	} else {
-	    		fprintf(fio, ">>> Float motor.");
-	    		ev3_motor_stop(port, false);
-	    	}
-	    	tslp_tsk(500);
-#endif
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_get_counts) {
-#if 1
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
 			while (1) {
@@ -228,27 +176,6 @@ void test_normal_motor(ID port) {
 					break;
 				}
 			}
-#else
-			fio_clear_screen();
-			fprintf(fio, "--- Test %s @ Port%c---\n", (mt == LARGE_MOTOR ? "Large Servo Motor" : "Medium Servo Motor"), 'A' + port);
-			fprintf(fio, "Press 'q' to cancel.\n");
-
-			ev3_motor_reset_counts(port);
-
-			while (1) {
-				int32_t val = ev3_motor_get_counts(port);
-				fio_clear_line();
-				fprintf(fio, "Motor counts (degrees): %ld.", val);
-				T_SERIAL_RPOR rpor;
-				serial_ref_por(SIO_PORT_DEFAULT, &rpor);
-				if (rpor.reacnt > 0) {
-					unsigned char c = fgetc(fio);
-					if (toupper(c) == 'Q') {
-						break;
-					}
-				}
-			}
-#endif
 		} else if(cme_op->exinf == -1) {
 			ev3_motor_stop(port, false);
 			return;
@@ -303,23 +230,6 @@ void test_unreg_motor(ID port) {
 					break;
 				}
 			}
-#if 0
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF | IOCTL_ECHO));
-	    	int power;
-	    	while(1) {
-	    		fprintf(fio, "Enter power (integer, [-100,100]): ");
-	    		fscanf(fio, "%d", &power);
-	    		if(power >= -100 && power <= 100)
-	    			break;
-	    		else {
-	    			fprintf(fio, "Invalid power %d entered, please enter again.", power);
-	    		}
-	    	}
-	    	serial_ctl_por(SIO_PORT_DEFAULT, (IOCTL_CRLF));
-	    	fprintf(fio, ">>> Set speed to %d.", power);
-	    	ev3_motor_set_power(port, power);
-	    	tslp_tsk(500);
-#endif
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_stop) {
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
@@ -342,20 +252,6 @@ void test_unreg_motor(ID port) {
 					break;
 				}
 			}
-#if 0
-	    	fprintf(fio, "Stop mode ('y' for brake, others for coast): ");
-	    	unsigned char c = fgetc(fio);
-	    	fputc(c, fio);
-	    	fputc('\n', fio);
-	    	if(toupper(c) == 'Y') {
-	    		fprintf(fio, ">>> Brake motor.");
-	    		ev3_motor_stop(port, true);
-	    	} else {
-	    		fprintf(fio, ">>> Float motor.");
-	    		ev3_motor_stop(port, false);
-	    	}
-	    	tslp_tsk(500);
-#endif
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_get_counts) {
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
@@ -368,26 +264,6 @@ void test_unreg_motor(ID port) {
 					break;
 				}
 			}
-#if 0
-			fio_clear_screen();
-			fprintf(fio, "--- Test Unregulated Motor @ Port%c---\n", 'A' + port);
-			fprintf(fio, "Press 'q' to cancel.\n");
-
-			ev3_motor_reset_counts(port);
-			while (1) {
-				int32_t val = ev3_motor_get_counts(port);
-				fio_clear_line();
-				fprintf(fio, "Motor counts (degrees): %ld.", val);
-				T_SERIAL_RPOR rpor;
-				serial_ref_por(SIO_PORT_DEFAULT, &rpor);
-				if (rpor.reacnt > 0) {
-					unsigned char c = fgetc(fio);
-					if (toupper(c) == 'Q') {
-						break;
-					}
-				}
-			}
-#endif
 		} else if(cme_op->exinf == -1) {
 			ev3_motor_stop(port, false);
 			return;

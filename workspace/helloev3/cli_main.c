@@ -198,7 +198,6 @@ void test_speaker(intptr_t unused) {
 
 static
 void test_button(intptr_t unused) {
-#if 1
 	// Clear menu area
 	ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE);
 
@@ -228,37 +227,6 @@ void test_button(intptr_t unused) {
 			break;
 		}
 	}
-
-#else
-	fio_clear_screen();
-	fprintf(fio, "--- Test Button ---\n");
-	fprintf(fio, "Press 'q' to cancel.\n");
-
-	ev3_button_set_on_clicked(LEFT_BUTTON, test_button_hdr, LEFT_BUTTON);
-	ev3_button_set_on_clicked(RIGHT_BUTTON, test_button_hdr, RIGHT_BUTTON);
-	ev3_button_set_on_clicked(UP_BUTTON, test_button_hdr, UP_BUTTON);
-	ev3_button_set_on_clicked(DOWN_BUTTON, test_button_hdr, DOWN_BUTTON);
-	ev3_button_set_on_clicked(ENTER_BUTTON, test_button_hdr, ENTER_BUTTON);
-	ev3_button_set_on_clicked(BACK_BUTTON, test_button_hdr, BACK_BUTTON);
-
-	while(1) {
-		T_SERIAL_RPOR rpor;
-		serial_ref_por(SIO_PORT_DEFAULT, &rpor);
-		if(rpor.reacnt > 0) {
-			unsigned char c = fgetc(fio);
-			if(toupper(c) == 'Q') {
-				break;
-			}
-		}
-	}
-
-	ev3_button_set_on_clicked(LEFT_BUTTON, NULL, 0);
-	ev3_button_set_on_clicked(RIGHT_BUTTON, NULL, 0);
-	ev3_button_set_on_clicked(UP_BUTTON, NULL, 0);
-	ev3_button_set_on_clicked(DOWN_BUTTON, NULL, 0);
-	ev3_button_set_on_clicked(ENTER_BUTTON, NULL, 0);
-	ev3_button_set_on_clicked(BACK_BUTTON, NULL, 0);
-#endif
 }
 
 static
