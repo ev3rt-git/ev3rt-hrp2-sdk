@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "ev3api.h"
+
 /**
  * Application initialize task
  */
