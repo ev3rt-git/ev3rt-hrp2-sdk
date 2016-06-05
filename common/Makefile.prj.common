@@ -1,6 +1,9 @@
 #
 # This Makefile includes the common part to build an EV3RT project.
 #
+# Input:
+# $(APPLDIR)
+#
 # Output:
 # $(EV3RT_SDK_COM_DIR)
 # $(EV3RT_SDK_API_DIR)
@@ -33,3 +36,9 @@ include $(EV3RT_SDK_API_DIR)/Makefile
 #
 ev3rt_sdk_lib_abs_dir := $(this_abs_dir)/library
 EV3RT_SDK_LIB_DIR := $(call get_relpath, $(ev3rt_sdk_lib_abs_dir), $(PWD))
+
+#
+# Add include/ and src/ under application directory to search path
+#
+INCLUDES += $(foreach dir,$(shell find $(APPLDIR) -type d -name include),-I$(dir))
+APPL_DIR += $(foreach dir,$(shell find $(APPLDIR) -type d -name src),$(dir))
