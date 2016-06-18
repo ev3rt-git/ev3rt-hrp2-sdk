@@ -27,5 +27,14 @@
 *.x86_64
 *.hex
 
+# Application
+app
+
+# System image
+uImage
+
+# Build directories
+OBJ/
+
 # Debug files
 *.dSYM/
