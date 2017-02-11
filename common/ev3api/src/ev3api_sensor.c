@@ -106,6 +106,7 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
     case ULTRASONIC_SENSOR:
     case GYRO_SENSOR:
     case COLOR_SENSOR:
+    case INFRARED_SENSOR:
         // Configure UART sensor
     	ercd = uart_sensor_config(port, 0);
     	assert(ercd == E_OK);
@@ -311,6 +312,113 @@ error_exit:
     return false;
 }
 
+typedef enum {
+	IR_DIST   = 0,
+	IR_SEEK   = 1,
+	IR_REMOTE = 2,
+} INFRARED_SENSOR_SENSOR_MODES;
+
+int8_t ev3_infrared_sensor_get_distance(sensor_port_t port) {
+	ER ercd;
+
+//	lazy_initialize();
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == INFRARED_SENSOR, E_OBJ);
+
+	int8_t val;
+	uart_sensor_fetch_data(port, IR_DIST, &val, sizeof(val));
+	return val;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return 0;
+}
+
+ir_seek_t ev3_infrared_sensor_seek(sensor_port_t port) {
+	ir_seek_t result;
+	ER ercd;
+
+//	lazy_initialize();
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == INFRARED_SENSOR, E_OBJ);
+
+	int8_t val[8];
+	uart_sensor_fetch_data(port, IR_SEEK, &val, 8 * sizeof(int8_t));
+	for (int i = 0; i < 4; i++) {
+		result.heading [i] = val[2 * i];
+		result.distance[i] = val[2 * i + 1];
+	}
+	return result;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	for (int i = 0; i < 4; i++) {
+		result.heading [i] = 0;
+		result.distance[i] = -128;
+	}
+	return result;
+}
+
+ir_remote_t ev3_infrared_sensor_get_remote(sensor_port_t port) {
+	ir_remote_t result;
+	ER ercd;
+
+//	lazy_initialize();
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == INFRARED_SENSOR, E_OBJ);
+
+	uint8_t val[4];
+	uart_sensor_fetch_data(port, IR_REMOTE, &val, 4 * sizeof(uint8_t));
+	for (int i = 0; i < 4; i++) {
+		switch(val[i])
+		{
+		case 0:  // no buttons pressed
+			result.channel[i] = 0;
+			continue;
+		case 1:  // red up
+			result.channel[i] = IR_RED_UP_BUTTON;
+			continue;
+		case 2:  // red down
+			result.channel[i] = IR_RED_DOWN_BUTTON;
+			continue;
+		case 3:  // blue up
+			result.channel[i] = IR_BLUE_UP_BUTTON;
+			continue;
+		case 4:  // blue down
+			result.channel[i] = IR_BLUE_DOWN_BUTTON;
+			continue;
+		case 5:  // red up and blue up
+			result.channel[i] = IR_RED_UP_BUTTON + IR_BLUE_UP_BUTTON;
+			continue;
+		case 6:  // red up and blue down
+			result.channel[i] = IR_RED_UP_BUTTON + IR_BLUE_DOWN_BUTTON;
+			continue;
+		case 7:  // red down and blue up
+			result.channel[i] = IR_RED_DOWN_BUTTON + IR_BLUE_UP_BUTTON;
+			continue;
+		case 8:  // red down and blue down
+			result.channel[i] = IR_RED_DOWN_BUTTON + IR_BLUE_DOWN_BUTTON;
+			continue;
+		case 9:  // beacon mode on
+			result.channel[i] = IR_BEACON_BUTTON;
+			continue;
+		case 10: // red up and red down
+			result.channel[i] = IR_RED_UP_BUTTON + IR_RED_DOWN_BUTTON;
+			continue;
+		case 11: // blue up and blue down
+			result.channel[i] = IR_BLUE_UP_BUTTON + IR_BLUE_DOWN_BUTTON;
+		}
+	}
+	return result;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	for (int i = 0; i < 4; i++) {
+		result.channel[i] = 0;
+	}
+	return result;
+}
+
 bool_t ev3_touch_sensor_is_pressed(sensor_port_t port) {
 	ER ercd;
 
@@ -401,6 +509,7 @@ void ev3_sensors_init(sensor_type_t type1, sensor_type_t type2, sensor_type_t ty
 			break;
 
 	    case ULTRASONIC_SENSOR:
+	    case INFRARED_SENSOR:
 	    case GYRO_SENSOR:
 	    case COLOR_SENSOR:
 	        // Configure UART sensor
@@ -451,6 +560,7 @@ void ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
 		break;
 
     case ULTRASONIC_SENSOR:
+    case INFRARED_SENSOR:
     case GYRO_SENSOR:
     case COLOR_SENSOR:
         // Configure UART sensor
