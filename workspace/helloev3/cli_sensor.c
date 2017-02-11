@@ -61,8 +61,9 @@ void connect_sensor(intptr_t unused) {
 		{ .key = '3', .title = "Touch sensor", .exinf = TOUCH_SENSOR },
 		{ .key = '4', .title = "Color sensor", .exinf = COLOR_SENSOR },
 		{ .key = '5', .title = "I2C sensor", .exinf = I2C_SENSOR },
+		{ .key = '6', .title = "IR sensor", .exinf = INFRARED_SENSOR },
 		{ .key = 'N', .title = "Not connected", .exinf = NONE_SENSOR },
-		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
+		//{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
 
 	static const CliMenu climenu = {
@@ -171,6 +172,133 @@ void test_ultrasonic_sensor(sensor_port_t port) {
 //				fio_clear_line();
 				sprintf(msgbuf, "Signal: %d", val);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				tslp_tsk(10);
+			});
+			break;
+		default:
+			assert(false);
+		}
+	}
+}
+
+void swap(int* a, int* b) {
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
+
+void lcd_rect(int x1, int y1, int x2, int y2, int fill)
+{
+	if (x1 > x2) swap(&x1, &x2);
+	if (y1 > y2) swap(&y1, &y2);
+	
+	if (fill)
+	{
+		ev3_lcd_fill_rect(x1, y1, x2-x1, y2-y1, EV3_LCD_BLACK);
+		return;
+	}
+	
+	ev3_lcd_draw_line(x1, y1, x1, y2);
+	ev3_lcd_draw_line(x2, y1, x2, y2);
+	ev3_lcd_draw_line(x1, y1, x2, y1);
+	ev3_lcd_draw_line(x1, y2, x2, y2);
+	ev3_lcd_fill_rect(x1+1, y1+1, x2-x1-1, y2-y1-1, EV3_LCD_WHITE);
+}
+
+typedef enum {
+	IR_DIST   = 0,
+	IR_SEEK   = 1,
+	IR_REMOTE = 2,
+} INFRARED_SENSOR_SENSOR_MODES;
+
+static
+void test_infrared_sensor(sensor_port_t port) {
+	static const CliMenuEntry entry_tab[] = {
+		{ .key = '1', .title = "Distance (%)", .exinf = IR_DIST },
+		{ .key = '2', .title = "Seek", .exinf = IR_SEEK },
+		{ .key = '3', .title = "Remote", .exinf = IR_REMOTE },
+		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
+	};
+
+	static const CliMenu climenu = {
+		.title     = "Select Mode",
+		.entry_tab = entry_tab,
+		.entry_num = sizeof(entry_tab) / sizeof(CliMenuEntry),
+	};
+
+	bool_t change_mode = true;
+
+	while(change_mode) {
+		const CliMenuEntry* cme_mode = NULL;
+		while (cme_mode == NULL) {
+#if 1
+			show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
+			cme_mode = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
+#else
+			fio_clear_screen();
+			fprintf(fio, "--- Test Infra-Red Sensor @ Port%d ---\n", port + 1);
+			show_cli_menu(&climenu);
+			cme_mode = select_menu_entry(&climenu);
+#endif
+		}
+
+		if (cme_mode->exinf == -1)
+			return;
+
+		// Draw title
+		char msgbuf[100];
+		ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+		ev3_lcd_draw_string("Test Sensor", (EV3_LCD_WIDTH - strlen("Test Sensor") * MENU_FONT_WIDTH) / 2, 0);
+		sprintf(msgbuf, "Type: Infra-Red");
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
+		sprintf(msgbuf, "Port: %c", '1' + port);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+		switch (cme_mode->exinf) {
+		case IR_DIST:
+			VIEW_SENSOR({
+				int8_t val = ev3_infrared_sensor_get_distance(port);
+//				fio_clear_line();
+				sprintf(msgbuf, "Distance: %-3d %%", val);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				tslp_tsk(10);
+			});
+			break;
+		case IR_SEEK:
+			VIEW_SENSOR({
+				ir_seek_t val = ev3_infrared_sensor_seek(port);
+//				fio_clear_line();
+				for(int c = 0; c < 4; c++)
+				{
+					int16_t h = val.heading[c];
+					int16_t d = val.distance[c];
+					sprintf(msgbuf, "%d H:%d D:%d      ", c + 1, h, d);
+					ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * (3 + c));
+				}
+				tslp_tsk(10);
+			});
+			break;
+		case IR_REMOTE:
+			VIEW_SENSOR({
+				ir_remote_t val = ev3_infrared_sensor_get_remote(port);
+				msgbuf[1] = 0;
+				for(int c = 0; c < 4; c++)
+				{
+					int beacon   = (val.channel[c] & IR_BEACON_BUTTON)    ? 1 : 0;
+					int redup    = (val.channel[c] & IR_RED_UP_BUTTON)    ? 1 : 0;
+					int reddown  = (val.channel[c] & IR_RED_DOWN_BUTTON)  ? 1 : 0;
+					int blueup   = (val.channel[c] & IR_BLUE_UP_BUTTON)   ? 1 : 0;
+					int bluedown = (val.channel[c] & IR_BLUE_DOWN_BUTTON) ? 1 : 0;
+					int top = MENU_FONT_HEIGHT * 3 + 2;
+					
+					lcd_rect(c * 45,      top     , c * 45 + 40, top + 68, 0);
+					lcd_rect(c * 45 + 2,  top + 2,  c * 45 + 38, top + 14, beacon);
+					lcd_rect(c * 45 + 2,  top + 16, c * 45 + 14, top + 40, redup);
+					lcd_rect(c * 45 + 2,  top + 42, c * 45 + 14, top + 66, reddown);
+					lcd_rect(c * 45 + 26, top + 16, c * 45 + 38, top + 40, blueup);
+					lcd_rect(c * 45 + 26, top + 42, c * 45 + 38, top + 66, bluedown);
+					msgbuf[0] = '1' + c;
+					ev3_lcd_draw_string(msgbuf, c * 45 + 16, top + 32);
+				}
 				tslp_tsk(10);
 			});
 			break;
@@ -444,6 +572,9 @@ void test_sensor(intptr_t unused) {
 	switch(ev3_sensor_get_type(cme_port->exinf)) {
 	case ULTRASONIC_SENSOR:
 		test_ultrasonic_sensor(cme_port->exinf);
+		break;
+	case INFRARED_SENSOR:
+		test_infrared_sensor(cme_port->exinf);
 		break;
 	case GYRO_SENSOR:
 		test_gyro_sensor(cme_port->exinf);
