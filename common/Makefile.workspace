@@ -104,6 +104,36 @@ endif
 usage:
 	@echo make img="<folder>"
 	@echo make app="<folder>"
+	@echo "make upload [ip=<ev3_ip_address>] [from=<local_file_name>] [to=<remote_file_name>]"
+	@echo "make uploadimg [ip=<ev3_ip_address>] [from=<local_image_path>]"
+
+# TODO: check file name carefully
+ifndef ip # Default IP
+ip := 10.0.10.1
+endif
+ifndef from # Default local application (or uImage) file name
+from := app
+uploadimg: from := uImage
+endif
+ifndef to
+to := $(from)
+endif
+upload:
+	@echo = "Upload user application file"
+	@echo "  BT PAN IP: $(ip)"
+	@echo "  FILE NAME: (Local) \"$(from)\" -> (Remote) \"$(to)\""
+	@echo = "Execute cURL:"
+	@curl -f --noproxy "*" -H "Content-Type: ev3rt/app" -H 'Content-Disposition: inline; filename="$(to)"' --data-binary @$(from) http://$(ip)/upload > /dev/null
+	@echo = Application has been successfully uploaded.
+
+uploadimg:
+	@echo = "Upload uImage file"
+	@echo "  BT PAN IP: $(ip)"
+	@echo "  FILE NAME: (Local) \"$(from)\" -> (Remote) \"/uImage\""
+	@echo = "Execute cURL:"
+	@curl -f --noproxy "*" -H "Content-Type: ev3rt/img" --data-binary @$(from) http://$(ip)/upload > /dev/null
+	@echo = uImage has been successfully uploaded.
+
 
 clean:
 	rm -rf $(OBJDIR)
