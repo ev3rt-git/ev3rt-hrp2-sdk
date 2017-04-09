@@ -96,11 +96,15 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
         // Do nothing
 		break;
 
-	case TOUCH_SENSOR:
+	case TOUCH_SENSOR: {
         // It seems analog sensor can't work correctly in I2C mode
     	ercd = uart_sensor_config(port, 0);
     	assert(ercd == E_OK);
-        dly_tsk(2); /* Wait 2ms to ensure that sensor value is updated */
+        /* Busy wait 2ms to ensure that sensor value is updated */
+        SYSTIM start, now;
+        get_tim(&start);
+        do { get_tim(&now); } while (now - start < 2);
+        }
         break;
 
     case ULTRASONIC_SENSOR:
