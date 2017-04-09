@@ -45,3 +45,5 @@ void _app_init_task(intptr_t unused) {
 	// Initialize EV3_CYC_HDR
 	_initialize_ev3api_cyc();
 }
+
+void *__dso_handle __attribute__((weak))=0;
