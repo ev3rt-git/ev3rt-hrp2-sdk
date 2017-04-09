@@ -46,4 +46,9 @@ void _app_init_task(intptr_t unused) {
 	_initialize_ev3api_cyc();
 }
 
+/**
+ * TODO:
+ * C++ destructors are not supported currently.
+ * This workaround can suppress compiler errors.
+ */
 void *__dso_handle __attribute__((weak))=0;
