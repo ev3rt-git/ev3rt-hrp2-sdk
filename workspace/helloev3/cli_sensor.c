@@ -158,18 +158,24 @@ void test_ultrasonic_sensor(sensor_port_t port) {
 		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
 		switch (cme_mode->exinf) {
 		case US_DIST_CM:
+            ev3_lcd_draw_string("UP Button: Reset", 0, MENU_FONT_HEIGHT * 4);
 			VIEW_SENSOR({
 				int16_t val = ev3_ultrasonic_sensor_get_distance(port);
-//				fio_clear_line();
 				sprintf(msgbuf, "Distance: %-3d cm", val);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+                // Reset sensor if UP button pressed
+		        if(ev3_button_is_pressed(UP_BUTTON)) {
+			        while(ev3_button_is_pressed(UP_BUTTON));
+	                ev3_sensor_config(port, HT_NXT_ACCEL_SENSOR);
+	                ev3_sensor_config(port, ULTRASONIC_SENSOR);
+				    ev3_ultrasonic_sensor_get_distance(port); // Wait first data
+		        }
 				tslp_tsk(10);
 			});
 			break;
 		case US_LISTEN:
 			VIEW_SENSOR({
 				bool_t val = ev3_ultrasonic_sensor_listen(port);
-//				fio_clear_line();
 				sprintf(msgbuf, "Signal: %d", val);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
 				tslp_tsk(10);
