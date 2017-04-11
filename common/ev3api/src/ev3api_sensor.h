@@ -47,6 +47,7 @@ typedef enum {
     GYRO_SENSOR,	     //!< \~English Gyroscope sensor 		 		  \~Japanese ジャイロセンサ
     TOUCH_SENSOR,	     //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
     COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
+    INFRARED_SENSOR,     //!< \~English Infra-Red sensor				  \~Japanese 
 	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
 	NXT_TEMP_SENSOR,     //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
     TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
@@ -240,6 +241,70 @@ int16_t ev3_ultrasonic_sensor_get_distance(sensor_port_t port);
  * \retval false 超音波信号を検出しなかった
  */
 bool_t ev3_ultrasonic_sensor_listen(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief Structure for IR Seek values for all 4 channels
+ *
+ * \~Japanese
+ * \brief 
+ */
+typedef struct {
+    int8_t heading[4];  //!< \~English Heading  for channels 1-4 (-25 to 25)           \~Japanese 
+    int8_t distance[4]; //!< \~English Distance for channels 1-4 (-128 and 0 to 100)   \~Japanese 
+} ir_seek_t;
+
+#define IR_RED_UP_BUTTON     1
+#define IR_RED_DOWN_BUTTON   2
+#define IR_BLUE_UP_BUTTON    4
+#define IR_BLUE_DOWN_BUTTON  8
+#define IR_BEACON_BUTTON     16
+
+typedef struct {
+    uint8_t channel[4];    //!< \~English IR Remote controller data for channels 1-4   \~Japanese 
+} ir_remote_t;
+
+/**
+ * \~English
+ * \brief      Get the distance using the infrared sensor.
+ * \param port Sensor port to be inquired.
+ * \return     Distance in percentage (0-100).
+ *
+ * \~Japanese
+ * \brief       
+ * \details     
+ * \param  port センサポート番号
+ * \return      
+ */
+int8_t ev3_infrared_sensor_get_distance(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief      Gets values to seek a remote controller in beacon mode.
+ * \param port Sensor port to be inquired.
+ * \return     Struct with heading/distance for all channels.
+ *
+ * \~Japanese
+ * \brief       
+ * \details     
+ * \param  port センサポート番号
+ * \return      
+ */
+ir_seek_t ev3_infrared_sensor_seek(sensor_port_t port);
+
+/**
+ * \~English
+ * \brief      Gets commands from IR remote controllers.
+ * \param port Sensor port to be inquired.
+ * \return     Struct with details of the IR remote buttons pressed.
+ *
+ * \~Japanese
+ * \brief       
+ * \details     
+ * \param  port センサポート番号
+ * \return      
+ */
+ir_remote_t ev3_infrared_sensor_get_remote(sensor_port_t port);
 
 /**
  * \~English
