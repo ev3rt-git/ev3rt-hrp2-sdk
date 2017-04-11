@@ -10,14 +10,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#define DEBUG
-
-#ifdef DEBUG
-#define _debug(x) (x)
-#else
-#define _debug(x)
-#endif
-
 FILE *fio;
 
 int32_t default_menu_font_width;
