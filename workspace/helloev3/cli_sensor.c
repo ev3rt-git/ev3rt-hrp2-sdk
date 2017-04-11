@@ -187,13 +187,13 @@ void test_ultrasonic_sensor(sensor_port_t port) {
 	}
 }
 
-void swap(int* a, int* b) {
+static void swap(int* a, int* b) {
 	int t = *a;
 	*a = *b;
 	*b = t;
 }
 
-void lcd_rect(int x1, int y1, int x2, int y2, int fill)
+static void lcd_rect(int x1, int y1, int x2, int y2, int fill)
 {
 	if (x1 > x2) swap(&x1, &x2);
 	if (y1 > y2) swap(&y1, &y2);
