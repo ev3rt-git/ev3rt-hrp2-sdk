@@ -7,23 +7,22 @@
 /**
  * \~English
  * \defgroup ev3api-brick EV3 Intelligent Brick
- *
+ * @{
+ *	 
  * \~Japanese
  * \defgroup ev3api-brick EV3本体機能
- *
  * @{
  */
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3api-led LED Light
  * \brief    Definitions of API for controlling LED lights of an EV3 intelligent brick.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3led LEDライト
  * \brief    LEDライトに関するAPI．
- *
  * @{
  */
 
@@ -45,8 +44,11 @@ typedef enum {
 
 /**
  * \~English
- * \brief 		Control the color of LED lights.
- * \param color the color to set
+ * \brief 		 Control the color of LED lights.
+ * \details      When specifying an incorrect setting value, do not change the color of the LED light.
+ * \param color  The color to set
+ * \retval E_OK  Successful completion
+ * \retval E_PAR Incorrect setting value
  *
  * \~Japanese
  * \brief 		 LEDライトのカラーを設定する

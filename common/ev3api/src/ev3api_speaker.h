@@ -8,10 +8,10 @@
 /**
  * \~English
  * \defgroup ev3api-brick EV3 Intelligent Brick
+ * @{ 
  *
  * \~Japanese
  * \defgroup ev3api-brick EV3本体機能
- *
  * @{
  */
 
@@ -21,13 +21,11 @@
  * \~English
  * \defgroup ev3api-speaker Speaker
  * \brief    Definitions of API for controlling speaker.
- *
  * @{ 
  *
  * \~Japanese
  * \defgroup ev3api-speaker スピーカ
  * \brief    音声（スピーカ）に関するAPI．
- *
  * @{
  */	
 
@@ -49,7 +47,7 @@
  */
 ER ev3_speaker_set_volume(uint8_t volume);
 
-#define SOUND_MANUAL_STOP (-1) //!< 音声の再生を手動で停止するためのフラグ
+#define SOUND_MANUAL_STOP (-1) //!< \~English Flag for stopping sound reproduction.   \~Japanese 音声の再生を手動で停止するためのフラグ
 
 /**
  * \~English
@@ -107,13 +105,6 @@ ER ev3_speaker_play_file(const memfile_t *p_memfile, int32_t duration);
  */
 ER ev3_speaker_stop();
 
-/**
- * \~English
- * \brief          Play a audio file. Only 8-bit 8kHz mono WAV file is supported by now. Any sound being played will be stopped by calling this function.
- * \param path     Full path of the WAV file for playing
- * \param duration Duration to play, in milliseconds (ms). If SOUND_MANUAL_STOP is specified,it will keep playing until stopped manually or finished.
- */
-//extern void ev3_speaker_play_file(const char *path, int32_t duration);
 
 #define NOTE_C4  (261.63)  //!< \~English Frequency of musical note C4  \~Japanese ノートC4の周波数
 #define NOTE_CS4 (277.18)  //!< \~English Frequency of musical note C#4 \~Japanese ノートC#4の周波数

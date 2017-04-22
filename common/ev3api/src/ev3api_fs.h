@@ -8,9 +8,9 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3api-fs File system
  * \brief    Definitions of API for file system.
+ * \details  This page describes only API unique to this platform, but it also supports file manipulation functions of standard C libraries such as fopen ().
  * @{
  *
  * \~Japanese
@@ -158,20 +158,23 @@ ER ev3_memfile_free(memfile_t *p_memfile);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief Numbers representing serial ports
  *
  * \~Japanese
  * \brief シリアルポートを表す番号
  */
 typedef enum {
-    EV3_SERIAL_DEFAULT = 0, //!< \~English Default SIO port     \~Japanese デフォルトのシリアルポート（ログタスク用ポート）
+    EV3_SERIAL_DEFAULT = 0, //!< \~English Default serial port (port for log task)     \~Japanese デフォルトのシリアルポート（ログタスク用ポート）
     EV3_SERIAL_UART = 1,	//!< \~English UART (Sensor port 1) \~Japanese UARTポート（センサポート1）
     EV3_SERIAL_BT = 2,	    //!< \~English Bluetooth SPP        \~Japanese Bluetooth仮想シリアルポート
 } serial_port_t;
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief 	     Open the serial port as a file.
+ * \details      In case of failure, NULL is returned (error log is output).
+ * \param port   Serial port number
+ * \returns      Serial port file
  *
  * \~Japanese
  * \brief 	     シリアルポートをファイルとしてオープンする．
@@ -183,7 +186,9 @@ FILE* ev3_serial_open_file(serial_port_t port);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            It is checked whether Bluetooth (Serial Port Profile) is connected.
+ * \retval true      Connected. It can communicate with the Bluetooth virtual serial port.
+ * \retval false     Unconnected.
  *
  * \~Japanese
  * \brief            Bluetooth (Serial Port Profile)が接続されているかどうかをチェックする．

@@ -4,19 +4,28 @@
  * \author	ertl-liyixiao
  */
 
+ /**
+ * \~English
+ * \defgroup ev3api-brick EV3 Intelligent Brick
+ * @{ 
+ *
+ * \~Japanese
+ * \defgroup ev3api-brick EV3本体機能
+ * @{
+ */
+ 
 #pragma once
 
 /**
  * \~English
  * [TODO: sync with jp version]
- * \defgroup ev3api-fs File system
- * \brief    Definitions of API for file system.
+ * \defgroup ev3api-lcd LCD
+ * \brief    Definitions of API for LCD.
  * @{
  *
  * \~Japanese
  * \defgroup ev3api-lcd LCD
  * \brief    LCDに関するAPI．
- *
  * @{
  */
 
@@ -184,8 +193,10 @@ ER ev3_lcd_fill_rect(int32_t x, int32_t y, int32_t w, int32_t h, lcdcolor_t colo
 ER ev3_lcd_draw_image(const image_t *p_image, int32_t x, int32_t y);
 
 /**
- * @} // End of group
+ * @} // End of group ev3api-lcd
  */
+ 
+/** @} // End of group ev3api-brick */
 
 #if 0 // Legacy or not implemented
 

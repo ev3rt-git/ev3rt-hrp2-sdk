@@ -17,7 +17,6 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3button Button
  * \brief    Definitions of API for controlling buttons of an EV3 intelligent brick.
  * @{
@@ -32,7 +31,6 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \brief Enumeration type for buttons
  *
  * \~Japanese
@@ -49,8 +47,12 @@ typedef enum {
 } button_t;
 
 /**
- * \~English
- * [TODO: sync with jp version]
+ * \~English 
+ * \brief         Get the pressed state of the button.
+ * \details       When an invalid button number is specified , always returns \a false  [TODO: check - error log is output]．
+ * \param  button Button number
+ * \retval true   Pressed state
+ * \retval false  Unpressed state
  *
  * \~Japanese
  * \brief         ボタンの押下状態を取得する．
@@ -65,9 +67,12 @@ bool_t ev3_button_is_pressed(button_t button);
  * \~English
  * [TODO: sync with jp version]
  * \brief 		  Attach a click event handler for a button.
+ * \details		  The button handler executes in the task contest. The default is called from the wait disabled state.
  * \param button  the button to be set
  * \param handler the handler to be attached, NULL for clearing the current handler
  * \param exinf   extra information passed to the \a handler when it is called
+ * \retval E_OK   Successful completion
+ * \retval E_ID   Invalid button number
  *
  * \~Japanese
  * \brief          指定したボタンのクリックイベントハンドラを設定する．
