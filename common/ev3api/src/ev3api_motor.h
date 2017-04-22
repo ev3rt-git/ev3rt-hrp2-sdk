@@ -9,6 +9,7 @@
  * [TODO: sync with jp version]
  * \defgroup ev3motor Motor
  * \brief    Definitions of API for controlling motors.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3motor サーボモータ

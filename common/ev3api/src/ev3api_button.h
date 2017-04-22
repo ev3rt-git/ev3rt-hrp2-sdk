@@ -7,6 +7,7 @@
 /**
  * \~English
  * \defgroup ev3api-brick EV3 Intelligent Brick
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-brick EV3本体機能
@@ -19,6 +20,7 @@
  * [TODO: sync with jp version]
  * \defgroup ev3button Button
  * \brief    Definitions of API for controlling buttons of an EV3 intelligent brick.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3button ボタン

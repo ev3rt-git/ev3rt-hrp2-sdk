@@ -7,6 +7,7 @@
 /**
  * \~English
  * \defgroup ev3api-brick EV3 Intelligent Brick
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-brick EV3本体機能
@@ -18,6 +19,7 @@
  * \~English
  * \defgroup ev3rt_battery Battery
  * \brief    API for battery.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3rt_battery バッテリ

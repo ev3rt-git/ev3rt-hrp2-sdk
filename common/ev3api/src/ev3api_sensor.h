@@ -9,6 +9,7 @@
  * [TODO: sync with jp version]
  * \defgroup ev3api-sensor Sensor
  * \brief    Definitions of API for controlling sensors.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3sensor 各種センサ

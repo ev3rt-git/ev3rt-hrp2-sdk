@@ -22,13 +22,14 @@
  * \defgroup ev3api-speaker Speaker
  * \brief    Definitions of API for controlling speaker.
  *
+ * @{ 
+ *
  * \~Japanese
-
  * \defgroup ev3api-speaker スピーカ
  * \brief    音声（スピーカ）に関するAPI．
  *
  * @{
- */
+ */	
 
 /**
  * \~English

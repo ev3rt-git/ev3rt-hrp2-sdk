@@ -11,6 +11,7 @@
  * [TODO: sync with jp version]
  * \defgroup ev3api-fs File system
  * \brief    Definitions of API for file system.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-lcd LCD

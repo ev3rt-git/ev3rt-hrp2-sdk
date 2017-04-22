@@ -11,6 +11,7 @@
  * [TODO: sync with jp version]
  * \defgroup ev3api-rtos File system
  * \brief    Definitions of API for file system.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-rtos 拡張RTOS機能
