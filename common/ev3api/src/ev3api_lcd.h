@@ -18,7 +18,6 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3api-lcd LCD
  * \brief    Definitions of API for LCD.
  * @{
@@ -32,8 +31,7 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief Enumeration type for buttons
+ * \brief Enumeration type for font size
  *
  * \~Japanese
  * \brief フォントを表す番号
@@ -45,8 +43,7 @@ typedef enum {
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief Enumeration type for buttons
+ * \brief Enumeration type for LCD color
  *
  * \~Japanese
  * \brief LCDカラーを表す番号
@@ -61,10 +58,10 @@ typedef enum {
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief      Open a directory for reading.
- * \param path Path of the directory to be opened
- * \return     ID of the opened directory
+ * \brief        Set the default font.
+ * \param font   Font number
+ * \retval E_OK  Successful completion
+ * \retval E_ID  Invalid font number
  *
  * \~Japanese
  * \brief        デフォルトのフォントを設定する．
@@ -76,10 +73,12 @@ ER ev3_lcd_set_font(lcdfont_t font);
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief      Open a directory for reading.
- * \param path Path of the directory to be opened
- * \return     ID of the opened directory
+ * \brief           Get font size.
+ * \param  font     Font number
+ * \param  p_width  Pointer to a place to store the acquired font width. If it is NULL, it is not stored.
+ * \param  p_height Pointer to the place to store the height of the acquired font. If it is NULL, it is not stored.
+ * \retval E_OK     Successful completion
+ * \retval E_ID     Invalid fomt number
  *
  * \~Japanese
  * \brief           フォントのサイズを取得する．
@@ -93,8 +92,7 @@ ER ev3_font_get_size(lcdfont_t font, int32_t *p_width, int32_t *p_height);
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief A memory file is a file stored in RAM rather than on the SD card.
+ * \brief Structure of the image object.
  *
  * \~Japanese
  * \brief 画像のオブジェクトの構造体．
@@ -107,7 +105,15 @@ typedef struct {
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            Load images from memory file.
+ * \details          Create an image object from the specified memory file. Currently, it only supports monochrome image files in BMP format. If an error occurs , clear the data of \a p_image to NULL.
+ * \param  p_memfile Object of memory file where image file is stored
+ * \param  p_image   Pointer to the place to store the object of the generated image
+ * \retval E_OK      Successful completion
+ * \retval E_NOMEM   Insufficient memory
+ * \retval E_NOSPT   Image file format is not supported
+ * \retval E_OBJ     Image file is damaged
+ * \retval E_PAR     Invalid memory file
  *
  * \~Japanese
  * \brief            メモリファイルから画像をロードする．
@@ -125,7 +131,11 @@ ER ev3_image_load(const memfile_t *p_memfile, image_t *p_image);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            Release the image object.
+ * \details          Free resources (memory area) secured by the object of the image. In case of normal \a termination , data of \a p_image is cleared to NULL.
+ * \param  p_image   Pointer to released object
+ * \retval E_OK      Successful completion
+ * \retval E_PAR     \a p_image is NULL
  *
  * \~Japanese
  * \brief            画像のオブジェクトを解放する．
@@ -138,7 +148,11 @@ ER ev3_image_free(image_t *p_image);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief             Draws a character string at the specified position.
+ * \param  x          Horizontal position of upper left corner
+ * \param  y          Vertical position of upper left corner
+ * \param  str        String (pointer to array of characters)
+ * \retval E_OK       Successful completion
  *
  * \~Japanese
  * \brief             指定位置で文字列を描く．
@@ -151,7 +165,12 @@ ER ev3_lcd_draw_string(const char *str, int32_t x, int32_t y);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief             Draw a line at specified coordinates.
+ * \param  x0         Horizontal position of start point
+ * \param  y0         Vertical position of start point
+ * \param  x1         Horizontal position of the end point
+ * \param  y1         Vertical position of the end point
+ * \retval E_OK       Successful completion
  *
  * \~Japanese
  * \brief             指定座標で線を引く．
@@ -165,7 +184,13 @@ ER ev3_lcd_draw_line(int32_t x0, int32_t y0, int32_t x1, int32_t y1);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            Draw a rectangle
+ * \param  x         Horizontal position of upper left corner
+ * \param  y         Vertical position of upper left corner
+ * \param  w         Width of the rectangle
+ * \param  h         Height of the rectangle
+ * \param  color     Color [TODO: color of filling?]
+ * \retval E_OK      Successful completion
  *
  * \~Japanese
  * \brief            矩形を描いて色を塗る．
@@ -180,7 +205,12 @@ ER ev3_lcd_fill_rect(int32_t x, int32_t y, int32_t w, int32_t h, lcdcolor_t colo
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            Display the image at specified coordinates.
+ * \param  p_image   Image object
+ * \param  x         Horizontal position of upper left corner
+ * \param  y         Vertical position of upper left corner
+ * \retval E_OK      Successful completion
+ * \retval E_PAR     Image object invalid
  *
  * \~Japanese
  * \brief            指定座標で画像を表示する．

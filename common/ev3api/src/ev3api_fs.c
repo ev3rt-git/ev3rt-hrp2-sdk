@@ -121,8 +121,8 @@ FILE* ev3_serial_open_file(serial_port_t port) {
  */
 
 ER_ID
-ev3_sdcard_opendir(const char *name) {
-	return filesys_opendir(name);
+ev3_sdcard_opendir(const char *path) {
+	return filesys_opendir(path);
 }
 
 ER
