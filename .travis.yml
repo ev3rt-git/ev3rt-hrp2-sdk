@@ -1,0 +1,31 @@
+sudo: required
+dist: trusty
+language: cpp
+
+compiler: gcc
+
+before_install:
+# -  sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi
+ - sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa -y # -qq is for travis CI
+ - sudo apt-get update
+ - sudo apt-get install gcc-arm-embedded u-boot-tools libboost1.55-all-dev -y
+
+before_script:
+ - ls -la
+ - git clone https://github.com/ev3rt-git/ev3rt-hrp2/
+ - cd ev3rt-hrp2
+ - git submodule init
+ - git submodule update
+ - cd ..
+ - rm -rf ev3rt-hrp2/sdk/*
+ - cp -rv common/ ev3rt-hrp2/sdk/common/
+ - cp -rv workspace/ ev3rt-hrp2/sdk/workspace/
+ - cp Makefile.sdk.conf ev3rt-hrp2/sdk/Makefile.sdk.conf
+ - cd ev3rt-hrp2
+ - cd cfg
+ - make
+ - cd ../base-workspace
+ - make app=loader
+ - cd ../sdk/workspace
+
+script: make app=helloev3
