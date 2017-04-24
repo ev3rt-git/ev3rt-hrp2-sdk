@@ -8,21 +8,23 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \defgroup ev3api-rtos File system
- * \brief    Definitions of API for file system.
+ * \defgroup ev3api-rtos Extended RTOS function
+ * \brief    Definitions of EV3RT specific API for RTOS function.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-rtos 拡張RTOS機能
  * \brief    EV3RT独自のRTOS機能に関するAPI．
- *
  * @{
  */
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * Start an EV3 cyclic handler.
+ * \brief            Start an EV3 cyclic handler.
+ * \param  ev3cycid  ID number of cyclic handler for EV 3 (specified by EV3_CRE_CYC）
+ * \retval E_OK      Successful completion
+ * \retval E_CTX     Call from non-task context
+ * \retval E_ID      Invalid ID number
  *
  * \~Japanese
  * \brief            EV3用周期ハンドラの動作を開始する．
@@ -35,8 +37,11 @@ ER ev3_sta_cyc(ID ev3cycid);
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * Stop an EV3 cyclic handler.
+ * \brief            Stop an EV3 cyclic handler.
+ * \param  ev3cycid  ID number of cyclic handler for EV 3 (specified by EV3_CRE_CYC）
+ * \retval E_OK      Successful completion
+ * \retval E_CTX     Call from non-task context
+ * \retval E_ID      Invalid ID number
  *
  * \~Japanese
  * \brief            EV3用周期ハンドラの動作を停止する．

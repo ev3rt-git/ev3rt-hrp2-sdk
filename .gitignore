@@ -38,3 +38,7 @@ OBJ/
 
 # Debug files
 *.dSYM/
+
+# Doxygen
+common/ev3api/doc/ev3rt-doc-c-api-en
+common/ev3api/doc/ev3rt-doc-c-api-jp

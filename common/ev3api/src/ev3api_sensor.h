@@ -6,9 +6,9 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3api-sensor Sensor
  * \brief    Definitions of API for controlling sensors.
+ * @{
  *
  * \~Japanese
  * \defgroup ev3sensor 各種センサ
@@ -20,7 +20,6 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \brief Enumeration type for supported sensor ports
  *
  * \~Japanese
@@ -47,7 +46,7 @@ typedef enum {
     GYRO_SENSOR,	     //!< \~English Gyroscope sensor 		 		  \~Japanese ジャイロセンサ
     TOUCH_SENSOR,	     //!< \~English Touch sensor			 		  \~Japanese タッチセンサ
     COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
-    INFRARED_SENSOR,     //!< \~English Infra-Red sensor				  \~Japanese 
+    INFRARED_SENSOR,     //!< \~English Infra-Red sensor				  \~Japanese 赤外線センサー
 	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
 	NXT_TEMP_SENSOR,     //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
     TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
@@ -87,9 +86,13 @@ typedef struct {
 
 /** 
  * \~English
- * \brief 	   Configure a sensor port.
- * \param port Sensor port to be configured
- * \param type Sensor type for the specified sensor port
+ * \brief 	     Configure a sensor port.
+ * \details      Always returns 0  when an invalid sensor number is specified.
+ * \param port   Sensor port to be configured
+ * \param type   Sensor type for the specified sensor port
+ * \retval E_OK  Successful completion
+ * \retval E_ID  Illegal sensor port number 
+ * \retval E_PAR Illegal sensor type
  *
  * \~Japanese
  * \brief 	     センサポートを設定する．
@@ -104,9 +107,10 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type);
 
 /**
  * \~English
- * \brief 	   Get the type of a sensor port.
- * \param port Sensor port to be inquired
- * \return     Sensor type of the specified sensor port
+ * \brief 	    Get the type of a sensor port.
+ * \param port  Sensor port to be inquired
+ * \retval >=0  Specified sensor type of supported sensor 
+ * \retval E_ID Incorrect sensor port number
  *
  * \~Japanese
  * \brief 	    センサポートのセンサタイプを取得する．
@@ -119,6 +123,7 @@ ER_UINT ev3_sensor_get_type(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the color by a color sensor.
+ * \details    Always return COLOR_NONE (error  is outputted) when an incorrect sensor number is specified.
  * \param port Sensor port to be inquired
  * \return     Color detected
  *
@@ -133,6 +138,7 @@ colorid_t ev3_color_sensor_get_color(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the reflect light intensity by a color sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired
  * \return     Reflect light intensity, ranging from 0 to 100
  *
@@ -147,6 +153,7 @@ uint8_t ev3_color_sensor_get_reflect(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the ambient light intensity by a color sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired
  * \return     Ambient light intensity, ranging from 0 to 100
  *
@@ -161,6 +168,7 @@ uint8_t ev3_color_sensor_get_ambient(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the RGB raw value by a color sensor.
+ * \details    If an invalid sensor number is specified, val is not updated (error log is output).
  * \param port Sensor port to be inquired
  * \param val  Pointer for storing sensor value
  *
@@ -175,6 +183,7 @@ void ev3_color_sensor_get_rgb_raw(sensor_port_t port, rgb_raw_t *val);
 /**
  * \~English
  * \brief 	   Get the angular position by a gyroscope sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired
  * \return     Angular position in degrees
  *
@@ -189,8 +198,9 @@ int16_t ev3_gyro_sensor_get_angle(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the angular speed by a gyroscope sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired
- * \return     Angular speed in degrees/s.
+ * \return     Angular speed in degrees/second.
  *
  * \~Japanese
  * \brief 	    ジャイロセンサで角速度を測定する
@@ -202,8 +212,10 @@ int16_t ev3_gyro_sensor_get_rate(sensor_port_t port);
 
 /**
  * \~English
- * \brief 	   Reset the angular position of a gyroscope sensor to zero.
- * \param port Sensor port to be reset
+ * \brief 	    Reset the angular position of a gyroscope sensor to zero.
+ * \param port  Sensor port to be reset
+ * \retval E_OK Successful completion
+ * \retval E_ID Illegal sensor port number 
  *
  * \~Japanese
  * \brief 	   ジャイロセンサの角位置をゼロにリセットする．
@@ -216,6 +228,7 @@ ER ev3_gyro_sensor_reset(sensor_port_t port);
 /**
  * \~English
  * \brief 	   Get the distance by a ultrasonic sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired
  * \return     Distance in centimeters.
  *
@@ -229,9 +242,11 @@ int16_t ev3_ultrasonic_sensor_get_distance(sensor_port_t port);
 
 /**
  * \~English
- * \brief 	   Get a ultrasonic signal by a ultrasonic sensor.
- * \param port Sensor port to be inquired
- * \return     \a true (A signal has been received), \a false (No signal has been received)
+ * \brief 	     Get a ultrasonic signal by a ultrasonic sensor.
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output).
+ * \param port   Sensor port to be inquired
+ * \retval true  A signal has been received
+ * \retval false No signal has been received
  *
  * \~Japanese
  * \brief 	     超音波センサで超音波信号を検出する．
@@ -267,6 +282,7 @@ typedef struct {
 /**
  * \~English
  * \brief      Get the distance using the infrared sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired.
  * \return     Distance in percentage (0-100).
  *
@@ -281,8 +297,9 @@ int8_t ev3_infrared_sensor_get_distance(sensor_port_t port);
 /**
  * \~English
  * \brief      Gets values to seek a remote controller in beacon mode.
+ * \details    When an invalid sensor support number is specified, always return 0 direction and distance of -128 (error log is output).
  * \param port Sensor port to be inquired.
- * \return     Struct with heading/distance for all channels.
+ * \return     Struct with heading/distance for all (4) channels.
  *
  * \~Japanese
  * \brief      IRセンサでIRビーコンの方位と距離を測定する． 
@@ -294,7 +311,8 @@ ir_seek_t ev3_infrared_sensor_seek(sensor_port_t port);
 
 /**
  * \~English
- * \brief      Gets commands from IR remote controllers.
+ * \brief      Gets commands from IR remote controllers. 
+ * \details    When an invalid sensor support number is specified, always return 0 pattern (error log is output).
  * \param port Sensor port to be inquired.
  * \return     Struct with details of the IR remote buttons pressed.
  *
@@ -308,9 +326,11 @@ ir_remote_t ev3_infrared_sensor_get_remote(sensor_port_t port);
 
 /**
  * \~English
- * \brief 	   Get the status of a touch sensor.
- * \param port Sensor port to be inquired
- * \return     \a true (Touch sensor is being pressed), \a false (Touch sensor is not being pressed)
+ * \brief 	     Get the status of a touch sensor.
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output)
+ * \param port   Sensor port to be inquired
+ * \retval true  Pressed  pressed
+ * \retval false Unpressed pressed
  *
  * \~Japanese
  * \brief 	     タッチセンサの状態を検出する．
@@ -323,10 +343,12 @@ bool_t ev3_touch_sensor_is_pressed(sensor_port_t port);
 
 /**
  * \~English
- * \brief 	   Measure acceleration with a HiTechnic NXT acceleration sensor.
- * \param port Sensor port to be inquired
- * \param axes Array to store the x/y/z axes data
- * \return     \a true (axes[] is updated), \a false (axes[] is unchanged due to I2C busy)
+ * \brief 	     Measure acceleration with a HiTechnic NXT acceleration sensor.
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output)
+ * \param port   Sensor port to be inquired
+ * \param axes   Array to store the x/y/z axes data
+ * \retval true  Axes [] is  updated
+ * \retval false Axes[] is unchanged due to I2C busy
  *
  * \~Japanese
  * \brief 	     加速度センサ（HiTechnic社製）で加速度を測定する．
@@ -340,10 +362,12 @@ bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]);
 
 /**
  * \~English
- * \brief 	   Measure temperature with a NXT temperature sensor (9749).
- * \param port Sensor port to be inquired
- * \param temp Variable to store the temperature value
- * \return     \a true (temp is updated), \a false (temp is unchanged due to I2C busy)
+ * \brief 	     Measure temperature with a NXT temperature sensor (9749).
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output)
+ * \param port   Sensor port to be inquired
+ * \param temp   Variable to store the temperature value
+ * \retval true  Temp is updated)
+ * \retval false Temp is unchanged due to I2C busy
  *
  * \~Japanese
  * \brief 	     NXT温度センサ（9749）で温度を測定する．

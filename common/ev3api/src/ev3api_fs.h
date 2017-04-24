@@ -8,9 +8,10 @@
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \defgroup ev3api-fs File system
  * \brief    Definitions of API for file system.
+ * \details  This page describes only API unique to this platform, but it also supports file manipulation functions of standard C libraries such as fopen ().
+ * @{
  *
  * \~Japanese
  * \defgroup ev3api-fs ファイルシステム
@@ -37,8 +38,7 @@ typedef struct {
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief A memory file is a file stored in RAM rather than on the SD card.
+ * \brief Structure of file information.
  *
  * \~Japanese
  * \brief ファイル情報の構造体．
@@ -55,10 +55,15 @@ typedef struct {
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \brief      Open a directory for reading.
+ * \details    If it succeeds, it returns the ID of the opened directory as a return value. This ID can be used to obtain file information in the directory.
  * \param path Path of the directory to be opened
- * \return     ID of the opened directory
+ * \retval >0     ID of the opened directory
+ * \retval E_CTX  Call from non-task contest
+ * \retval E_MACV Memory access violation (path)
+ * \retval E_NOID Insufficient ID number
+ * \retval E_PAR  Invalid path name
+ * \retval E_SYS  I/O error occurred (High possibility of SD card failure)
  *
  * \~Japanese
  * \brief         ディレクトリをオープンする．
@@ -75,10 +80,16 @@ ER_ID ev3_sdcard_opendir(const char *path);
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief             Close a directory.
+ * \brief             Read file information in the directory.
+ * \details   	      Return information on the next file from the opened directory. [TODO: check]
  * \param  dirid      ID of an opened directory
+ * \param  p_fileinfo Pointer to structure with information of storing file [TODO: check].
  * \retval E_OK       Success
+ * \retval E_CTX      Call from non-task contest
+ * \retval E_ID       Invalid ID number
+ * \retval E_MACV     Memory access violation (p_fileinfo)
+ * \retval E_OBJ      There is no information on files that can be read any more
+ * \retval E_SYS      I/O error occurred (High possibility of SD card failure)
  *
  * \~Japanese
  * \brief             ディレクトリ内のファイル情報を読み込む．
@@ -96,10 +107,13 @@ ER ev3_sdcard_readdir(ID dirid, fileinfo_t *p_fileinfo);
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \brief             Close a directory.
+ * \details           If it succeeds, it releases the resource of the opened directory, and its ID can not be used.
  * \param  dirid      ID of an opened directory
  * \retval E_OK       Success
+ * \retval E_CTX      Call from non-task contest
+ * \retval E_ID       Invalid ID number
+ * \retval E_SYS      I/O error occurred (High possibility of SD card failure)
  *
  * \~Japanese
  * \brief          ディレクトリをクローズする．
@@ -114,14 +128,15 @@ ER ev3_sdcard_closedir(ID dirid);
 
 /**
  * \~English
- * [TODO: sync with jp version]
  * \brief            Create a memory file and load a specific file into it from the SD card.
+ * \details          Generates an object of the memory file and reads the specified file from the SD card into this memory file. If an error occurs , clear buffer in \a p_memfile to \a NULL.
  * \param  path      Path of the file to be loaded
  * \param  p_memfile Pointer of save the created memory file
  * \retval E_OK      Success
+ * \retval E_MACV    Memory access violation (path or p_memfile)
  * \retval E_NOMEM   No enough free memory to create the memory file, or \a p_memfile is NULL. The \a buffer of \a p_memfile will be set to NULL if this happens.
  * \retval E_PAR     The \a path does not point to a valid file. The \a buffer of \a p_memfile will be set to NULL if this happens.
- * \retval E_OBJ     I/O failure, which might be caused by a corrupted SD card. The \a buffer of \a p_memfile will be set to NULL if this happens.
+ * \retval E_SYS     I/O failure, which might be caused by a corrupted SD card. The \a buffer of \a p_memfile will be set to NULL if this happens.
  *
  * \~Japanese
  * \brief            SDカードのファイルをメモリファイルとしてロードする．
@@ -138,11 +153,11 @@ ER ev3_memfile_load(const char *path, memfile_t *p_memfile);
 
 /**
  * \~English
- * [TODO: sync with jp version]
- * \brief            Free the resource (memory) allocated to a memory file. The \a buffer of \a p_memfile will be set to NULL on success.
- * \param  p_memfile Pointer of a memory file
+ * \brief            Free the resource (memory) allocated to a memory file. 
+  * \details         The \a buffer of \a p_memfile will be set to NULL on success.
+ * \param  p_memfile Pointer of a memory file to release
  * \retval E_OK      Success
- * \retval E_PAR     The \a p_memfile is NULL.
+ * \retval E_PAR     The \a p_memfile is NULL. [TODO: check - inconsistent with Jp version -> E_MACV]
  * \retval E_OBJ     The \a p_memfile does not point to a valid memory file.
  *
  * \~Japanese
@@ -157,20 +172,23 @@ ER ev3_memfile_free(memfile_t *p_memfile);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief Numbers representing serial ports
  *
  * \~Japanese
  * \brief シリアルポートを表す番号
  */
 typedef enum {
-    EV3_SERIAL_DEFAULT = 0, //!< \~English Default SIO port     \~Japanese デフォルトのシリアルポート（ログタスク用ポート）
+    EV3_SERIAL_DEFAULT = 0, //!< \~English Default serial port (port for log task)     \~Japanese デフォルトのシリアルポート（ログタスク用ポート）
     EV3_SERIAL_UART = 1,	//!< \~English UART (Sensor port 1) \~Japanese UARTポート（センサポート1）
     EV3_SERIAL_BT = 2,	    //!< \~English Bluetooth SPP        \~Japanese Bluetooth仮想シリアルポート
 } serial_port_t;
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief 	     Open the serial port as a file.
+ * \details      In case of failure, NULL is returned (error log is output).
+ * \param port   Serial port number
+ * \returns      Serial port file
  *
  * \~Japanese
  * \brief 	     シリアルポートをファイルとしてオープンする．
@@ -182,7 +200,9 @@ FILE* ev3_serial_open_file(serial_port_t port);
 
 /**
  * \~English
- * [TODO: sync with jp version]
+ * \brief            It is checked whether Bluetooth (Serial Port Profile) is connected.
+ * \retval true      Connected. It can communicate with the Bluetooth virtual serial port.
+ * \retval false     Unconnected.
  *
  * \~Japanese
  * \brief            Bluetooth (Serial Port Profile)が接続されているかどうかをチェックする．
