@@ -90,9 +90,10 @@ static
 void test_normal_motor(ID port) {
 	static const CliMenuEntry entry_tab[] = {
 		{ .key = '1', .title = "Control speed", .exinf = (intptr_t)ev3_motor_set_power },
-		{ .key = '2', .title = "Rotate", .exinf = (intptr_t)ev3_motor_rotate },
-		{ .key = '3', .title = "Stop", .exinf = (intptr_t)ev3_motor_stop },
-		{ .key = '4', .title = "Show counts", .exinf = (intptr_t)ev3_motor_get_counts },
+		{ .key = '2', .title = "Control position", .exinf = (intptr_t)ev3_motor_rotate },
+		{ .key = '3', .title = "Rotate", .exinf = (intptr_t)ev3_motor_rotate },
+		{ .key = '4', .title = "Stop", .exinf = (intptr_t)ev3_motor_stop },
+		{ .key = '5', .title = "Show counts", .exinf = (intptr_t)ev3_motor_get_counts },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
 
@@ -103,43 +104,85 @@ void test_normal_motor(ID port) {
 	};
 
 	motor_type_t mt = ev3_motor_get_type(port);
-
+	int setPower = 0;
+	
 	while(1) {
-#if 1
 		// Clear menu area & draw title
 		static char title[100];
 		sprintf(title, "Test %s @ %c", (mt == LARGE_MOTOR ? "L-Motor" : "M-Motor"), 'A' + port);
 		climenu.title = title;
 		show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
 		const CliMenuEntry* cme_op = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
-#else
-		fio_clear_screen();
-		fprintf(fio, "--- Test %s @ Port%c---\n", (mt == LARGE_MOTOR ? "Large Servo Motor" : "Medium Servo Motor"), 'A' + port);
-		show_cli_menu(&climenu);
-		const CliMenuEntry* cme_op = select_menu_entry(&climenu);
-#endif
+
 		if(cme_op == NULL) continue;
 		if(cme_op->exinf == (intptr_t)ev3_motor_set_power) {
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
 			while (1) {
-				static char title[100];
-				sprintf(title, "Power: %-4d", ev3_motor_get_power(port));
-				ev3_lcd_draw_string(title, 0, MENU_FONT_HEIGHT);
+				static char setPowerText[100];
+				static char actualPowerText[100];
+				sprintf(setPowerText, "Set Power: %-4d", setPower);
+				sprintf(actualPowerText, "Actual Power: %-4d", ev3_motor_get_power(port));
+				ev3_lcd_draw_string(setPowerText, 0, MENU_FONT_HEIGHT);
+				ev3_lcd_draw_string(actualPowerText, 0, MENU_FONT_HEIGHT*2);
+				ev3_lcd_draw_string("UP:    power += 10", 0, MENU_FONT_HEIGHT*4);
+				ev3_lcd_draw_string("DOWN:  power -= 10", 0, MENU_FONT_HEIGHT*5);
+				ev3_lcd_draw_string("ENTER: Stop", 0, MENU_FONT_HEIGHT*6);
 				if (ev3_button_is_pressed(UP_BUTTON)) {
 					while(ev3_button_is_pressed(UP_BUTTON));
-					ev3_motor_set_power(port, ev3_motor_get_power(port) + 10);
+					setPower += 10;
+					ev3_motor_set_power(port, setPower);
 				}
 				if (ev3_button_is_pressed(DOWN_BUTTON)) {
 					while(ev3_button_is_pressed(DOWN_BUTTON));
-					ev3_motor_set_power(port, ev3_motor_get_power(port) - 10);
+					setPower -= 10;
+					ev3_motor_set_power(port, setPower);
+				}				
+				if (ev3_button_is_pressed(ENTER_BUTTON)) {
+					while(ev3_button_is_pressed(ENTER_BUTTON));
+					setPower = 0;
+					ev3_motor_set_power(port, setPower);
 				}
 				if (ev3_button_is_pressed(BACK_BUTTON)) {
 					while(ev3_button_is_pressed(BACK_BUTTON));
 					break;
 				}
 			}
-		} else if(cme_op->exinf == (intptr_t)ev3_motor_rotate) {
+		} else if(cme_op->key == '2' /* cme_op->key == (intptr_t)ev3_motor_rotate */) {
+			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+			int diffPosition = 10;
+			while (1) {
+				static char lcdText[100];
+				sprintf(lcdText, "Pos: %-10ld", ev3_motor_get_counts(port));
+				ev3_lcd_draw_string(lcdText, 0, MENU_FONT_HEIGHT);
+				sprintf(lcdText, "diff: %-4d", diffPosition);
+				ev3_lcd_draw_string(lcdText, 0, MENU_FONT_HEIGHT*2);
+				ev3_lcd_draw_string("UP:    pos += diff", 0, MENU_FONT_HEIGHT*4);
+				ev3_lcd_draw_string("DOWN:  pos -= diff", 0, MENU_FONT_HEIGHT*5);
+				ev3_lcd_draw_string("LEFT:  diff -= 10", 0, MENU_FONT_HEIGHT*6);
+				ev3_lcd_draw_string("RIGHT: diff += 10", 0, MENU_FONT_HEIGHT*7);
+				if (ev3_button_is_pressed(UP_BUTTON)) {
+					while(ev3_button_is_pressed(UP_BUTTON));
+					ev3_motor_rotate(port, diffPosition, 30, false);
+				}
+				if (ev3_button_is_pressed(DOWN_BUTTON)) {
+					while(ev3_button_is_pressed(DOWN_BUTTON));
+					ev3_motor_rotate(port, -diffPosition, 30, false);
+				}				
+				if (ev3_button_is_pressed(LEFT_BUTTON)) {
+					while(ev3_button_is_pressed(LEFT_BUTTON));
+					diffPosition -= 10;
+				}
+				if (ev3_button_is_pressed(RIGHT_BUTTON)) {
+					while(ev3_button_is_pressed(RIGHT_BUTTON));
+					diffPosition += 10;
+				}
+				if (ev3_button_is_pressed(BACK_BUTTON)) {
+					while(ev3_button_is_pressed(BACK_BUTTON));
+					break;
+				}
+			}
+		} else if(cme_op->key == '3') {
 	    	ev3_motor_rotate(port, 90, 30, false);
 	    	show_message_box("Rotate Motor", "Motor is rotated for 90 degrees at 30% power.");
 		} else if(cme_op->exinf == (intptr_t)ev3_motor_stop) {
@@ -152,11 +195,13 @@ void test_normal_motor(ID port) {
 				if (ev3_button_is_pressed(ENTER_BUTTON)) {
 					while(ev3_button_is_pressed(ENTER_BUTTON));
 					ev3_motor_stop(port, true);
+					setPower = 0;
 					break;
 				}
 				if (ev3_button_is_pressed(DOWN_BUTTON)) {
 					while(ev3_button_is_pressed(DOWN_BUTTON));
 					ev3_motor_stop(port, false);
+					setPower = 0;
 					break;
 				}
 				if (ev3_button_is_pressed(BACK_BUTTON)) {
@@ -171,13 +216,20 @@ void test_normal_motor(ID port) {
 				static char title[100];
 				sprintf(title, "Counts: %-5ld", ev3_motor_get_counts(port));
 				ev3_lcd_draw_string(title, 0, MENU_FONT_HEIGHT);
+				ev3_lcd_draw_string("ENTER: Reset cnt.", 0, MENU_FONT_HEIGHT * 4);
+				ev3_lcd_draw_string("BACK:  Cancel.", 0, MENU_FONT_HEIGHT * 5);
 				if (ev3_button_is_pressed(BACK_BUTTON)) {
 					while(ev3_button_is_pressed(BACK_BUTTON));
 					break;
 				}
+				if (ev3_button_is_pressed(ENTER_BUTTON)) {
+					while(ev3_button_is_pressed(ENTER_BUTTON));
+					ev3_motor_reset_counts(port);
+				}
 			}
 		} else if(cme_op->exinf == -1) {
 			ev3_motor_stop(port, false);
+			setPower = 0;
 			return;
 		} else assert(false);
 	}
@@ -188,42 +240,53 @@ void test_unreg_motor(ID port) {
 	static const CliMenuEntry entry_tab[] = {
 		{ .key = '1', .title = "Control Power", .exinf = (intptr_t)ev3_motor_set_power },
 		{ .key = '2', .title = "Stop", .exinf = (intptr_t)ev3_motor_stop },
-		{ .key = '3', .title = "Tachometer", .exinf = (intptr_t)ev3_motor_get_counts },
+		{ .key = '3', .title = "Show counts", .exinf = (intptr_t)ev3_motor_get_counts },
 		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
 	};
 
-	static const CliMenu climenu = {
-		.title     = "Test Unreg Motor",
+	static CliMenu climenu = {
+		//.title     = "Test Unreg Motor",
 		.entry_tab = entry_tab,
 		.entry_num = sizeof(entry_tab) / sizeof(CliMenuEntry),
 	};
 
 	while(1) {
-#if 1
+		static char title[100];
+		sprintf(title, "Test Unreg M. @ %c", 'A' + port);
+		climenu.title = title;
 		show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
 		const CliMenuEntry* cme_op = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
-#else
-		fio_clear_screen();
-		fprintf(fio, "--- Test Unregulated Motor @ Port%c---\n", 'A' + port);
-		show_cli_menu(&climenu);
-		const CliMenuEntry* cme_op = select_menu_entry(&climenu);
-#endif
-		if(cme_op == NULL) continue;
+		
+		int setPower = 0;
 
+		if(cme_op == NULL) continue;
 		if(cme_op->exinf == (intptr_t)ev3_motor_set_power) {
 			// Refresh current speed
 			ev3_lcd_fill_rect(0, MENU_FONT_HEIGHT, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
 			while (1) {
-				static char title[100];
-				sprintf(title, "Power: %-4d", ev3_motor_get_power(port));
-				ev3_lcd_draw_string(title, 0, MENU_FONT_HEIGHT);
+				static char setPowerText[100];
+				static char actualPowerText[100];
+				sprintf(setPowerText, "Set Power: %-4d", setPower);
+				sprintf(actualPowerText, "Actual Power: %-4d", ev3_motor_get_power(port));
+				ev3_lcd_draw_string(setPowerText, 0, MENU_FONT_HEIGHT);
+				ev3_lcd_draw_string(actualPowerText, 0, MENU_FONT_HEIGHT*2);
+				ev3_lcd_draw_string("UP:    power += 10", 0, MENU_FONT_HEIGHT*4);
+				ev3_lcd_draw_string("DOWN:  power -= 10", 0, MENU_FONT_HEIGHT*5);
+				ev3_lcd_draw_string("ENTER: Stop", 0, MENU_FONT_HEIGHT*6);
 				if (ev3_button_is_pressed(UP_BUTTON)) {
 					while(ev3_button_is_pressed(UP_BUTTON));
-					ev3_motor_set_power(port, ev3_motor_get_power(port) + 10);
+					setPower += 10;
+					ev3_motor_set_power(port, setPower);
 				}
 				if (ev3_button_is_pressed(DOWN_BUTTON)) {
 					while(ev3_button_is_pressed(DOWN_BUTTON));
-					ev3_motor_set_power(port, ev3_motor_get_power(port) - 10);
+					setPower -= 10;
+					ev3_motor_set_power(port, setPower);
+				}				
+				if (ev3_button_is_pressed(ENTER_BUTTON)) {
+					while(ev3_button_is_pressed(ENTER_BUTTON));
+					setPower = 0;
+					ev3_motor_set_power(port, setPower);
 				}
 				if (ev3_button_is_pressed(BACK_BUTTON)) {
 					while(ev3_button_is_pressed(BACK_BUTTON));
@@ -240,11 +303,13 @@ void test_unreg_motor(ID port) {
 				if (ev3_button_is_pressed(ENTER_BUTTON)) {
 					while(ev3_button_is_pressed(ENTER_BUTTON));
 					ev3_motor_stop(port, true);
+					setPower = 0;
 					break;
 				}
 				if (ev3_button_is_pressed(DOWN_BUTTON)) {
 					while(ev3_button_is_pressed(DOWN_BUTTON));
 					ev3_motor_stop(port, false);
+					setPower = 0;
 					break;
 				}
 				if (ev3_button_is_pressed(BACK_BUTTON)) {
