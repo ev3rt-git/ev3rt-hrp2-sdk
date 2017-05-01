@@ -18,7 +18,7 @@ Motor::~Motor(void){
     Motor::off(true);
 }
 
-ER  Motor::off(bool brake){
+ER Motor::off(bool brake){
     return m_error = ev3_motor_stop(m_port, brake);
 }
 

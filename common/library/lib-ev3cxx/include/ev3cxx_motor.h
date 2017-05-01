@@ -40,7 +40,7 @@ public:
      * \details	    Set the motor power or speed to 0 and depending on param \a brake will brake the motor. 
      * \param brake Start breaking the motor (true = braking, false = not braking). Default value is \a true.
      */
-    void off(bool brake = true);
+    ER off(bool brake = true);
 
     /**
      * \~English
