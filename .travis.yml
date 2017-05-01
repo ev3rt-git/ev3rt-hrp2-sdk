@@ -28,4 +28,7 @@ before_script:
  - make app=loader
  - cd ../sdk/workspace
 
-script: make app=helloev3
+script: 
+ - make app=helloev3
+ - make app=ev3cxx_test
+ - ls -la

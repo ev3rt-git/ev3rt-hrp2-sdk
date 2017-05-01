@@ -42,3 +42,4 @@ OBJ/
 # Doxygen
 common/ev3api/doc/ev3rt-doc-c-api-en
 common/ev3api/doc/ev3rt-doc-c-api-jp
+common/library/lib-ev3cxx/doc/ev3rt-doc-cxx-api-en
