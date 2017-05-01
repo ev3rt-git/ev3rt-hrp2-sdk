@@ -77,7 +77,7 @@ public:
      * \param blocking  \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
      *                  Default value is \a false.
      */   
-    void onForRotations(uint32_t power_abs, float rotations, bool_t blocking);
+    void onForRotations(uint32_t power_abs = 50, float rotations = 1, bool_t blocking = false);
 
     /**
     * \~English
@@ -89,7 +89,7 @@ public:
 
     /**
     * \~English
-    * \brief   Get the actual position of a motor in rotations. [TODO: fix - not return float value - change value just on each revolution]
+    * \brief   Get the actual position of a motor in rotations.
     * \details When an incorrect motor port number is specified, it always returns 0.
     * \return  Motor position in rotations (float value). 
     */

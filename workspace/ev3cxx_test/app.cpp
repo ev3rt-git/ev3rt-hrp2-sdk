@@ -6,22 +6,22 @@
 #include "ev3cxx.h"
 #include "app.h"
 
-float multi(float a, float b){
-    return a*b; 
-}
-
 char lcd_text[100];
 int32_t LCD_FONT_WIDTH, LCD_FONT_HEIGHT;
 
 void lcd_debug_output(int cnt, int &lcd_row, ev3cxx::Motor &motor) {
-    sprintf(lcd_text, "Degrees: %3.3f", motor.rotations());
+    sprintf(lcd_text, "Degrees: %5i", motor.degrees());
+    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+
+    sprintf(lcd_text, "Rotation: %3.3f", motor.rotations());
     ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
 
     sprintf(lcd_text, "Power: %i", motor.currentPower());
     ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
 
-    sprintf(lcd_text, "CNT: %f", multi(float(cnt), 1.25));
+    sprintf(lcd_text, "CNT: %i", cnt);
     ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+    lcd_row -= 4;
 }
 
 void main_task(intptr_t unused) {
@@ -51,47 +51,56 @@ void main_task(intptr_t unused) {
     
     left_motor.on(50);
 
-    sprintf(lcd_text, "ON_er: %i", left_motor.getError());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-
     ev3_lcd_draw_string("on(50)      ", 0, LCD_FONT_HEIGHT * 7);
     int cnt = 0;  
-    while(cnt < 500) {
+    while(cnt < 200) {
         lcd_debug_output(cnt, lcd_row, left_motor);
-        lcd_row -= 3;
         cnt++;
         tslp_tsk(10);
     }
 
-    ev3_lcd_draw_string("oForD(30,-2000)    ", 0, LCD_FONT_HEIGHT *76);
+    left_motor.resetPosition();
+
+    ev3_lcd_draw_string("oForD(30,-2000)    ", 0, LCD_FONT_HEIGHT * 7);
     left_motor.onForDegrees(30, -2000);
     cnt = 0;  
     while(cnt < 500) {
         lcd_debug_output(cnt, lcd_row, left_motor);
-        lcd_row -= 3;
         cnt++;
         tslp_tsk(10);
     }
+
+    left_motor.resetPosition();
 
     ev3_lcd_draw_string("oForD(70,1000,true)", 0, LCD_FONT_HEIGHT * 7);
     left_motor.onForDegrees(70, 1000, true);
     cnt = 0;  
-    while(cnt < 500) {
+    while(cnt < 200) {
         lcd_debug_output(cnt, lcd_row, left_motor);
-        lcd_row -= 3;
         cnt++;
         tslp_tsk(10);
     }
 
-    ev3_lcd_draw_string("oForRot(50,-10)    ", 0, LCD_FONT_HEIGHT * 7);
-    //left_motor.onForRotations(50, -10);
-    //left_motor.onForRotations(50, 10.5, false);
+    left_motor.resetPosition();
+
+    ev3_lcd_draw_string("oForRot(25,-2.5)   ", 0, LCD_FONT_HEIGHT * 7);
+    left_motor.onForRotations(25, -2.5);
     cnt = 0;  
-    while(cnt < 500) {
+    while(cnt < 200) {
         lcd_debug_output(cnt, lcd_row, left_motor);
-        lcd_row -= 3;
         cnt++;
         tslp_tsk(10);
     }
-    ev3_lcd_draw_string("END               ", 0, LCD_FONT_HEIGHT * 7);
+
+    left_motor.resetPosition();
+
+    ev3_lcd_draw_string("oForRot()          ", 0, LCD_FONT_HEIGHT * 7);
+    left_motor.onForRotations();
+    cnt = 0;  
+    while(cnt < 200) {
+        lcd_debug_output(cnt, lcd_row, left_motor);
+        cnt++;
+        tslp_tsk(10);
+    }
+    ev3_lcd_draw_string("END                ", 0, LCD_FONT_HEIGHT * 7);
 }

@@ -59,10 +59,10 @@ void Motor::onForRotations(uint32_t power_abs, float rotations, bool_t blocking)
     ev3_motor_rotate( m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
 }
 
-int Motor::degrees() const { return ev3_motor_get_counts(m_port) + 1; }
+int Motor::degrees() const { return ev3_motor_get_counts(m_port); }
 
 float Motor::rotations() const { 
-    return static_cast<float>(ev3_motor_get_counts(m_port)) / NUMBER_OF_DEGREES_PER_ROTATION;
+    return ev3_motor_get_counts(m_port) / NUMBER_OF_DEGREES_PER_ROTATION;
  }
 
 int Motor::currentPower() const { return ev3_motor_get_power(m_port); }
