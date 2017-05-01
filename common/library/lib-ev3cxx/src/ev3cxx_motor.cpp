@@ -11,7 +11,7 @@ Motor::Motor(motor_port_t port, motor_type_t type)
 :m_port(port),
  m_type(type)
 {
-    mError = ev3_motor_config(m_port, type);
+    m_error = ev3_motor_config(m_port, type);
 }
 
 Motor::~Motor(void){
@@ -19,36 +19,36 @@ Motor::~Motor(void){
 }
 
 ER  Motor::off(bool brake){
-    return mError = ev3_motor_stop(m_port, brake);
+    return m_error = ev3_motor_stop(m_port, brake);
 }
 
 ER Motor::on(int power){
-    mError = ev3_motor_set_power(m_port, power);
+    m_error = ev3_motor_set_power(m_port, power);
     // change type of motor: UNREGULATED_MOTOR => LARGE_MOTOR/MEDIUM_MOTOR
     if( m_type != getType()) {
-        mError = ev3_motor_config(m_port, m_type);
+        m_error = ev3_motor_config(m_port, m_type);
     }
 
-    if(mError == E_OK)
-        mError = ev3_motor_set_power(m_port, power);
+    if(m_error == E_OK)
+        m_error = ev3_motor_set_power(m_port, power);
     else
-        assert(true);//API_ERROR(mError); // TODO: API_ERROR
+        assert(true);//API_ERROR(m_error); // TODO: API_ERROR
 
-    return mError;
+    return m_error;
 }
 
 ER Motor::unregulated(int power){ 
     // change type of motor: LARGE_MOTOR/MEDIUM_MOTOR => UNREGULATED_MOTOR
     if(UNREGULATED_MOTOR != getType()) {
-        mError = ev3_motor_config(m_port, UNREGULATED_MOTOR);
+        m_error = ev3_motor_config(m_port, UNREGULATED_MOTOR);
     }
 
-    if(mError == E_OK)
-        mError = ev3_motor_set_power(m_port, power);
+    if(m_error == E_OK)
+        m_error = ev3_motor_set_power(m_port, power);
     else
-        assert(true);//API_ERROR(mError); // TODO: API_ERROR
+        assert(true);//API_ERROR(m_error); // TODO: API_ERROR
 
-    return mError;
+    return m_error;
 }
 
 void Motor::onForDegrees(uint32_t power_abs, int degrees, bool_t blocking){ // TODO: add param brake
@@ -59,7 +59,7 @@ void Motor::onForRotations(uint32_t power_abs, float rotations, bool_t blocking)
     ev3_motor_rotate( m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
 }
 
-int Motor::degrees() const { return ev3_motor_get_counts(m_port); }
+int Motor::degrees() const { return ev3_motor_get_counts(m_port) + 1; }
 
 float Motor::rotations() const { 
     return static_cast<float>(ev3_motor_get_counts(m_port)) / NUMBER_OF_DEGREES_PER_ROTATION;
@@ -79,4 +79,4 @@ ER_UINT Motor::getType() const {
     return motor_type; 
 }
 
-ER Motor::getError() const { return mError; } 
+ER Motor::getError() const { return m_error; } 
