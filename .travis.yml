@@ -12,16 +12,16 @@ before_install:
 
 before_script:
  - ls -la
- - git clone https://github.com/ev3rt-git/ev3rt-hrp2/
- - cd ev3rt-hrp2
+ - git clone https://github.com/RoboticsBrno/RB-ev3rt-hrp2/
+ - cd RB-ev3rt-hrp2
  - git submodule init
  - git submodule update
  - cd ..
- - rm -rf ev3rt-hrp2/sdk/*
- - cp -rv common/ ev3rt-hrp2/sdk/common/
- - cp -rv workspace/ ev3rt-hrp2/sdk/workspace/
- - cp Makefile.sdk.conf ev3rt-hrp2/sdk/Makefile.sdk.conf
- - cd ev3rt-hrp2
+ - rm -rf RB-ev3rt-hrp2/sdk/*
+ - cp -rv common/ RB-ev3rt-hrp2/sdk/common/
+ - cp -rv workspace/ RB-ev3rt-hrp2/sdk/workspace/
+ - cp Makefile.sdk.conf RB-ev3rt-hrp2/sdk/Makefile.sdk.conf
+ - cd RB-ev3rt-hrp2
  - cd cfg
  - make
  - cd ../base-workspace
