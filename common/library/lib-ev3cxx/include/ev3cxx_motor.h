@@ -25,7 +25,7 @@ public:
     /**
      * \~English
      * \brief 	    Constructor of class motor.
-     * \param port  Number of port
+     * \param port  Port number
      * \param type  Type of port: \a motor_type_t
      */
     Motor(motor_port_t port, motor_type_t type = LARGE_MOTOR);
@@ -40,14 +40,14 @@ public:
      * \~English
      * \brief 	    Stop motor.
      * \details	    Set the motor power or speed to 0 and depending on param \a brake will brake the motor. 
-     * \param brake Start breaking the motor (true = braking, false = not braking). Default value is \a true.
+     * \param brake Start braking the motor (true = braking, false = not braking). Default value is \a true.
      */
     ER off(bool brake = true);
 
     /**
      * \~English
      * \brief 	    Set speed on regulated motor.
-     * \details	    Using regulated motor driver and param \a power is equivalent to speed. 
+     * \details	    Using regulated motor driver (motor should has constant speed) and param \a power is equivalent to speed. Motor control real power to keep constant speed.
      * \param power Motor speed. Range: -100 to +100. A negative value moves the robot backwards. Default value is 50. 
      *              If a out-of-range value is given, it will be clipped to the minimum (-100) or maximum (100) value.
      */
@@ -56,6 +56,7 @@ public:
     /**
      * \~English
      * \brief 	    Set power on unregulated motor. [TODO: fix - same behavior as on() -> problem in EV3RT]
+     * \details	    Motor works with constant power, NOT speed. Speed changes depend on load. 
      * \param power Motor power. Range: -100 to +100. A negative value moves the robot backwards. Default value is 50. 
      *              If a out-of-range value is given, it will be clipped to the minimum (-100) or maximum (100) value.
      */   

@@ -38,7 +38,7 @@ public:
      * \~English
      * \brief 	    Destructor of class Display.
      */
-    ~Display(void);
+    ~Display();
 
     /**
      * \~English    
@@ -53,7 +53,7 @@ public:
     /**
      * \~English    
      * \brief 	      Write formated text to LCD.
-     * \param line    Number of line to write text on LCD.
+     * \param line    Line index to write text on LCD.
      * \param pattern String with pattern for final output text.
      */
     format_impl<Display, string_literal_range> format(int8_t line,
@@ -72,16 +72,16 @@ public:
 
     /**
      * \~English
-     * \brief        Get actual number of text line.
+     * \brief        Get actual text line index.
      * \details      Range depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
      */
     int32_t getTextLine() const;
     
     /**
      * \~English
-     * \brief           Set actual number of text line for next write. 
+     * \brief           Set actual text line index of cursor for next write. 
      * \details         Also clear all line (\a clearTextLine()).
-     * \param line      Number of required line. Range \a line depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
+     * \param line      Line index. Range depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
@@ -89,9 +89,9 @@ public:
 
     /**
      * \~English
-     * \brief           Clear set line. 
-     * \param line      Number of required line. Range \a line depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
-     * \param color     Color of cleared line. You can set \a white or \a black. 
+     * \brief           Clear a line. 
+     * \param line      Line index. Range depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
+     * \param color     Color the cleared with. You can set \a white or \a black. 
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
@@ -99,7 +99,7 @@ public:
 
     /**
      * \~English
-     * \brief           Clear all LCD. 
+     * \brief           Clear whole LCD. 
      * \param color     Color of screen after reset. You can set \a white or \a black. 
      */
     void resetScreen(bool_t color = white);

@@ -19,20 +19,20 @@ Motor::~Motor() {
 }
 
 ER Motor::off(bool brake) {
-    return m_error = ev3_motor_stop(m_port, brake);
+    return (m_error = ev3_motor_stop(m_port, brake));
 }
 
 ER Motor::on(int power) {
     m_error = ev3_motor_set_power(m_port, power);
     // change type of motor: UNREGULATED_MOTOR => LARGE_MOTOR/MEDIUM_MOTOR
-    if( m_type != getType()) {
+    if(m_type != getType()) {
         m_error = ev3_motor_config(m_port, m_type);
     }
 
     if(m_error == E_OK)
         m_error = ev3_motor_set_power(m_port, power);
     else
-        assert(true);//API_ERROR(m_error); // TODO: API_ERROR
+        assert(false);//API_ERROR(m_error); // TODO: API_ERROR
 
     return m_error;
 }
@@ -46,17 +46,17 @@ ER Motor::unregulated(int power) {
     if(m_error == E_OK)
         m_error = ev3_motor_set_power(m_port, power);
     else
-        assert(true);//API_ERROR(m_error); // TODO: API_ERROR
+        assert(false);//API_ERROR(m_error); // TODO: API_ERROR
 
     return m_error;
 }
 
 void Motor::onForDegrees(uint32_t power_abs, int degrees, bool_t blocking) { // TODO: add param brake
-    ev3_motor_rotate( m_port, degrees, power_abs, blocking);
+    ev3_motor_rotate(m_port, degrees, power_abs, blocking);
 }
 
 void Motor::onForRotations(uint32_t power_abs, float rotations, bool_t blocking) { // TODO: add param brake
-    ev3_motor_rotate( m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
+    ev3_motor_rotate(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
 }
 
 int Motor::degrees() const { return ev3_motor_get_counts(m_port); }
