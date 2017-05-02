@@ -30,5 +30,6 @@ before_script:
 
 script: 
  - make app=helloev3
- - make app=ev3cxx_test
+ - make app=ev3cxx-motor
+ - make app=ev3cxx-display
  - ls -la

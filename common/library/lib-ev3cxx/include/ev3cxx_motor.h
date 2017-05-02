@@ -1,26 +1,28 @@
 /**
- * \file    motor.h
+ * \file    ev3cxx_motor.h
  * \brief	EV3RT CPP API for motors
  * \author	Jaroslav Páral (jarekparal)
  */
 
 #pragma once
 
-#include "ev3api.h"
+#include "ev3cxx.h"
 
 namespace ev3cxx {
 
 /**
- * Class Motor
+ * \~English
+ * \brief    Class Motor
+ * \details  API for working with motors.
  */
 class Motor
 {
 public:
-    static const int POWER_MAX = 100;
-    static const int POWER_MIN = -100;
+    static const int POWER_MAX = 100;   //!< \~English Max power on motor
+    static const int POWER_MIN = -100;  //!< \~English Min power on motor
     static constexpr float NUMBER_OF_DEGREES_PER_ROTATION = 360.0;
 
-     /**
+    /**
      * \~English
      * \brief 	    Constructor of class motor.
      * \param port  Number of port
@@ -28,13 +30,13 @@ public:
      */
     Motor(motor_port_t port, motor_type_t type = LARGE_MOTOR);
     
-     /**
+    /**
      * \~English
      * \brief 	    Destructor of class motor.
      */
-    ~Motor(void);
+    ~Motor();
 
-     /**
+    /**
      * \~English
      * \brief 	    Stop motor.
      * \details	    Set the motor power or speed to 0 and depending on param \a brake will brake the motor. 
@@ -143,5 +145,3 @@ private:
 
 }; // class Motor
 } // namespace ev3cxx
-
-/** @} */ // End of group

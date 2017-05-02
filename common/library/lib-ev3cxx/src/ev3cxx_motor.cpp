@@ -1,5 +1,5 @@
 /*
- * Motor.c
+ * ev3cxx_motor.cpp
  * Author: Jaroslav Páral (jarekparal)
  */
 
@@ -9,20 +9,20 @@ using namespace ev3cxx;
 
 Motor::Motor(motor_port_t port, motor_type_t type)
 :m_port(port),
- m_type(type)
+ m_type(type) 
 {
     m_error = ev3_motor_config(m_port, type);
 }
 
-Motor::~Motor(void){
+Motor::~Motor() {
     Motor::off(true);
 }
 
-ER Motor::off(bool brake){
+ER Motor::off(bool brake) {
     return m_error = ev3_motor_stop(m_port, brake);
 }
 
-ER Motor::on(int power){
+ER Motor::on(int power) {
     m_error = ev3_motor_set_power(m_port, power);
     // change type of motor: UNREGULATED_MOTOR => LARGE_MOTOR/MEDIUM_MOTOR
     if( m_type != getType()) {
@@ -37,7 +37,7 @@ ER Motor::on(int power){
     return m_error;
 }
 
-ER Motor::unregulated(int power){ 
+ER Motor::unregulated(int power) { 
     // change type of motor: LARGE_MOTOR/MEDIUM_MOTOR => UNREGULATED_MOTOR
     if(UNREGULATED_MOTOR != getType()) {
         m_error = ev3_motor_config(m_port, UNREGULATED_MOTOR);
@@ -51,11 +51,11 @@ ER Motor::unregulated(int power){
     return m_error;
 }
 
-void Motor::onForDegrees(uint32_t power_abs, int degrees, bool_t blocking){ // TODO: add param brake
+void Motor::onForDegrees(uint32_t power_abs, int degrees, bool_t blocking) { // TODO: add param brake
     ev3_motor_rotate( m_port, degrees, power_abs, blocking);
 }
 
-void Motor::onForRotations(uint32_t power_abs, float rotations, bool_t blocking){ // TODO: add param brake
+void Motor::onForRotations(uint32_t power_abs, float rotations, bool_t blocking) { // TODO: add param brake
     ev3_motor_rotate( m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
 }
 
