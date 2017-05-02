@@ -59,7 +59,7 @@ typedef struct {
  * \details    If it succeeds, it returns the ID of the opened directory as a return value. This ID can be used to obtain file information in the directory.
  * \param path Path of the directory to be opened
  * \retval >0     ID of the opened directory
- * \retval E_CTX  Call from non-task contest
+ * \retval E_CTX  Call from non-task context
  * \retval E_MACV Memory access violation (path)
  * \retval E_NOID Insufficient ID number
  * \retval E_PAR  Invalid path name
@@ -85,7 +85,7 @@ ER_ID ev3_sdcard_opendir(const char *path);
  * \param  dirid      ID of an opened directory
  * \param  p_fileinfo Pointer to structure with information of storing file [TODO: check].
  * \retval E_OK       Success
- * \retval E_CTX      Call from non-task contest
+ * \retval E_CTX      Call from non-task context
  * \retval E_ID       Invalid ID number
  * \retval E_MACV     Memory access violation (p_fileinfo)
  * \retval E_OBJ      There is no information on files that can be read any more
@@ -111,7 +111,7 @@ ER ev3_sdcard_readdir(ID dirid, fileinfo_t *p_fileinfo);
  * \details           If it succeeds, it releases the resource of the opened directory, and its ID can not be used.
  * \param  dirid      ID of an opened directory
  * \retval E_OK       Success
- * \retval E_CTX      Call from non-task contest
+ * \retval E_CTX      Call from non-task context
  * \retval E_ID       Invalid ID number
  * \retval E_SYS      I/O error occurred (High possibility of SD card failure)
  *

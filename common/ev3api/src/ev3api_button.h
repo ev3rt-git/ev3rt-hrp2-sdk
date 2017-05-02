@@ -67,7 +67,7 @@ bool_t ev3_button_is_pressed(button_t button);
  * \~English
  * [TODO: sync with jp version]
  * \brief 		  Attach a click event handler for a button.
- * \details		  The button handler executes in the task contest. The default is called from the wait disabled state.
+ * \details		  The button handler executes in the task context. The default is called from the wait disabled state.
  * \param button  the button to be set
  * \param handler the handler to be attached, NULL for clearing the current handler
  * \param exinf   extra information passed to the \a handler when it is called

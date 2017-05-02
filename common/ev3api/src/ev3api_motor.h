@@ -50,10 +50,10 @@ typedef enum {
 
 /**
  * \~English
- * \brief 	   Configure a motor port.
- * \details	   Set the type of motor connected to the motor port. You can also specify a new motor type even if you have already set it.
- * \param port Motor port to be configured
- * \param type Motor type for the specified motor port
+ * \brief 	     Configure a motor port.
+ * \details	     Set the type of motor connected to the motor port. You can also specify a new motor type even if you have already set it.
+ * \param port   Motor port to be configured
+ * \param type   Motor type for the specified motor port
  * \retval E_OK  Successful completion
  * \retval E_ID  Illegal motor port number 
  * \retval E_PAR Illegal motor type
@@ -89,8 +89,7 @@ ER_UINT ev3_motor_get_type(motor_port_t port);
  * \brief 	   Get the angular position of a motor port.
  * \details    When an incorrect motor port number is specified, it always returns 0.
  * \param port Motor port to be inquired
- * \return     Angular position in degrees. A negative value means the motor rotate has rotated backwards. [TODO: number of degrees per one revolution of motor]
- 
+ * \return     Angular position in degrees. A negative value means the motor rotate has rotated backwards. One revolution of motor is 360 degrees.
  *
  * \~Japanese
  * \brief 	   モータの角位置を取得する．
@@ -102,12 +101,12 @@ int32_t ev3_motor_get_counts(motor_port_t port);
 
 /**
  * \~English
- * \brief 	   Reset the angular position of the motor to zero
- * \details    Setting the value of the angular position sensor of the motor does not affect the actual power and position of the motor.
- * \param port Motor port to be inquired
- * \retval E_OK   Successful completion
- * \retval E_ID   Illegal motor port number
- * \retval E_OBJ  Motor port has not been initialized.
+ * \brief 	     Reset the angular position of the motor to zero
+ * \details      Setting the value of the angular position sensor of the motor does not affect the actual power and position of the motor.
+ * \param port   Motor port to be inquired
+ * \retval E_OK  Successful completion
+ * \retval E_ID  Illegal motor port number
+ * \retval E_OBJ Motor port has not been initialized.
  *
  * \~Japanese
  * \brief 	      モータの角位置をゼロにリセットする．
@@ -121,12 +120,12 @@ ER ev3_motor_reset_counts(motor_port_t port);
 
 /**
  * \~English
- * \brief 	    Set the unregulated power for a motor port.
- * \param port  Motor port to be set
- * \param power The percentage of full power, ranging from -100 to +100. A negative value makes the motor rotate backwards.
- * \retval E_OK     Successful completion
- * \retval E_ID     Illegal motor port number
- * \retval E_OBJ    Motor port has not been initialized.
+ * \brief 	     Set the unregulated power for a motor port.
+ * \param port   Motor port to be set
+ * \param power  The percentage of full power, range from -100 to +100 . A negative value makes the motor rotate backwards. If a out-of-range value is given, it will be clipped to the minimum (-100) or maximum (100) value.
+ * \retval E_OK  Successful completion
+ * \retval E_ID  Illegal motor port number
+ * \retval E_OBJ Motor port has not been initialized.
  *
  * \~Japanese
  * \brief 	     モータのパワーを設定する
@@ -140,10 +139,10 @@ ER ev3_motor_set_power(motor_port_t port, int power);
 
 /**
  * \~English
- * \brief 	    Get the actual power of a motor port.
- * \details     When an incorrect motor port number is specified, it always returns 0.
- * \param port  Motor port to be set
- * \return      Motor power [TODO: range?]
+ * \brief 	   Get the actual power of a motor port.
+ * \details    When an incorrect motor port number is specified, it always returns 0.
+ * \param port Motor port to be set
+ * \return     Motor power, range from -100 to 100.
  *
  * \~Japanese
  * \brief 	   モータのパワーを取得する
@@ -155,12 +154,12 @@ int ev3_motor_get_power(motor_port_t port);
 
 /**
  * \~English
- * \brief 	    Stop a motor port.
- * \param port  Motor port to be stopped
- * \param brake Brake mode, \a true for braking, \a false for coasting.
- * \retval E_OK     Successful completion
- * \retval E_ID     Illegal motor port number
- * \retval E_OBJ    Motor port has not been initialized.
+ * \brief 	     Stop a motor port.
+ * \param port   Motor port to be stopped
+ * \param brake  Brake mode, \a true for braking, \a false for coasting.
+ * \retval E_OK  Successful completion
+ * \retval E_ID  Illegal motor port number
+ * \retval E_OBJ Motor port has not been initialized.
  *
  * \~Japanese
  * \brief 	     モータを停止する
@@ -201,7 +200,7 @@ ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t b
  * \param  left_motor  ID of the left motor port
  * \param  right_motor ID of the right motor port
  * \param  power       Power of motors. Range: -100 to +100. A negative value moves the robot backwards.
- * \param  turn_ratio  The sharpness of the turn. Range: -100 to +100. If \a turn_ratio is negative, the robot will turn left.
+ * \param  turn_ratio  The sharpness of the turn. Range: -100 to +100 [TODO: out-of-range]. If \a turn_ratio is negative, the robot will turn left.
  *                     If \a turn_ratio is positive, the robot will turn right. More specifically, \a turn_ratio determines the ratio of
  *                     inner wheel speed as a percent. For example, if \a turn_ratio is +25, the right motor will move at 75% of the \a power,
  *                     which makes the robot turn right.
