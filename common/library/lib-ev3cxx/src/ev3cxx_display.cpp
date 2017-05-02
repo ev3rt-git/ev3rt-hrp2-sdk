@@ -32,9 +32,9 @@ void Display::write(char ch) {
 }
 
 void Display::setTextLine(int8_t line, int32_t x_offset) {
-    clearTextLine(line, white, set_x);
+    clearTextLine(line, white, x_offset);
     m_y = line * getFontHeight();
-    m_x = set_x;
+    m_x = x_offset;
 }
 
 int32_t Display::getTextLine() const { return m_y / getFontHeight(); }
