@@ -187,8 +187,8 @@ typedef enum {
  * \~English
  * \brief 	     Open the serial port as a file.
  * \details      In case of failure, NULL is returned (error log is output).
- * \param port   Serial port number
- * \returns      Serial port file
+ * \param port   Serial port enum.
+ * \returns      If succesful return serial port file descriptor, else NULL.
  *
  * \~Japanese
  * \brief 	     シリアルポートをファイルとしてオープンする．

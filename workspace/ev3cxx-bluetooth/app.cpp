@@ -1,5 +1,5 @@
 /**
- * This is sample program for File class in CPP EV3RT API.
+ * This is sample program for Bluetooth class in CPP EV3RT API.
  *
  * Author: Jaroslav Páral (jarekparal)
  */
@@ -12,10 +12,11 @@
 using ev3cxx::File;
 using ev3cxx::display;
 using ev3cxx::format;
-
+    
 void main_task(intptr_t unused) {
-    File file("test_file.txt");
-
+    //File file("test_file.txt");
+    ev3cxx::Bluetooth file; // same workflow as with file
+    file.open();
 
     display.format("Test File\n");
     display.format("isOpen(): % \n") % file.isOpen();

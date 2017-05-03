@@ -33,4 +33,5 @@ script:
  - make app=ev3cxx-motor
  - make app=ev3cxx-display
  - make app=ev3cxx-file
+ - make app=ev3cxx-bluetooth
  - ls -la

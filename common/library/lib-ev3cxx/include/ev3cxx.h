@@ -17,6 +17,7 @@
  */
 #include "ev3cxx_display.h"
 #include "ev3cxx_motor.h"
+#include "ev3cxx_bluetooth.h"
 
 
 /**
