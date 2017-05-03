@@ -27,10 +27,7 @@ public:
      * \~English
      * \brief 	    Constructor of class Bluetooth. Don't open bluetooth port. For opening port call \a open().
      */  
-    Bluetooth() : File("")
-    {
-        m_filedesc = NULL;
-    }
+    Bluetooth() : File(), m_filedesc(NULL) {}
     
     /**
      * \~English
@@ -41,13 +38,13 @@ public:
     /**
      * \~English
      * \brief 	    Opening serial port on bluetooth. Params are not used. 
-     * \return      Return file descriptor to open bluetooth or NULL. 
+     * \return      Return \a true if is open, else \a false.
      */  
-    virtual FILE * open(const char * filename = "", const char * mode = "w+") {
+    virtual bool_t open(const char * filename = "", const char * mode = "w+") {
         if(m_filedesc == NULL) {
             m_filedesc = ev3_serial_open_file(EV3_SERIAL_BT);
         }
-        return m_filedesc;
+        return (m_filedesc != NULL);
     }
 
     /**

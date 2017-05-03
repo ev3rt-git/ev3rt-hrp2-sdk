@@ -20,8 +20,10 @@ namespace ev3cxx {
  */
 class File
 {
+protected:
+    File() : m_filedesc(NULL) {}
+
 public:
-   
     /**
      * \~English
      * \brief 	       Constructor of class File.
@@ -57,10 +59,10 @@ public:
      * \param mode     Mode in which will be file open. More info http://www.cplusplus.com/reference/cstdio/fopen/
      *                 Default mode is "w+": Create an empty file and open it for update (both for input and output). 
      *                 If a file with the same name already exists its contents are discarded and the file is treated as a new empty file.
-     * \return         Return file descriptor to open file or NULL.
+     * \return         Return \a true if is open, else \a false.
      */
-    virtual FILE * open(const char * filename, const char * mode = "w+") {
-        return (m_filedesc = fopen(filename, mode));
+    virtual bool_t open(const char * filename, const char * mode = "w+") {
+        return ((m_filedesc = fopen(filename, mode)) != NULL);
     }
     
     /**
