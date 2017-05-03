@@ -6,101 +6,101 @@
 #include "ev3cxx.h"
 #include "app.h"
 
-char lcd_text[100];
-int32_t LCD_FONT_WIDTH, LCD_FONT_HEIGHT;
-
-void lcd_debug_output(int cnt, int &lcd_row, ev3cxx::Motor &motor) {
-    sprintf(lcd_text, "Degrees: %5i", motor.degrees());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-
-    sprintf(lcd_text, "Rotation: %3.3f", motor.rotations());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-
-    sprintf(lcd_text, "Power: %i", motor.currentPower());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-
-    sprintf(lcd_text, "CNT: %i", cnt);
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-    lcd_row -= 4;
-}
-
 void main_task(intptr_t unused) {
-    // Set LCD font and get width and height of font
-    ev3_lcd_set_font(EV3_FONT_MEDIUM);
-    ev3_font_get_size(EV3_FONT_MEDIUM, &LCD_FONT_WIDTH, &LCD_FONT_HEIGHT);
-    int char_size_width = EV3_LCD_WIDTH/LCD_FONT_WIDTH;
-    int lcd_row = 0;
-
+    // // EV3API lib - C solution
     // ev3_motor_config(EV3_PORT_B, LARGE_MOTOR);
     // ev3_motor_set_power(EV3_PORT_B, 50);
 
-    // Title on LCD
-    sprintf(lcd_text, "EV3CXX test");
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+    // // Set LCD font and get width and height of font
+    // char lcdText[100];
+    // ev3_lcd_set_font(EV3_FONT_MEDIUM);
+    // int32_t LCD_FONT_HEIGHT, LCD_FONT_WIDTH;
+    // ev3_font_get_size(EV3_FONT_MEDIUM, &LCD_FONT_WIDTH, &LCD_FONT_HEIGHT);
+
+    // FILE *bt = ev3_serial_open_file(EV3_SERIAL_BT);   
+    // ev3_lcd_draw_string(lcdText, 0, LCD_FONT_HEIGHT * 0);
+    // sprintf(lcdText, "isOpen(): %i", (bt == NULL) ? 'Y' : 'N');
+    // ev3_lcd_draw_string(lcdText, 0, LCD_FONT_HEIGHT * 1);
+    // sprintf(lcdText, "isConnected(): %i", ev3_bluetooth_is_connected() ? 'Y' : 'N');
+    // ev3_lcd_draw_string(lcdText, 0, LCD_FONT_HEIGHT * 2);
     
-    ev3cxx::Motor left_motor(EV3_PORT_B, LARGE_MOTOR);
-
-    // sprintf(lcd_text, "Set_port: %i", left_motor.getPort());
-    // ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-
-    sprintf(lcd_text, "Set_type: %i", left_motor.getType());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+    // fputc('a', bt);
+    // ev3_lcd_draw_string("fputc('a', bt)", 0, LCD_FONT_HEIGHT * 3);
     
-    sprintf(lcd_text, "Const_er: %i", left_motor.getError());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+    // ev3cxx lib - C++ solution
+    //File file("test_file.txt");
+    ev3cxx::Bluetooth file{}; // same workflow as with file
+    file.open();
+
+    display.setTextLine(4);
+    display.format("Test File\n");    
+    display.format("isOpen(): % \n") % (file.isOpen() ? 'Y' : 'N');
+    display.format("isConnected(): % \n") % (file.isConnected() ? 'Y' : 'N'));
+
+    if(!file.isOpen())
+        std::exit(1); // if is not bluetooth open => exit() => end program
+
+    display.format("write('a')\n");
+    file.write('a');
+
+    display.format("format(file,...)\n");
+
+    format(file, "Test File\n");
+    format(file, "\ntest write to file \n\tdata: %  % \n") % 125 % 98.76;
+
+    file.close();
+    display.format("close(): % \n") % file.isOpen();
+
+    tslp_tsk(2000);
+    display.resetScreen();
+
+
+    // Open new file
+    file.open("new_file.txt");
+    display.format("%  - new_file\n") % "File";
+    display.format("isOpen(): % \n") % file.isOpen();
     
-    left_motor.on(50);
+    if(!file.isOpen())
+        std::exit(1); // if is not open, exit()
+    
+    //format(file, "text %  %  % ") % 12 % 98.876 % 55; 
+    format(file,    "text 125 56 \n 98.76 66,55\n");
+    display.format( "text 123 56 \n 98.76 66,55\n");
+    
+    file.rewind(); // set position indicator to start => read from start
 
-    ev3_lcd_draw_string("on(50)      ", 0, LCD_FONT_HEIGHT * 7);
-    int cnt = 0;  
-    while(cnt < 200) {
-        lcd_debug_output(cnt, lcd_row, left_motor);
-        cnt++;
-        tslp_tsk(10);
-    }
+    char text[5] = {'\0'};
+    text[0] = file.readChar();
+    text[1] = file.readChar();
+    text[2] = file.readChar();
+    text[3] = file.readChar();
+    display.format("text: % \n") % text;
 
-    left_motor.resetPosition();
+    uint8_t ui8 = 0; 
+    int er = file.readNumber(ui8);
+    display.format("rN(ui8)=% : % \n") % er % ui8;
 
-    ev3_lcd_draw_string("oForD(30,-2000)    ", 0, LCD_FONT_HEIGHT * 7);
-    left_motor.onForDegrees(30, -2000);
-    cnt = 0;  
-    while(cnt < 500) {
-        lcd_debug_output(cnt, lcd_row, left_motor);
-        cnt++;
-        tslp_tsk(10);
-    }
+    float f = -1; 
+    er = file.readNumber(f);
+    display.format("rN(f)=% : % \n") % er % f;
 
-    left_motor.resetPosition();
+    double d = -1; 
+    er = file.readNumber(d);
+    display.format("rN(f)=% : % \n") % er % d;
 
-    ev3_lcd_draw_string("oForD(70,1000,true)", 0, LCD_FONT_HEIGHT * 7);
-    left_motor.onForDegrees(70, 1000, true);
-    cnt = 0;  
-    while(cnt < 200) {
-        lcd_debug_output(cnt, lcd_row, left_motor);
-        cnt++;
-        tslp_tsk(10);
-    }
+    f = -1; 
+    er = file.readNumber(f);
+    display.format("rN(f)=% : % \n") % er % f;
 
-    left_motor.resetPosition();
+    tslp_tsk(2000);
 
-    ev3_lcd_draw_string("oForRot(25,-2.5)   ", 0, LCD_FONT_HEIGHT * 7);
-    left_motor.onForRotations(25, -2.5);
-    cnt = 0;  
-    while(cnt < 200) {
-        lcd_debug_output(cnt, lcd_row, left_motor);
-        cnt++;
-        tslp_tsk(10);
-    }
+    int i = -1; 
+    er = file.readNumber(i);
+    display.format("rN(i)=% : % \n") % er % i;
 
-    left_motor.resetPosition();
+    tslp_tsk(2000);
 
-    ev3_lcd_draw_string("oForRot()          ", 0, LCD_FONT_HEIGHT * 7);
-    left_motor.onForRotations();
-    cnt = 0;  
-    while(cnt < 200) {
-        lcd_debug_output(cnt, lcd_row, left_motor);
-        cnt++;
-        tslp_tsk(10);
-    }
-    ev3_lcd_draw_string("END                ", 0, LCD_FONT_HEIGHT * 7);
+    i = -1; 
+    er = file.readNumber(i);
+    display.format("rN(i)=% : % \n") % er % i;
 }

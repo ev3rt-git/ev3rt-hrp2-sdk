@@ -15,7 +15,7 @@ using ev3cxx::format;
     
 void main_task(intptr_t unused) {
     //File file("test_file.txt");
-    ev3cxx::Bluetooth file; // same workflow as with file
+    ev3cxx::Bluetooth file{}; // same workflow as with file
     file.open();
 
     display.format("Test File\n");

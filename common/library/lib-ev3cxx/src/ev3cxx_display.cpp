@@ -32,7 +32,9 @@ void Display::write(char ch) {
 }
 
 void Display::setTextLine(uint8_t line, int32_t x_offset) {
-    clearTextLine(line, white, x_offset);
+    if((line * getFontHeight()) < height) {
+        clearTextLine(line, white, x_offset);
+    }
     m_y = (line * getFontHeight()) % height;
     m_x = x_offset;
 }

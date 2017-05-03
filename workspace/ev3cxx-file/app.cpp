@@ -14,8 +14,7 @@ using ev3cxx::display;
 using ev3cxx::format;
 
 void main_task(intptr_t unused) {
-    File file("test_file.txt");
-
+    File file{"test_file.txt"};
 
     display.format("Test File\n");
     display.format("isOpen(): % \n") % file.isOpen();
