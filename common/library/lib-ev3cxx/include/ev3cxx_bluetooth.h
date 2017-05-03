@@ -22,12 +22,11 @@ namespace ev3cxx {
 class Bluetooth : public File
 {
 public:
-   
     /**
      * \~English
      * \brief 	    Constructor of class Bluetooth. Don't open bluetooth port. For opening port call \a open().
      */  
-    Bluetooth() : File(), m_filedesc(NULL) {}
+    Bluetooth() : File() {}
     
     /**
      * \~English
@@ -74,11 +73,6 @@ public:
     virtual int close() {
         return 0;
     }
-
-
-private:
-     FILE * m_filedesc;               //!< \~English file of this class 
-   
 }; // class File
 
 

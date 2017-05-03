@@ -149,7 +149,7 @@ public:
         ::rewind(m_filedesc);
     }
 
-private:
+protected:
      FILE * m_filedesc;               //!< \~English file of this class 
    
 }; // class File
