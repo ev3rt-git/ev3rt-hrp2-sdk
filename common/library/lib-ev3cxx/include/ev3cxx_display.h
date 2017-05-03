@@ -82,20 +82,22 @@ public:
      * \brief           Set actual text line index of cursor for next write. 
      * \details         Also clear all line (\a clearTextLine()).
      * \param line      Line index. Range depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
+     *                  If out of range, then result is \a "line % m_max_line_on_height". 
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
-    void setTextLine(int8_t line, int32_t x_offset = 0);
+    void setTextLine(uint8_t line, int32_t x_offset = 0);
 
     /**
      * \~English
      * \brief           Clear a line. 
      * \param line      Line index. Range depend on actual font type (EV3_FONT_MEDIUM => 0 - 7). 
+     *                  If out of range, then result is \a "line % m_max_line_on_height".    
      * \param color     Color the cleared with. You can set \a white or \a black. 
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
-    void clearTextLine(int8_t line, bool_t color = white, int32_t x_offset = 0);
+    void clearTextLine(uint8_t line, bool_t color = white, int32_t x_offset = 0);
 
     /**
      * \~English

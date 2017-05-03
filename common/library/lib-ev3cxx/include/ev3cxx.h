@@ -10,6 +10,7 @@
  * EV3 hardware independent libraries
  */
 #include "ev3cxx_format.h"
+#include "ev3cxx_file.h"
 
 /**
  * EV3 hardware dependent libraries

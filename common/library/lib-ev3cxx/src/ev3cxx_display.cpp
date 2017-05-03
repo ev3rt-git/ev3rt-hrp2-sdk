@@ -31,21 +31,22 @@ void Display::write(char ch) {
     }   
 }
 
-void Display::setTextLine(int8_t line, int32_t x_offset) {
+void Display::setTextLine(uint8_t line, int32_t x_offset) {
     clearTextLine(line, white, x_offset);
-    m_y = line * getFontHeight();
+    m_y = (line * getFontHeight()) % height;
     m_x = x_offset;
 }
 
 int32_t Display::getTextLine() const { return m_y / getFontHeight(); }
 
-void Display::clearTextLine(int8_t line, bool_t color, int32_t x_offset) {
-    ev3_lcd_fill_rect(0 + x_offset, line * getFontHeight(), width,
+void Display::clearTextLine(uint8_t line, bool_t color, int32_t x_offset) {
+    ev3_lcd_fill_rect(0 + x_offset, (line * getFontHeight()) % height, width,
                       getFontHeight(), static_cast<lcdcolor_t>(color));
 }
 
 void Display::resetScreen(bool_t color) {
   ev3_lcd_fill_rect(0, 0, width, height, static_cast<lcdcolor_t>(color));
+  setTextLine(0);
 }
 
 void Display::setFont(lcdfont_t font) {

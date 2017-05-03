@@ -32,4 +32,5 @@ script:
  - make app=helloev3
  - make app=ev3cxx-motor
  - make app=ev3cxx-display
+ - make app=ev3cxx-file
  - ls -la
