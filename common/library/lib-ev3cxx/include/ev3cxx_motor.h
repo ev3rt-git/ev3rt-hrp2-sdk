@@ -10,6 +10,29 @@
 
 namespace ev3cxx {
 
+
+    
+/**
+* \~English
+* \brief    Enum with index of motor ports (A - D)
+*/
+enum class MotorPort {
+    A = 0,
+    B,
+    C,
+    D
+};
+
+/**
+* \~English
+* \brief    Enum with index of motor type
+*/
+enum class MotorType {
+    MEDIUM = 1,	    //!< \~English Medium servo motor    \~Japanese サーボモータM
+    LARGE,	        //!< \~English Large servo motor     \~Japanese サーボモータL
+    UNREGULATED,    //!< \~English Unregulated motor     \~Japanese 未調整モータ    
+};
+
 /**
  * \~English
  * \brief    Class Motor
@@ -28,12 +51,11 @@ public:
      * \param port  Port number
      * \param type  Type of port: \a motor_type_t
      */
-     
-    Motor(motor_port_t port, motor_type_t type = LARGE_MOTOR)
-    :m_port(port),
-    m_type(type) 
+    Motor(MotorPort port, MotorType type = MotorType::LARGE)
+    : m_port(static_cast<motor_port_t>(port)), 
+      m_type(static_cast<motor_type_t>(type)) 
     {
-        m_error = ev3_motor_config(m_port, type);
+        ev3_motor_config(m_port, m_type);
     }
 
     /**
@@ -50,8 +72,8 @@ public:
      * \details	    Set the motor power or speed to 0 and depending on param \a brake will brake the motor. 
      * \param brake Start braking the motor (true = braking, false = not braking). Default value is \a true.
      */
-    ER off(bool brake = true) {
-        return (m_error = ev3_motor_stop(m_port, brake));
+    void off(bool brake = true) {
+        ev3_motor_stop(m_port, brake);
     }
 
     /**
@@ -61,20 +83,14 @@ public:
      * \param power Motor speed. Range: -100 to +100. A negative value moves the robot backwards. Default value is 50. 
      *              If a out-of-range value is given, it will be clipped to the minimum (-100) or maximum (100) value.
      */
-    ER on(int power = 50) {
-        m_error = ev3_motor_set_power(m_port, power);
-        // change type of motor: UNREGULATED_MOTOR => LARGE_MOTOR/MEDIUM_MOTOR
+    void on(int power = 50) {
+        // change type of motor: UNREGULATED_MOTOR => LARGE_MOTOR/MEDIUM_MOTOR 
         if(m_type != getType()) {
-            m_error = ev3_motor_config(m_port, m_type);
+            ev3_motor_config(m_port, m_type);
         }
-
-        if(m_error == E_OK)
-            m_error = ev3_motor_set_power(m_port, power);
-        else
-            assert(false);//API_ERROR(m_error); // TODO: API_ERROR
-
-        return m_error;
+        ev3_motor_set_power(m_port, power);
     }
+
     /**
      * \~English
      * \brief 	    Set power on unregulated motor. [TODO: fix - same behavior as on() -> problem in EV3RT]
@@ -82,18 +98,12 @@ public:
      * \param power Motor power. Range: -100 to +100. A negative value moves the robot backwards. Default value is 50. 
      *              If a out-of-range value is given, it will be clipped to the minimum (-100) or maximum (100) value.
      */   
-    ER unregulated(int power = 50) { 
+    void unregulated(int power = 50) { 
         // change type of motor: LARGE_MOTOR/MEDIUM_MOTOR => UNREGULATED_MOTOR
         if(UNREGULATED_MOTOR != getType()) {
-            m_error = ev3_motor_config(m_port, UNREGULATED_MOTOR);
+            ev3_motor_config(m_port, UNREGULATED_MOTOR);
         }
-
-        if(m_error == E_OK)
-            m_error = ev3_motor_set_power(m_port, power);
-        else
-            assert(false);//API_ERROR(m_error); // TODO: API_ERROR
-
-        return m_error;
+        ev3_motor_set_power(m_port, power);
     }
     
     /**
@@ -174,20 +184,8 @@ public:
         return motor_type; 
     }
 
-    /**
-     * \~English
-     * \brief         Get state of motor error.
-     * \retval E_OK   All OK
-     * \retval E_ID   Illegal motor port number
-     * \retval E_PAR  Illegal motor type
-     * \retval E_OBJ  Motor port has not been initialized
-     */
-    ER getError() const { return m_error; }
-
 private:
     motor_port_t m_port;
     motor_type_t m_type;
-    ER m_error;
-
 }; // class Motor
 } // namespace ev3cxx

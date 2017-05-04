@@ -38,17 +38,14 @@ void main_task(intptr_t unused) {
     sprintf(lcd_text, "EV3CXX test");
     ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
     
-    ev3cxx::Motor left_motor(EV3_PORT_B, LARGE_MOTOR);
+    ev3cxx::Motor left_motor(ev3cxx::MotorPort::B, ev3cxx::MotorType::LARGE);
 
-    // sprintf(lcd_text, "Set_port: %i", left_motor.getPort());
-    // ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
+    sprintf(lcd_text, "Set_port: %i", left_motor.getPort());
+    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
 
     sprintf(lcd_text, "Set_type: %i", left_motor.getType());
     ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-    
-    sprintf(lcd_text, "Const_er: %i", left_motor.getError());
-    ev3_lcd_draw_string(lcd_text, 0, LCD_FONT_HEIGHT * lcd_row++);
-    
+        
     left_motor.on(50);
 
     ev3_lcd_draw_string("on(50)      ", 0, LCD_FONT_HEIGHT * 7);
