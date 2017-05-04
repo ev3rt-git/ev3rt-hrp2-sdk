@@ -30,8 +30,8 @@ public:
 
     /**
      * \~English
-     * \brief       Get measure distance in centimeters. 
-     * \return      Distance in cm. Range: 4 - 255 (to near/far = 255) [TODO: check range]      
+     * \brief       Get state of touch sensor. 
+     * \return      If is pressed return \true, else \false. 
      */  
     int isPressed() {
         return ev3_touch_sensor_is_pressed(m_port);
@@ -57,7 +57,7 @@ public:
 
 	/**
 	 * \~English
-     * \brief       Blocks until sensor is clicked
+     * \brief       Blocks until sensor is clicked (press and release)
 	 */
 	void waitForClick() {
 		waitForPress();
