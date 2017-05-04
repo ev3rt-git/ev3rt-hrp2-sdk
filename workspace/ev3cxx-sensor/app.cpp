@@ -20,7 +20,7 @@ void main_task(intptr_t unused) {
     Bluetooth bt{true};
 
     format(bt, "\n\n\t EV3RT ev3cxx \n\t Sensors test\n\n"); 
-    display.format("  EV3RT ev3cxx \n  Sensors test\n");         
+    display.format("\tEV3RT ev3cxx \n\tSensors test\n");         
 
     UltrasonicSensor UltraS{Sensor::Port::S4};
 

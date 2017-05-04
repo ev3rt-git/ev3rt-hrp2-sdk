@@ -16,8 +16,13 @@ Display::Display(lcdfont_t font)
 Display::~Display() {}
 
 void Display::write(char ch) {
-    if(ch == '\n')
-        setTextLine(getTextLine() + 1);    
+    if(ch == '\n') {
+        setTextLine(getTextLine() + 1);   
+    }
+    else if(ch == '\t') {
+        write(' ');
+        write(' ');
+    }
     else {
         ev3_lcd_draw_character(ch, m_x, m_y);
         m_x += getFontWidth();
