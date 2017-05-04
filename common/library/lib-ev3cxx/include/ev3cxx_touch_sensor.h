@@ -26,7 +26,7 @@ public:
      * \brief       Constructor of class TouchSensor. 
      * \param port  Port index (1-4).      
      */  
-    TouchSensor(Port port) : Sensor(port, TOUCH_SENSOR) {}
+    TouchSensor(SensorPort port) : Sensor(port, TOUCH_SENSOR) {}
 
     /**
      * \~English

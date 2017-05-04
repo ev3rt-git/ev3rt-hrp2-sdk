@@ -13,31 +13,30 @@
 namespace ev3cxx {
     
 /**
+* \~English
+* \brief    Enum with index of sensor ports
+*/
+enum class SensorPort {
+    S1 = 0,
+    S2,
+    S3,
+    S4
+};
+
+/**
  * \~English
  * \brief    Class Sensor
  * \details  API for working with sensor.
  */
 class Sensor
 {
-public:
-    /**
-    * \~English
-    * \brief    Enum with index of sensor ports
-    */
-    enum class Port {
-        S1 = 0,
-        S2,
-        S3,
-        S4
-    };
-
 protected:
     /**
      * \~English
      * \brief       Constructor of class Sensor. 
      * \param port  Port index (1-4).      
      */  
-    Sensor(Port port, sensor_type_t type)
+    Sensor(SensorPort port, sensor_type_t type)
      : m_port(static_cast<sensor_port_t>(port)), m_type(type) 
     {
         ev3_sensor_config(m_port, m_type);

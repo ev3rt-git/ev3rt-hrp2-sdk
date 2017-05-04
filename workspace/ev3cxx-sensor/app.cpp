@@ -10,21 +10,16 @@
 #include "app.h"
 
 using ev3cxx::display;
-using ev3cxx::Bluetooth;
 using ev3cxx::format;
-
-using ev3cxx::Sensor;
-using ev3cxx::UltrasonicSensor;
-using ev3cxx::TouchSensor;
     
 void main_task(intptr_t unused) {
-    Bluetooth bt{true};
+    ev3cxx::Bluetooth bt{true};
 
     format(bt, "\n\n\t EV3RT ev3cxx \n\t Sensors test\n\n"); 
     display.format("\tEV3RT ev3cxx \n\tSensors test\n");         
 
-    TouchSensor TouchS{Sensor::Port::S1};
-    UltrasonicSensor UltraS{Sensor::Port::S4};
+    ev3cxx::TouchSensor TouchS{ev3cxx::SensorPort::S1};
+    ev3cxx::UltrasonicSensor UltraS{ev3cxx::SensorPort::S4};
 
     format(bt, "Waiting for click on Touch Sensor\n"); 
     display.format("Click => TouchS\n");

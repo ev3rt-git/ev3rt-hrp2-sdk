@@ -26,7 +26,7 @@ public:
      * \brief       Constructor of class UltrasonicSensor. 
      * \param port  Port index (1-4).      
      */  
-    UltrasonicSensor(Port port) : Sensor(port, ULTRASONIC_SENSOR) {}
+    UltrasonicSensor(SensorPort port) : Sensor(port, ULTRASONIC_SENSOR) {}
 
     /**
      * \~English
