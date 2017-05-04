@@ -19,6 +19,7 @@
 #include "ev3cxx_bluetooth.h"
 #include "ev3cxx_motor.h"
 #include "ev3cxx_sensor.h"
+#include "ev3cxx_touch_sensor.h"
 #include "ev3cxx_ultrasonic_sensor.h"
 
 
