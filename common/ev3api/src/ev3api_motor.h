@@ -173,14 +173,15 @@ ER ev3_motor_stop(motor_port_t port, bool_t brake);
 
 /**
  * \~English
- * \brief 	        Rotate a motor port for specified degrees.
- * \param port      Motor port to be rotated
- * \param degrees   Degrees to be rotated. A negative value makes the motor rotate backwards.
- * \param speed_abs Speed for rotating. The value is a percentage of full speed, ranging from 0 to +100.
- * \param blocking  \a true (The function will be blocked until the rotation is finished), or \a false (The function will not be blocked).
- * \retval E_OK     Successful completion
- * \retval E_ID     Illegal motor port number
- * \retval E_OBJ    Motor port has not been initialized.
+ * \brief 	         Rotate a motor port for specified degrees.
+ * \param  port      Motor port to be rotated
+ * \param  degrees   Degrees to be rotated. A negative value makes the motor rotate backwards.
+ * \param  speed_abs Speed for rotating. The value is a percentage of full speed, ranging from 0 to +100.
+ * \param  blocking  \a true (The function will be blocked until the rotation is finished), or \a false (The function will not be blocked).
+ * \param  brake     If \a true, then motor start braking after reach the position (= degrees).
+ * \retval E_OK      Successful completion
+ * \retval E_ID      Illegal motor port number
+ * \retval E_OBJ     Motor port has not been initialized.
  *
  * \~Japanese
  * \brief 	         モータを指定した角度だけ回転させる
@@ -188,9 +189,20 @@ ER ev3_motor_stop(motor_port_t port, bool_t brake);
  * \param  degrees   回転角度，マイナスの値でモータを逆方向に回転させることができる
  * \param  speed_abs 回転速度，モータポートのフルスピードのパーセント値．範囲：0から+100．
  * \param  blocking  \a true (関数は回転が完了してからリターン)，\a false (関数は回転操作を待たずにリターン)
+ * \param  brake       [TODO] 
  * \retval E_OK      正常終了
  * \retval E_ID      不正のモータポート番号
  * \retval E_OBJ     モータ未接続
+ */
+ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake);
+
+/**
+ * \~English
+ * \brief 	        Wrapper around function \a ev3_motor_rotate_brake() to back compatibility EV3RT API..
+ * \details         Everything is same as in \a ev3_motor_rotate_brake(), but there missing parameter \a "bool_t brake".
+ *
+ * \~Japanese
+ * [TODO]
  */
 ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking);
 

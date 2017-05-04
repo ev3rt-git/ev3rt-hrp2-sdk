@@ -15,8 +15,7 @@ namespace ev3cxx {
     
 /**
  * \~English
- * \brief    Class File
- * \details  API for working with file.
+ * \brief    Class File. API for working with file.
  */
 class File
 {

@@ -16,8 +16,7 @@ namespace ev3cxx {
     
 /**
  * \~English
- * \brief    Class Bluetooth
- * \details  API for working with bluetooth.
+ * \brief    Class Bluetooth. API for working with bluetooth.
  */
 class Bluetooth : public File
 {

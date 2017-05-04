@@ -14,19 +14,18 @@ namespace ev3cxx {
     
 /**
 * \~English
-* \brief    Enum with index of sensor ports
+* \brief    Enum with index of sensor port
 */
 enum class SensorPort {
-    S1 = 0,
-    S2,
-    S3,
-    S4
+    S1 = 0,     //!< \~English Sensor port 1
+    S2,         //!< \~English Sensor port 2
+    S3,         //!< \~English Sensor port 3
+    S4          //!< \~English Sensor port 4
 };
 
 /**
  * \~English
- * \brief    Class Sensor
- * \details  API for working with sensor.
+ * \brief    Class Sensor. API for working with sensor.
  */
 class Sensor
 {

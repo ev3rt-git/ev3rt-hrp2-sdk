@@ -10,17 +10,15 @@
 
 namespace ev3cxx {
 
-
-    
 /**
 * \~English
-* \brief    Enum with index of motor ports (A - D)
+* \brief    Enum with index of motor port (A - D)
 */
 enum class MotorPort {
-    A = 0,
-    B,
-    C,
-    D
+    A = 0, 	//!< \~English Motor port A
+    B,		//!< \~English Motor port B
+    C,		//!< \~English Motor port C
+    D    	//!< \~English Motor port D
 };
 
 /**
@@ -35,8 +33,7 @@ enum class MotorType {
 
 /**
  * \~English
- * \brief    Class Motor
- * \details  API for working with motors.
+ * \brief    Class Motor. API for working with motor.
  */
 class Motor
 {
@@ -113,9 +110,10 @@ public:
      * \param degrees   Number of degrees for rotation of motor. A negative value moves the robot backwards. Default value is 360. 
      * \param blocking  \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
      *                  Default value is \a false.
+     * \param brake     If \a true, then motor start braking after reach the position (= degrees).
      */   
-    void onForDegrees(uint32_t power_abs = 50, int degrees = 360, bool_t blocking = false) { // TODO: add param brake
-        ev3_motor_rotate(m_port, degrees, power_abs, blocking);
+    void onForDegrees(uint32_t power_abs = 50, int degrees = 360, bool_t blocking = false, bool_t brake = true) {
+        ev3_motor_rotate_brake(m_port, degrees, power_abs, blocking, brake);
     }
 
     /**
@@ -125,9 +123,10 @@ public:
      * \param rotations Number of rotation for rotate with motor. A negative value moves the robot backwards. Default value is 1. 
      * \param blocking  \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
      *                  Default value is \a false.
+     * \param brake     If \a true, then motor start braking after reach the position (= degrees).
      */   
-    void onForRotations(uint32_t power_abs = 50, float rotations = 1, bool_t blocking = false) { // TODO: add param brake
-        ev3_motor_rotate(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking);
+    void onForRotations(uint32_t power_abs = 50, float rotations = 1, bool_t blocking = false, bool_t brake = true) {
+        ev3_motor_rotate_brake(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking, brake);
     }
 
     /**

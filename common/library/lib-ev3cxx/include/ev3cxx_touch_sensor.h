@@ -15,8 +15,7 @@ namespace ev3cxx {
     
 /**
  * \~English
- * \brief    Class TouchSensor
- * \details  API for working with touch sensor.
+ * \brief    Class TouchSensor. API for working with touch sensor.
  */
 class TouchSensor : public Sensor
 {

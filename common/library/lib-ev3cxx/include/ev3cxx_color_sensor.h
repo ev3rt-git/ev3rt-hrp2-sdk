@@ -15,8 +15,7 @@ namespace ev3cxx {
     
 /**
  * \~English
- * \brief    Class ColorSensor
- * \details  API for working with color sensor.
+ * \brief    Class ColorSensor. API for working with color sensor.
  */
 class ColorSensor : public Sensor
 {

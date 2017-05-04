@@ -15,8 +15,7 @@ namespace detail {
     
 /**
  * \~English
- * \brief    Class Display
- * \details  API for working with text on display.
+ * \brief    Class Display. API for working with text on display.
  */
 class Display
 {

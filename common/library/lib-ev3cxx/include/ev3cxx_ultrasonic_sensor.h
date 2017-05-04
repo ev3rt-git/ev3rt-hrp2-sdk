@@ -15,8 +15,7 @@ namespace ev3cxx {
     
 /**
  * \~English
- * \brief    Class UltrasonicSensor
- * \details  API for working with ultrasonic sensor.
+ * \brief    Class UltrasonicSensor. API for working with ultrasonic sensor.
  */
 class UltrasonicSensor : public Sensor
 {

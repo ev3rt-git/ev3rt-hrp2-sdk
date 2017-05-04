@@ -327,7 +327,7 @@ error_exit:
     return ercd;
 }
 
-ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking) {
+ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake) {
 	ER ercd;
 
 //	lazy_initialize();
@@ -341,7 +341,7 @@ ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t b
     ss.Step1 = 0;         // Up to Speed
     ss.Step2 = (degrees < 0 ? -degrees : degrees);   // Keep Speed
     ss.Step3 = 0;         // Down to Speed
-    ss.Brake = true;
+    ss.Brake = brake;
     ss.Nos = 1 << port;
     motor_command(&ss, sizeof(ss));
     if (blocking) // TODO: What if pMotorReadyStatus is kept busy by other tasks?
@@ -351,6 +351,10 @@ ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t b
 
 error_exit:
 	return ercd;
+}
+
+ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking) {
+    return ev3_motor_rotate_brake(port, degrees, speed_abs, blocking, true);
 }
 
 ER ev3_motor_steer(motor_port_t left_motor, motor_port_t right_motor, int power, int turn_ratio) {
