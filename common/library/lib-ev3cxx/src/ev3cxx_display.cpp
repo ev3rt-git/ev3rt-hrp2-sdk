@@ -18,10 +18,11 @@ Display::~Display() {}
 void Display::write(char ch) {
     if(ch == '\n') {
         setTextLine(getTextLine() + 1);   
-    }
-    else if(ch == '\t') {
+    } else if(ch == '\t') {
         write(' ');
         write(' ');
+    } else if(ch == '\r') {
+        setTextLine(getTextLine(), width);  
     }
     else {
         ev3_lcd_draw_character(ch, m_x, m_y);
