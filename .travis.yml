@@ -34,4 +34,5 @@ script:
  - make app=ev3cxx-display
  - make app=ev3cxx-file
  - make app=ev3cxx-bluetooth
+ - make app=ev3cxx-sensor
  - ls -la

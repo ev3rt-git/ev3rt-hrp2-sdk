@@ -28,6 +28,12 @@ public:
      */  
     Bluetooth() : File() {}
     
+    Bluetooth(bool_t open_bt) : File() {
+        if(open_bt) {
+            open();
+        }
+    }
+
     /**
      * \~English
      * \brief 	    Destructor of class Bluetooth - DO NOTHING.  
@@ -73,7 +79,7 @@ public:
     virtual int close() {
         return 0;
     }
-}; // class File
+}; // class Bluetooth
 
 
 } // namespace ev3cxx

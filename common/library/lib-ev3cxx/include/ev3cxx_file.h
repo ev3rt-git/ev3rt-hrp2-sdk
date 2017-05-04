@@ -40,7 +40,7 @@ public:
      * \~English
      * \brief 	    Destructor of class File. Close the file if is open.
      */
-    ~File() {
+    virtual ~File() {
         close();
     }
 

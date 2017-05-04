@@ -73,6 +73,18 @@ typedef enum {
 
 /**
  * \~English
+ * \brief Enumeration type for modes of ultrasonic sensor 
+ *
+ * \~Japanese
+ * [TODO]
+ */
+typedef enum {
+	US_DIST_METRIC = 0,     //!< \~English Unit system metric (m, cm, mm) => default millimeters
+	US_DIST_IMPERIAL = 1,   //!< \~English Unit system imperial (in, points, mil) => default 0.1 inches
+} ULTRASONIC_SENSOR_MEASURE_MODES;
+
+/**
+ * \~English
  * \brief Structure for an RGB raw value
  *
  * \~Japanese
@@ -224,6 +236,24 @@ int16_t ev3_gyro_sensor_get_rate(sensor_port_t port);
  * \retval E_ID 不正のセンサポート番号
  */
 ER ev3_gyro_sensor_reset(sensor_port_t port);
+
+
+/**
+ * \~English
+ * \brief 	   Get the raw distance from a ultrasonic sensor.
+ * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
+ * \param port Sensor port to be inquired
+ * \param mode Sensor mode - ULTRASONIC_SENSOR_MEASURE_MODES
+ * \return     Distance in millimeters (mode = US_DIST_METRIC) or 0.1 inches (mode = US_DIST_IMPERIAL).
+ *
+ * \~Japanese
+ * [TODO: check]
+ * \brief 	    超音波センサで距離を測定する．
+ * \details     不正のセンサポート番号を指定した場合，常に0を返す（エラーログが出力される）．
+ * \param  port センサポート番号
+ * \return      距離（単位はセンチ）
+ */
+int16_t ev3_ultrasonic_sensor_get_raw_data(sensor_port_t port, ULTRASONIC_SENSOR_MEASURE_MODES mode);
 
 /**
  * \~English
