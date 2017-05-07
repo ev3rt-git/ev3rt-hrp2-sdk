@@ -15,14 +15,17 @@
 /**
  * EV3 hardware dependent libraries
  */
+#include "ev3cxx_utils.h"
+#include "ev3cxx_time.h"
+#include "ev3cxx_brick_led.h"
 #include "ev3cxx_display.h"
 #include "ev3cxx_bluetooth.h"
 #include "ev3cxx_motor.h"
+#include "ev3cxx_motor_tank.h"
 #include "ev3cxx_sensor.h"
 #include "ev3cxx_touch_sensor.h"
 #include "ev3cxx_color_sensor.h"
 #include "ev3cxx_ultrasonic_sensor.h"
-
 
 /**
  * EV3CXX global objects
@@ -30,5 +33,6 @@
 namespace ev3cxx {
 
 extern ::ev3cxx::detail::Display display;
+extern ::ev3cxx::detail::BrickLED statusLight;
 
-} // ev3cxx
+} // namespace ev3cxx

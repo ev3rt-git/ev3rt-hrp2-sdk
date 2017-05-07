@@ -31,17 +31,24 @@ enum class MotorType {
     UNREGULATED,    //!< \~English Unregulated motor     \~Japanese 未調整モータ    
 };
 
+namespace detail {
+struct MotorConstants
+{
+    static const int POWER_MAX = 100;   //!< \~English Max power on motor
+    static const int POWER_MIN = -100;  //!< \~English Min power on motor
+    static constexpr float NUMBER_OF_DEGREES_PER_ROTATION = 360.0;
+}; // struct MotorConstants
+} // namespace detail
+
 /**
  * \~English
  * \brief    Class Motor. API for working with motor.
  */
 class Motor
+    : public detail::MotorConstants
 {
 public:
-    static const int POWER_MAX = 100;   //!< \~English Max power on motor
-    static const int POWER_MIN = -100;  //!< \~English Min power on motor
-    static constexpr float NUMBER_OF_DEGREES_PER_ROTATION = 360.0;
-
+    
     /**
      * \~English
      * \brief 	    Constructor of class motor.
@@ -58,9 +65,10 @@ public:
     /**
      * \~English
      * \brief 	    Destructor of class motor.
+     * \details     Turns off the motor and lefts it coasts.
      */
     ~Motor() {
-        Motor::off(true);
+        Motor::off(false);
     }
 
     /**
@@ -105,28 +113,59 @@ public:
     
     /**
      * \~English
-     * \brief 	        Set number of degrees to rotate with regulated motor. 
-     * \param power_abs \a power_abs is equivalent to speed. \a power_abs is in absolute value. Range: 0 to +100. Default value is 50. 
-     * \param degrees   Number of degrees for rotation of motor. A negative value moves the robot backwards. Default value is 360. 
-     * \param blocking  \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
-     *                  Default value is \a false.
-     * \param brake     If \a true, then motor start braking after reach the position (= degrees).
+     * \brief 	            Set number of degrees to rotate with regulated motor. 
+     * \param speed         Speed of motor. Range: -100 to +100. Default value is 50. 
+     * \param degrees       Number of degrees for rotation of motor. A negative value moves the robot backwards. Default value is 360. 
+     * \param brake         If \a true, then motor start braking after reach the position (= degrees).
+     * \param blocking      \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
+     *                      Default value is \a false.
+     * \param wait_after_ms Adds wait after the functuion executes. Default wait is 60 ms. It is important because of some race condition
+     *                      when another motor rotation follows immediately
      */   
-    void onForDegrees(uint32_t power_abs = 50, int degrees = 360, bool_t blocking = false, bool_t brake = true) {
-        ev3_motor_rotate_brake(m_port, degrees, power_abs, blocking, brake);
+    void onForDegrees(int speed = 50, int degrees = 360, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+        if (speed == 0)
+            return;
+        if (speed < 0) {
+            speed = -speed;
+            degrees = -degrees;
+        }
+        ev3_motor_rotate_brake(m_port, degrees, speed, blocking, brake);
+        tslp_tsk(wait_after_ms);
     }
 
     /**
      * \~English
-     * \brief 	        Set number of rotation to rotate with regulated motor. 
-     * \param power_abs \a power_abs is equivalent to speed. \a power_abs is in absolute value. Range: 0 to +100. Default value is 50. 
-     * \param rotations Number of rotation for rotate with motor. A negative value moves the robot backwards. Default value is 1. 
-     * \param blocking  \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
-     *                  Default value is \a false.
-     * \param brake     If \a true, then motor start braking after reach the position (= degrees).
+     * \brief 	            Set number of rotation to rotate with regulated motor. 
+     * \param speed         Speed of motor. Range: -100 to +100. Default value is 50. 
+     * \param rotations     Number of rotation for rotate with motor. A negative value moves the robot backwards. Default value is 1. 
+     * \param brake         If \a true, then motor start braking after reach the position (= degrees).
+     * \param blocking      \a true (The function will be blocked until the move is finished), or \a false (The function will not be blocked). 
+     *                      Default value is \a false.
+     * \param wait_after_ms Adds wait after the functuion executes. Default wait is 60 ms. It is important because of some race condition
+     *                      when another motor rotation follows immediately
      */   
-    void onForRotations(uint32_t power_abs = 50, float rotations = 1, bool_t blocking = false, bool_t brake = true) {
-        ev3_motor_rotate_brake(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, power_abs, blocking, brake);
+    void onForRotations(int speed = 50, float rotations = 1, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+        if (speed == 0)
+            return;
+        if (speed < 0) {
+            speed = -speed;
+            rotations = -rotations;
+        }
+        ev3_motor_rotate_brake(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, speed, blocking, brake);
+        tslp_tsk(wait_after_ms);
+    }
+
+    /**
+     * \~English
+     * \brief 	    Rotates the motor for a given time. 
+     * \param speed Speed of motor. Range: -100 to +100. Default value is 50. 
+     * \param time  Number of miliseconds for rotate with motor. Default value is 1000. 
+     * \param brake If \a true, then motor start braking after reach the position (= degrees).
+     */   
+    void onForTime(int speed = 50, uint32_t ms = 1000, bool_t brake = true) {
+        on(speed);
+        tslp_tsk(ms);
+        off(brake);
     }
 
     /**
@@ -161,6 +200,7 @@ public:
     * \details  Setting the value of the angular position sensor of the motor does not affect the actual power and position of the motor.
     */
     void resetPosition() { ev3_motor_reset_counts(m_port); }
+    
     /**
      * \~English
      * \brief  Get motor port. 

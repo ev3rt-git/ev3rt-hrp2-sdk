@@ -13,11 +13,12 @@
 #include "ev3cxx_file.h"
 
 namespace ev3cxx {
-    
+
 /**
  * \~English
  * \brief    Class Bluetooth. API for working with bluetooth.
  */
+
 class Bluetooth : public File
 {
 public:
@@ -80,6 +81,4 @@ public:
     }
 }; // class Bluetooth
 
-
 } // namespace ev3cxx
-

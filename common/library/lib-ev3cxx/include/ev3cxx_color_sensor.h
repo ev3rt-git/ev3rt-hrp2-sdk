@@ -68,6 +68,4 @@ public:
     }
 }; // class ColorSensor
 
-
 } // namespace ev3cxx
-

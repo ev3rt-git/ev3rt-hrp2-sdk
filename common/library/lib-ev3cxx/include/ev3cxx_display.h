@@ -198,4 +198,3 @@ private:
 } // namespace detail
 
 } // namespace ev3cxx
-
