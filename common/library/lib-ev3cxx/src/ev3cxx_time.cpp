@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ev3cxx_time.h"
 
 namespace ev3cxx {
