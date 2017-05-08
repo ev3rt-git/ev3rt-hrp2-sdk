@@ -38,4 +38,14 @@ script:
  - make app=ev3cxx-sensor
 # ev3cxx-cppstl temporary remove from tests
 # - make app=ev3cxx-cppstl
+
+# ev3cxx_robotutorial
+ - make app=ev3cxx_robotutorial/01-triangle
+ - make app=ev3cxx_robotutorial/02-square
+ - make app=ev3cxx_robotutorial/03-draw_house
+ - make app=ev3cxx_robotutorial/04-catch_and_return
+ - make app=ev3cxx_robotutorial/05-switch
+ - make app=ev3cxx_robotutorial/06-line_simple
+ - make app=ev3cxx_robotutorial/07-line_simple_plus
+ - make app=ev3cxx_robotutorial/08-line_advance
  - ls -la
