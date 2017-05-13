@@ -26,7 +26,7 @@ public:
      * \param port  Port index (1-4).      
      */  
     UltrasonicSensor(SensorPort port) : Sensor(port, ULTRASONIC_SENSOR) {
-        Centimeters(); // By read one value immediate activate the sensor
+        centimeters(); // By read one value immediate activate the sensor
     }
 
     /**
@@ -34,7 +34,7 @@ public:
      * \brief       Get distance in centimeters. 
      * \return      Distance in cm. Range: 3 - 255 (too near/far => 255)      
      */  
-    int Centimeters() {
+    int centimeters() {
         return ev3_ultrasonic_sensor_get_distance(m_port);
     }
 
@@ -43,7 +43,7 @@ public:
      * \brief       Get millimeters in centimeters. 
      * \return      Distance in mm. Range: 30 - 2550 (too near/far => 2550)      
      */  
-    int Millimeters() {
+    int millimeters() {
         return ev3_ultrasonic_sensor_get_raw_data(m_port, US_DIST_METRIC);
     }
 
@@ -52,7 +52,7 @@ public:
      * \brief       Get measure distance in inches. 
      * \return      Distance in in. Range: 1 - 100 (too near/far => 100)      
      */  
-    int Inches() {
+    int inches() {
         return ev3_ultrasonic_sensor_get_raw_data(m_port, US_DIST_IMPERIAL) / 10;
     }
 
@@ -61,7 +61,7 @@ public:
      * \brief       Get measure distance in line (1/12 inch). 
      * \return      Distance in ln. Range: 13 - 1200 (too near/far => 1200)      
      */  
-    int InchesLine() {
+    int inchesLine() {
         return (ev3_ultrasonic_sensor_get_raw_data(m_port, US_DIST_IMPERIAL) * 12) / 10;
     }
 

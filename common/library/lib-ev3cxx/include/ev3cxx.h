@@ -24,6 +24,7 @@
 #include "ev3cxx_motor_tank.h"
 #include "ev3cxx_sensor.h"
 #include "ev3cxx_touch_sensor.h"
+#include "ev3cxx_gyro_sensor.h"
 #include "ev3cxx_color_sensor.h"
 #include "ev3cxx_ultrasonic_sensor.h"
 
