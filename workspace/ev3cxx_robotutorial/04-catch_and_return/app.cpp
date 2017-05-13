@@ -15,7 +15,7 @@ void main_task(intptr_t unused) {
     claw_motor.onForTime(30, 500);
     motors.on(50, 50);
 
-    while (ultrasonic.Centimeters() >= 4) {};
+    while (ultrasonic.centimeters() >= 4) {};
 
     motors.off(true);
     claw_motor.onForTime(-30, 500);
