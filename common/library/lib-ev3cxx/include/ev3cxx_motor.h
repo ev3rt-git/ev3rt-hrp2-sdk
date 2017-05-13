@@ -122,7 +122,7 @@ public:
      * \param wait_after_ms Adds wait after the functuion executes. Default wait is 60 ms. It is important because of some race condition
      *                      when another motor rotation follows immediately
      */   
-    void onForDegrees(int speed = 50, int degrees = 360, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+    void onForDegrees(int speed = 50, int degrees = 360, bool_t brake = true, bool_t blocking = true, unsigned int wait_after_ms = 60) {
         if (speed == 0)
             return;
         if (speed < 0) {
@@ -144,7 +144,7 @@ public:
      * \param wait_after_ms Adds wait after the functuion executes. Default wait is 60 ms. It is important because of some race condition
      *                      when another motor rotation follows immediately
      */   
-    void onForRotations(int speed = 50, float rotations = 1, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+    void onForRotations(int speed = 50, float rotations = 1, bool_t brake = true, bool_t blocking = true, unsigned int wait_after_ms = 60) {
         if (speed == 0)
             return;
         if (speed < 0) {
@@ -162,9 +162,9 @@ public:
      * \param time  Number of miliseconds for rotate with motor. Default value is 1000. 
      * \param brake If \a true, then motor start braking after reach the position (= degrees).
      */   
-    void onForTime(int speed = 50, uint32_t ms = 1000, bool_t brake = true) {
+    void onForTime(int speed = 50, unsigned int time_ms = 1000, bool_t brake = true) {
         on(speed);
-        tslp_tsk(ms);
+        tslp_tsk(time_ms);
         off(brake);
     }
 

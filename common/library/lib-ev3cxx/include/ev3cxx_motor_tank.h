@@ -84,7 +84,7 @@ public:
      * \param wait_after_ms Adds wait after the function executes. Default wait is 60 ms. It is important because of some race condition
      *                      when another motor rotation follows immediately
      */   
-    void onForDegrees(int left_speed = 50, int right_speed = 50, int degrees = 360, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+    void onForDegrees(int left_speed = 50, int right_speed = 50, int degrees = 360, bool_t brake = true, bool_t blocking = true, unsigned int wait_after_ms = 60) {
         int labs = abs(left_speed);
         int rabs = abs(right_speed);
         if (labs > rabs) {
@@ -110,7 +110,7 @@ public:
      * \param wait_after_ms Adds wait after the function executes. Default wait is 60 ms. It is important because of some race condition
      *                      when another motor rotation follows immediately
      */   
-    void onForRotations(int left_speed = 50, int right_speed = 50, float rotations = 1, bool_t brake = true, bool_t blocking = true, uint32_t wait_after_ms = 60) {
+    void onForRotations(int left_speed = 50, int right_speed = 50, float rotations = 1, bool_t brake = true, bool_t blocking = true, unsigned int wait_after_ms = 60) {
         onForDegrees(left_speed, right_speed, rotations * NUMBER_OF_DEGREES_PER_ROTATION, brake, blocking, wait_after_ms);
     }
 
@@ -122,9 +122,9 @@ public:
      * \param ms            Number of miliseconds for rotate with motor. Default value is 1000. 
      * \param brake         If \a true, then motor start braking after reach the position (= degrees).
      */   
-    void onForSeconds(int left_speed = 50, int right_speed = 50, uint32_t ms = 1000, bool_t brake = true) {
+    void onForSeconds(int left_speed = 50, int right_speed = 50, unsigned int time_ms = 1000, bool_t brake = true) {
         on(left_speed, right_speed);
-        tslp_tsk(ms);
+        tslp_tsk(time_ms);
         off(brake);
     }
 
