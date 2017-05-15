@@ -10,6 +10,7 @@
 
 #include "ev3api.h"
 #include "ev3cxx_sensor.h"
+#include "ev3cxx_button.h"
 
 namespace ev3cxx {
     
@@ -17,7 +18,7 @@ namespace ev3cxx {
  * \~English
  * \brief    Class TouchSensor. API for working with touch sensor.
  */
-class TouchSensor : public Sensor
+class TouchSensor : public Sensor, detail::Button
 {
 public:
     /**
@@ -35,34 +36,6 @@ public:
     int isPressed() {
         return ev3_touch_sensor_is_pressed(m_port);
     }
-
-	/**
-	 * \~English
-     * \brief       Blocks until sensor is pressed
-	 */
-	void waitForPress() {
-		while (!isPressed())
-			tslp_tsk(1);
-	}
-
-	/**
-	 * \~English
-     * \brief       Blocks until sensor is release
-	 */
-	void waitForRelease() {
-		while (isPressed())
-			tslp_tsk(1);
-	}
-
-	/**
-	 * \~English
-     * \brief       Blocks until sensor is clicked (press and release)
-	 */
-	void waitForClick() {
-		waitForPress();
-		waitForRelease();
-	}
-    
 
 }; // class TouchSensor
 

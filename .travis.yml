@@ -35,6 +35,7 @@ script:
  - make app=ev3cxx-display
  - make app=ev3cxx-file
  - make app=ev3cxx-bluetooth
+ - make app=ev3cxx-brick
  - make app=ev3cxx-sensor
 # ev3cxx-cppstl temporary remove from tests
 # - make app=ev3cxx-cppstl

@@ -17,6 +17,7 @@
  */
 #include "ev3cxx_utils.h"
 #include "ev3cxx_time.h"
+#include "ev3cxx_brick_button.h"
 #include "ev3cxx_brick_led.h"
 #include "ev3cxx_display.h"
 #include "ev3cxx_bluetooth.h"
