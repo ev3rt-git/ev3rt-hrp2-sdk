@@ -26,10 +26,11 @@ public:
      * \brief 	    Constructor of class MotorTank.
      * \param left_motor_port   Port number
      * \param right_motor_port  Port number
+     * \param type              Type of motor ports: \a motor_type_t
      */
-    MotorTank(MotorPort left_motor_port, MotorPort right_motor_port)
-    : m_left_motor(left_motor_port), 
-      m_right_motor(right_motor_port)
+    MotorTank(MotorPort left_motor_port, MotorPort right_motor_port, MotorType type = MotorType::LARGE)
+    : m_left_motor(left_motor_port, type), 
+      m_right_motor(right_motor_port, type)
     {}
 
     /**

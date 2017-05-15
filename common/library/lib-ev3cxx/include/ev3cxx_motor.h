@@ -162,7 +162,7 @@ public:
      * \param time  Number of miliseconds for rotate with motor. Default value is 1000. 
      * \param brake If \a true, then motor start braking after reach the position (= degrees).
      */   
-    void onForTime(int speed = 50, unsigned int time_ms = 1000, bool_t brake = true) {
+    void onForSeconds(int speed = 50, unsigned int time_ms = 1000, bool_t brake = true) {
         on(speed);
         tslp_tsk(time_ms);
         off(brake);
