@@ -12,12 +12,12 @@ void main_task(intptr_t unused) {
     ev3cxx::MotorTank motors(ev3cxx::MotorPort::B, ev3cxx::MotorPort::C);
     ev3cxx::Motor claw_motor(ev3cxx::MotorPort::A);
 
-    claw_motor.onForTime(30, 500);
+    claw_motor.onForSeconds(30, 500);
     motors.on(50, 50);
 
     while (ultrasonic.centimeters() >= 4) {};
 
     motors.off(true);
-    claw_motor.onForTime(-30, 500);
+    claw_motor.onForSeconds(-30, 500);
     motors.onForDegrees(-50, -50, motors.leftMotor().degrees());
 }
