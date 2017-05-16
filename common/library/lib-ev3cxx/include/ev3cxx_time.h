@@ -314,13 +314,13 @@ extern void uwait(detail::us_counter_t::time_type time);
 template <typename Process>
 void uwait(detail::us_counter_t::time_type time, Process process)
 {
-	detail::uwait(detail::us_counter, time, process);
+	detail::wait(detail::us_counter, time, process);
 }
 
 template <typename Process>
 void uwait(detail::us_counter_t::time_type time, Process process, int)
 {
-	detail::uwait(detail::us_counter, time, process, 0);
+	detail::wait(detail::us_counter, time, process, 0);
 }
 
 

@@ -1,3 +1,9 @@
+/*
+ * ev3cxx_time.cpp
+ * Author: Jaroslav Páral (jarekparal)
+ */
+
+
 #include "ev3cxx_time.h"
 
 namespace ev3cxx {
