@@ -1,5 +1,5 @@
 /*
- * ev3cxx_display.cpp
+ * ev3cxx.cpp
  * Author: Jaroslav Páral (jarekparal)
  */
 
