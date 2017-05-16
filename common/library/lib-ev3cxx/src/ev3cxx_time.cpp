@@ -2,7 +2,8 @@
 
 namespace ev3cxx {
 
-void wait(detail::us_counter_t::time_type time) { detail::wait(detail::us_counter, time); }
+void wait(detail::us_counter_t::time_type time) { detail::wait(detail::us_counter, time * 1000); }
+void uwait(detail::us_counter_t::time_type time) { detail::wait(detail::us_counter, time); }
 
 void delayMs(const unsigned int& ms) { tslp_tsk(ms); }
 void delayUs(const unsigned int& us) { wait(us); }

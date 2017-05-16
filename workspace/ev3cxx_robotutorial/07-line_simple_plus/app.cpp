@@ -13,7 +13,7 @@ void main_task(intptr_t unused) {
     ev3cxx::MotorTank motors(ev3cxx::MotorPort::B, ev3cxx::MotorPort::C);
 
     touch.waitForPress();
-    ev3cxx::wait(ev3cxx::msec(500)); // wait(msec(500)) => 500 ms = 0.5 s
+    ev3cxx::wait(500); // 500 = 500 ms = 0.5 s
 
     while (touch.isPressed() == false) {
         if (color.getReflected() < 50) {

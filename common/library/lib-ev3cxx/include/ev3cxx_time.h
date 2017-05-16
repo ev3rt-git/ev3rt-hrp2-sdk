@@ -299,17 +299,33 @@ extern void wait(detail::us_counter_t::time_type time);
 template <typename Process>
 void wait(detail::us_counter_t::time_type time, Process process)
 {
-	detail::wait(detail::us_counter, time, process);
+	detail::wait(detail::us_counter, time * 1000, process);
 }
 
 template <typename Process>
 void wait(detail::us_counter_t::time_type time, Process process, int)
 {
-	detail::wait(detail::us_counter, time, process, 0);
+	detail::wait(detail::us_counter, time * 1000, process, 0);
 }
 
-extern void delayMs(const unsigned int& ms);
-extern void delayUs(const unsigned int& us);
+
+extern void uwait(detail::us_counter_t::time_type time);
+
+template <typename Process>
+void uwait(detail::us_counter_t::time_type time, Process process)
+{
+	detail::uwait(detail::us_counter, time, process);
+}
+
+template <typename Process>
+void uwait(detail::us_counter_t::time_type time, Process process, int)
+{
+	detail::uwait(detail::us_counter, time, process, 0);
+}
+
+
+extern void delayMs(unsigned int ms);
+extern void delayUs(unsigned int us);
 
 extern detail::us_counter_t::time_type usec(detail::us_counter_t::time_type t);
 extern detail::us_counter_t::time_type msec(detail::us_counter_t::time_type t);
