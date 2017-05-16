@@ -16,7 +16,7 @@ void main_task(intptr_t unused) {
     ev3cxx::wait(500); // 500 = 500 ms = 0.5 s
 
     while (touch.isPressed() == false) {
-        if (color.getReflected() < 50) {
+        if (color.reflected() < 50) {
             motors.on(25, 0);
             ev3cxx::statusLight.setColor(ev3cxx::StatusLightColor::GREEN);
         } else {

@@ -17,7 +17,7 @@ void main_task(intptr_t unused) {
     int turn = 0;
 
     while (true) {
-        turn = (line_center - sensor.getReflected()) * turn_speed;
+        turn = (line_center - sensor.reflected()) * turn_speed;
         motors.on(forward_speed + turn, forward_speed - turn);
     }
 }

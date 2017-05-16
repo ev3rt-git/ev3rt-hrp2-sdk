@@ -45,7 +45,7 @@ void main_task(intptr_t unused) {
         //format(bt, "Gyro-rate:%5\t") % GyroS.rate();
         
         format(bt, "Cs-ref:%3 Cs-amb:%3\t") 
-            % ColorS.getReflected() % ColorS.getAmbient();
+            % ColorS.reflected() % ColorS.ambient();
         
         format(bt, "Us-metric:%4 cm -%5 mm\tUs-imperial:%4 in -%5 ln\n") 
             % UltraS.centimeters() % UltraS.millimeters() 
@@ -59,7 +59,7 @@ void main_task(intptr_t unused) {
         //display.format("Gs-rate:%5\n") % GyroS.rate();
         
         display.format("Cs-r:%3 Cs-a:%3\n") 
-            % ColorS.getReflected() % ColorS.getAmbient();
+            % ColorS.reflected() % ColorS.ambient();
         
         display.format("U-metric%4 %4\nU-imper %4 %4") 
             % UltraS.centimeters() % UltraS.millimeters() 

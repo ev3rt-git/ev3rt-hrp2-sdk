@@ -12,7 +12,7 @@ void main_task(intptr_t unused) {
     ev3cxx::MotorTank motors(ev3cxx::MotorPort::B, ev3cxx::MotorPort::C);
 
     while (true) {
-        if (color.getReflected() < 50) {
+        if (color.reflected() < 50) {
             motors.on(25, 0);
             ev3cxx::statusLight.setColor(ev3cxx::StatusLightColor::GREEN);
         } else {

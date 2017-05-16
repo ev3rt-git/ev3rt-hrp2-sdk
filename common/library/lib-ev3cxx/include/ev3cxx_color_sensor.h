@@ -34,7 +34,7 @@ public:
      * \brief       Get reflected light intensity. Red LED on.
      * \return      Range: 0 - 100   
      */  
-    int getReflected() {
+    int reflected() {
         return ev3_color_sensor_get_reflect(m_port);
     }
 
@@ -43,7 +43,7 @@ public:
      * \brief       Get raw reflected light intensity (red, green, blue). Red LED on.
      * \return      Return rgb_raw_t (r, g, b)    
      */  
-	rgb_raw_t getReflectedRawRgb() {
+	rgb_raw_t reflectedRawRgb() {
 		rgb_raw_t color;
 		ev3_color_sensor_get_rgb_raw(m_port, &color);
 		return color;
@@ -54,7 +54,7 @@ public:
      * \brief       Get ambient light intensity. Red LEDs off. 
      * \return      Range: 0 - 100     
      */  
-	int getAmbient() {
+	int ambient() {
         return ev3_color_sensor_get_ambient(m_port);
     }
 
@@ -63,7 +63,7 @@ public:
      * \brief       Get color. 
      * \return      Return colorid_t (COLOR_NONE, COLOR_BLACK, COLOR_BLUE).     
      */  
-	colorid_t getColor() {
+	colorid_t color() {
         return ev3_color_sensor_get_color(m_port);
     }
 }; // class ColorSensor
