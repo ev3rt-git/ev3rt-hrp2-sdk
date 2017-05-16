@@ -31,12 +31,13 @@ before_script:
 script: 
  - make app=helloev3
  - make app=test-motor-rotate
- - make app=ev3cxx-motor
- - make app=ev3cxx-display
- - make app=ev3cxx-file
- - make app=ev3cxx-bluetooth
- - make app=ev3cxx-brick
- - make app=ev3cxx-sensor
+ - make app=ev3cxx_tests/ev3cxx-test
+ - make app=ev3cxx_tests/ev3cxx-motor
+ - make app=ev3cxx_tests/ev3cxx-display
+ - make app=ev3cxx_tests/ev3cxx-file
+ - make app=ev3cxx_tests/ev3cxx-bluetooth
+ - make app=ev3cxx_tests/ev3cxx-brick
+ - make app=ev3cxx_tests/ev3cxx-sensor
 # ev3cxx-cppstl temporary remove from tests
 # - make app=ev3cxx-cppstl
 
