@@ -1,7 +1,7 @@
 /**
  * \file    ev3cxx_display.h
- * \brief	EV3RT CPP API for display
- * \author	Jaroslav Páral (jarekparal)
+ * \brief   EV3RT CPP API for display
+ * \author  Jaroslav Páral (jarekparal)
  */
 
 #pragma once
@@ -28,7 +28,7 @@ public:
 
     /**
      * \~English
-     * \brief 	    Constructor of class Display.
+     * \brief       Constructor of class Display.
      * \param font  Type of font \a lcdfont_t (EV3_FONT_SMALL / EV3_FONT_MEDIUM). Default is EV3_FONT_MEDIUM.
      */
     Display(lcdfont_t font = EV3_FONT_MEDIUM)
@@ -39,31 +39,31 @@ public:
     
     /**
      * \~English
-     * \brief 	    Destructor of class Display.
+     * \brief       Destructor of class Display.
      */
     ~Display() {}
 
     /**
      * \~English    
-     * \brief 	      Write formated text to LCD.
+     * \brief         Write formated text to LCD.
      * \param pattern String with pattern for final output text.
      */
-    format_impl<Display, string_literal_range> format(char const *pattern) {
-        return format_impl<Display, string_literal_range>(
-            *this, string_literal_range(pattern));
+    detail::format_impl<Display, detail::string_literal_range> format(char const *pattern) {
+        return detail::format_impl<Display, detail::string_literal_range>(
+            *this, detail::string_literal_range(pattern));
     }
 
     /**
      * \~English    
-     * \brief 	      Write formated text to LCD.
+     * \brief         Write formated text to LCD.
      * \param line    Line index to write text on LCD.
      * \param pattern String with pattern for final output text.
      */
-    format_impl<Display, string_literal_range> format(int8_t line,
-                                                  char const *pattern) {
+    detail::format_impl<Display, detail::string_literal_range> format(int8_t line,
+                                                                      char const *pattern) {
         setTextLine(line);                                                
-        return format_impl<Display, string_literal_range>(
-            *this, string_literal_range(pattern));
+        return detail::format_impl<Display, detail::string_literal_range>(
+            *this, detail::string_literal_range(pattern));
     }
 
     /**
@@ -71,26 +71,37 @@ public:
      * \brief        Write one character on screen of class Display.
      * \details      Char "\n" set next text line.
      */
-    void write(char ch) {
+    virtual void write(char ch) {
         if(ch == '\n') {
             setTextLine(getTextLine() + 1);   
         } else if(ch == '\t') {
-            write(' ');
+            write_raw(' ');
+            write_raw(' ');
             write(' ');
         } else if(ch == '\r') {
-            setTextLine(getTextLine(), width);  
+            setTextLine(getTextLine(), 0);  
         }
         else {
-            ev3_lcd_draw_character(ch, m_x, m_y);
-            m_x += getFontWidth();
-
-            if(m_x >= width) { 
-                m_y += getFontHeight(); 
-                m_x = 0;    
-
-                if(m_y >= height) { m_y = 0; } 
-            }          
+            write_raw(ch);     
         }   
+    }
+
+    /**
+     * \~English
+     * \brief        Write one character on screen of class Display.
+     */
+    void write_raw(char ch, bool clear = false) {
+        if (clear)
+            clearTextLine(getTextLine(), white, m_x, 1);
+        ev3_lcd_draw_character(ch, m_x, m_y);
+        m_x += getFontWidth();
+        if(m_x >= width) { 
+            m_y += getFontHeight(); 
+            m_x = 0;    
+
+            if(m_y >= height)
+                m_y = 0;
+        }  
     }
 
     /**
@@ -109,8 +120,8 @@ public:
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
-    void setTextLine(uint8_t line, int32_t x_offset = 0) {
-        if((line * getFontHeight()) < height) {
+    void setTextLine(uint8_t line, int32_t x_offset = 0, bool clear = true) {
+        if(clear && (line * getFontHeight()) < height) {
             clearTextLine(line, white, x_offset);
         }
         m_y = (line * getFontHeight()) % height;
@@ -126,9 +137,16 @@ public:
      * \param x_offset  Offset for clearing the line in x coordinate. When you want clear just part of display, then you set this offset.
      *                  If you want to set offset depend on character, use function \a getFontWidth() and multiple by require number of char.
      */
-    void clearTextLine(uint8_t line, bool_t color = white, int32_t x_offset = 0) {
-        ev3_lcd_fill_rect(0 + x_offset, (line * getFontHeight()) % height, width,
-                        getFontHeight(), static_cast<lcdcolor_t>(color));
+    void clearTextLine(uint8_t line, bool_t color = white, int32_t x_offset = 0, int32_t line_length = 0) {
+        if (line_length == 0)
+            line_length = width - x_offset;
+        else
+            line_length *= getFontWidth();
+        ev3_lcd_fill_rect(x_offset,
+                          (line * getFontHeight()) % height,
+                          line_length,
+                          getFontHeight(),
+                          static_cast<lcdcolor_t>(color));
     }
 
     /**

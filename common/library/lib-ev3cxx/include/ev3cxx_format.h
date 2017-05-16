@@ -1,7 +1,7 @@
 /**
  * \file    ev3cxx_format.h
- * \brief	API for formating data to output (display, bluetooth, file)
- * \author	Jakub Streit, Jaroslav Páral (jarekparal)
+ * \brief   API for formating data to output (display, bluetooth, file)
+ * \author  Jakub Streit, Jaroslav Páral (jarekparal)
  */
 
 #pragma once
@@ -10,6 +10,8 @@
 
 #include "ev3api.h"
 
+#include <string>
+
 namespace ev3cxx {
 
 template <typename Stream>
@@ -17,6 +19,13 @@ void send(Stream & s, char const * str)
 {
     for (; *str != 0; ++str)
         s.write(*str);
+}
+
+template <typename Stream>
+void send(Stream & s, const std::string& str)
+{
+    for (auto c: str)
+        s.write(c);
 }
 
 template <typename Stream>
@@ -185,6 +194,8 @@ uint8_t readline(Stream & s, uint8_t * buffer, uint8_t len)
     return i;
 }
 
+namespace detail {
+
 template <int N>
 bool bufcmp(uint8_t const * buf, uint8_t len, char const (&pattern)[N])
 {
@@ -220,6 +231,17 @@ public:
             return *this;
         while (*str)
             m_out.write(*str++);
+        m_pattern.pop();
+        this->write_literal();
+        return *this;
+    }
+
+    format_impl & operator%(const std::string& str)
+    {
+        if(m_pattern.empty())
+            return *this;
+        for (auto c: str)
+            m_out.write(c);
         m_pattern.pop();
         this->write_literal();
         return *this;
@@ -359,10 +381,12 @@ private:
     char const * m_pattern;
 };
 
+} // end of namespace detail
+
 template <typename Stream>
-format_impl<Stream, string_literal_range> format(Stream & out, char const * pattern)
+detail::format_impl<Stream, detail::string_literal_range> format(Stream & out, char const * pattern)
 {
-    return format_impl<Stream, string_literal_range>(out, string_literal_range(pattern));
+    return detail::format_impl<Stream, detail::string_literal_range>(out, detail::string_literal_range(pattern));
 }
 
 } // end of namespace ev3cxx
