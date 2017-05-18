@@ -1,5 +1,7 @@
 /**
- * This sample program for CPP EV3RT API.
+ * Test program for EV3RT C++ API.
+ *
+ * Author: Jaroslav Páral (jarekparal)
  */
 
 #include <cstdlib>

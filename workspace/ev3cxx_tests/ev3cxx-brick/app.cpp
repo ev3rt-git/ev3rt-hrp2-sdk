@@ -1,5 +1,5 @@
 /**
- * This is sample program for Brick components (LEDs, buttons).
+ * This is sample program for Brick components (LEDs, buttons) in EV3RT C++ API.
  *
  * Author: Jaroslav Páral (jarekparal)
  */

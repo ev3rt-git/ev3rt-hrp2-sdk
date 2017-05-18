@@ -1,5 +1,5 @@
 /**
- * This is sample program for Display class in CPP EV3RT API.
+ * This is sample program for Display class in EV3RT C++ API.
  *
  * Author: Jaroslav Páral (jarekparal)
  */
@@ -44,6 +44,4 @@ void main_task(intptr_t unused) {
     d_num = 1239876543210.0123456789;
     display.format("D2: % ") % d_num; 
     // with EV3_FONT_MEDIUM - overwrite zero text line on screen
-
-    // TODO: add example for change port
 }

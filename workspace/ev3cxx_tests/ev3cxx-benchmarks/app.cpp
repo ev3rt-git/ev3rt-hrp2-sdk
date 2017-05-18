@@ -1,5 +1,5 @@
 /**
- * Benchmark.
+ * Benchmark for EV3RT based on EV3RT C++ API.
  *
  * Author: Jaroslav Páral (jarekparal)
  */

@@ -1,5 +1,5 @@
 /**
- * This is sample program for Motor class in CPP EV3RT API.
+ * This is sample program for Motor class in EV3RT C++ API.
  *
  * Author: Jaroslav Páral (jarekparal)
  */
