@@ -303,9 +303,9 @@ void wait(detail::us_counter_t::time_type time, Process process)
 }
 
 template <typename Process>
-void wait(detail::us_counter_t::time_type time, Process process, int)
+detail::us_counter_t::time_type wait(detail::us_counter_t::time_type time, Process process, int)
 {
-	detail::wait(detail::us_counter, time * 1000, process, 0);
+	return detail::wait(detail::us_counter, time * 1000, process, 0);
 }
 
 
@@ -318,9 +318,9 @@ void uwait(detail::us_counter_t::time_type time, Process process)
 }
 
 template <typename Process>
-void uwait(detail::us_counter_t::time_type time, Process process, int)
+detail::us_counter_t::time_type uwait(detail::us_counter_t::time_type time, Process process, int)
 {
-	detail::wait(detail::us_counter, time, process, 0);
+	return detail::wait(detail::us_counter, time, process, 0);
 }
 
 
