@@ -327,7 +327,8 @@ error_exit:
     return ercd;
 }
 
-ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake) {
+// experimental implementation with params speedUp and speedDown - NOT TESTED => TODO
+ER ev3_motor_rotate_brake_ramp(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake, int speedUp, int speedDown) {
 	ER ercd;
 
 //	lazy_initialize();
@@ -338,9 +339,9 @@ ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bo
     STEPSPEED ss;
     ss.Cmd = opOUTPUT_STEP_SPEED;
     ss.Speed = speed_abs * (degrees < 0 ? -1 : 1);
-    ss.Step1 = 0;         // Up to Speed
+    ss.Step1 = speedUp;   // Up to Speed
     ss.Step2 = (degrees < 0 ? -degrees : degrees);   // Keep Speed
-    ss.Step3 = 0;         // Down to Speed
+    ss.Step3 = speedDown; // Down to Speed
     ss.Brake = brake;
     ss.Nos = 1 << port;
     motor_command(&ss, sizeof(ss));
@@ -351,6 +352,10 @@ ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bo
 
 error_exit:
 	return ercd;
+}
+
+ER ev3_motor_rotate_brake(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake) {
+    return ev3_motor_rotate_brake_ramp(port, degrees, speed_abs, blocking, brake, 0, 0);
 }
 
 ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking) {

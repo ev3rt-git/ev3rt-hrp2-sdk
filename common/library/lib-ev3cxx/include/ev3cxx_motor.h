@@ -57,7 +57,8 @@ public:
      */
     Motor(MotorPort port, MotorType type = MotorType::LARGE)
     : m_port(static_cast<motor_port_t>(port)), 
-      m_type(static_cast<motor_type_t>(type)) 
+      m_type(static_cast<motor_type_t>(type)),
+      m_ramp_speed_up(0), m_ramp_speed_down(0) 
     {
         ev3_motor_config(m_port, m_type);
     }
@@ -129,7 +130,7 @@ public:
             speed = -speed;
             degrees = -degrees;
         }
-        ev3_motor_rotate_brake(m_port, degrees, speed, blocking, brake);
+        ev3_motor_rotate_brake_ramp(m_port, degrees, speed, blocking, brake, m_ramp_speed_up, m_ramp_speed_down);
         tslp_tsk(wait_after_ms);
     }
 
@@ -151,7 +152,7 @@ public:
             speed = -speed;
             rotations = -rotations;
         }
-        ev3_motor_rotate_brake(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, speed, blocking, brake);
+        ev3_motor_rotate_brake_ramp(m_port, NUMBER_OF_DEGREES_PER_ROTATION * rotations, speed, blocking, brake, m_ramp_speed_up, m_ramp_speed_down);
         tslp_tsk(wait_after_ms);
     }
 
@@ -223,8 +224,34 @@ public:
         return motor_type; 
     }
 
+    // methods for working with RAMPs are in experimental mode - NOT TESTED => TODO
+
+    int getRampSpeedUp() {
+        return m_ramp_speed_up;
+    }
+
+    int getRampSpeedDown() {
+        return m_ramp_speed_down;
+    }
+
+    void setRampSpeedUp(int speedUp) {
+        m_ramp_speed_up = speedUp;
+    }
+
+    void setRampSpeedDown(int speedDown) {
+        m_ramp_speed_down = speedDown;
+    }
+
+    void setRampSpeed(int speedUp, int speedDown) {
+        setRampSpeedUp(speedUp);
+        setRampSpeedDown(speedDown);
+    }
+
 private:
     motor_port_t m_port;
     motor_type_t m_type;
+    int m_ramp_speed_up;
+    int m_ramp_speed_down;
+
 }; // class Motor
 } // namespace ev3cxx

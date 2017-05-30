@@ -171,6 +171,9 @@ int ev3_motor_get_power(motor_port_t port);
  */
 ER ev3_motor_stop(motor_port_t port, bool_t brake);
 
+// experimental implementation with params speedUp and speedDown - NOT TESTED => TODO
+ER ev3_motor_rotate_brake_ramp(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking, bool_t brake, int speedUp, int speedDown);
+
 /**
  * \~English
  * \brief 	         Rotate a motor port for specified degrees.
