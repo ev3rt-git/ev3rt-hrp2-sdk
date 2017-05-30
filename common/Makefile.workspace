@@ -123,7 +123,7 @@ upload:
 	@echo "  BT PAN IP: $(ip)"
 	@echo "  FILE NAME: (Local) \"$(from)\" -> (Remote) \"$(to)\""
 	@echo = "Execute cURL:"
-	@curl -f --noproxy "*" -H "Content-Type: ev3rt/app" -H 'Content-Disposition: inline; filename="$(to)"' --data-binary @$(from) http://$(ip)/upload > /dev/null
+	@curl -f --connect-timeout 40 --noproxy "*" -H "Content-Type: ev3rt/app" -H 'Content-Disposition: inline; filename="$(to)"' --data-binary @$(from) http://$(ip)/upload > /dev/null
 	@echo = Application has been successfully uploaded.
 
 uploadimg:
@@ -131,7 +131,7 @@ uploadimg:
 	@echo "  BT PAN IP: $(ip)"
 	@echo "  FILE NAME: (Local) \"$(from)\" -> (Remote) \"/uImage\""
 	@echo = "Execute cURL:"
-	@curl -f --noproxy "*" -H "Content-Type: ev3rt/img" --data-binary @$(from) http://$(ip)/upload > /dev/null
+	@curl -f --connect-timeout 40 --noproxy "*" -H "Content-Type: ev3rt/img" --data-binary @$(from) http://$(ip)/upload > /dev/null
 	@echo = uImage has been successfully uploaded.
 
 
