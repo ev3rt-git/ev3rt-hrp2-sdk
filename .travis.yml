@@ -38,6 +38,7 @@ script:
  - make app=ev3cxx_tests/ev3cxx-bluetooth
  - make app=ev3cxx_tests/ev3cxx-brick
  - make app=ev3cxx_tests/ev3cxx-sensor
+ - make app=ev3cxx_tests/ev3cxx-color_sensor_2x
 # ev3cxx-cppstl temporary remove from tests
 # - make app=ev3cxx-cppstl
 
