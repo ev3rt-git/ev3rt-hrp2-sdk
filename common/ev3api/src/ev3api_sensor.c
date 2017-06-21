@@ -280,6 +280,25 @@ typedef enum {
 	US_LISTEN  = 2,
 } ULTRASONIC_SENSOR_MODES;
 
+int16_t ev3_ultrasonic_sensor_get_raw_data(sensor_port_t port, ULTRASONIC_SENSOR_MEASURE_MODES mode) {
+	ER ercd;
+
+//	lazy_initialize();
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == ULTRASONIC_SENSOR, E_OBJ);
+
+#if 0
+    return ev3_uart_sensor_get_short(port) / 10;
+#endif
+	int16_t val;
+	uart_sensor_fetch_data(port, mode, &val, sizeof(val));
+    return val;
+
+error_exit:
+    syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+    return 0;
+}
+
 int16_t ev3_ultrasonic_sensor_get_distance(sensor_port_t port) {
 	ER ercd;
 

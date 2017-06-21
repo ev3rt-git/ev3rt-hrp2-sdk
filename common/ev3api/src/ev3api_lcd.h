@@ -148,6 +148,23 @@ ER ev3_image_free(image_t *p_image);
 
 /**
  * \~English
+ * \brief             Draws one character at the specified position.
+ * \param  x          Horizontal position of upper left corner
+ * \param  y          Vertical position of upper left corner
+ * \param  ch         Char (one character)
+ * \retval E_OK       Successful completion
+ *
+ * \~Japanese [TODO: fix Japanese text]
+ * \brief             指定位置で文字列を描く．
+ * \param  x          左上隅の水平方向の位置
+ * \param  y          左上隅の垂直方向の位置
+ * \param  str        文字列
+ * \retval E_OK       正常終了
+ */
+ER ev3_lcd_draw_character(const char ch, int32_t x, int32_t y);
+
+/**
+ * \~English
  * \brief             Draws a character string at the specified position.
  * \param  x          Horizontal position of upper left corner
  * \param  y          Vertical position of upper left corner

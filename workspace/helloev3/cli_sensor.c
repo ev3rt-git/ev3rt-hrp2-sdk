@@ -362,6 +362,7 @@ void test_gyro_sensor(sensor_port_t port) {
 		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
 		sprintf(msgbuf, "Port: %c", '1' + port);
 		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+		ev3_lcd_draw_string("UP Button: Reset", 0, MENU_FONT_HEIGHT * 5);
 		switch (cme_mode->exinf) {
 		case GYRO_ANG:
 			ev3_gyro_sensor_reset(port);
@@ -370,7 +371,15 @@ void test_gyro_sensor(sensor_port_t port) {
 //				fio_clear_line();
 				sprintf(msgbuf, "Angle: %-4d deg", val);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
-				tslp_tsk(10);
+
+                // Reset sensor if UP button pressed
+		        if(ev3_button_is_pressed(UP_BUTTON)) {
+			        while(ev3_button_is_pressed(UP_BUTTON));
+					// It is necessary to change mode of reading (angle => rate => angle)
+					ev3_gyro_sensor_reset(port);
+					ev3_gyro_sensor_get_rate(port);
+					ev3_gyro_sensor_reset(port);
+				}
 			});
 			break;
 		case GYRO_RATE:
@@ -380,6 +389,15 @@ void test_gyro_sensor(sensor_port_t port) {
 //				fio_clear_line();
 				sprintf(msgbuf, "Rate: %-4d deg/s", val);
 				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+
+				// Reset sensor if UP button pressed
+		        if(ev3_button_is_pressed(UP_BUTTON)) {
+			        while(ev3_button_is_pressed(UP_BUTTON));
+					// It is necessary to change mode of reading (rate => angle => rate)
+					ev3_gyro_sensor_reset(port);
+					ev3_gyro_sensor_get_angle(port);
+					ev3_gyro_sensor_reset(port);
+				}
 				tslp_tsk(10);
 			});
 			break;

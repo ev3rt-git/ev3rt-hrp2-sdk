@@ -12,20 +12,43 @@ before_install:
 
 before_script:
  - ls -la
- - git clone https://github.com/ev3rt-git/ev3rt-hrp2/
- - cd ev3rt-hrp2
+ - git clone https://github.com/RoboticsBrno/RB-ev3rt-hrp2/
+ - cd RB-ev3rt-hrp2
  - git submodule init
  - git submodule update
  - cd ..
- - rm -rf ev3rt-hrp2/sdk/*
- - cp -rv common/ ev3rt-hrp2/sdk/common/
- - cp -rv workspace/ ev3rt-hrp2/sdk/workspace/
- - cp Makefile.sdk.conf ev3rt-hrp2/sdk/Makefile.sdk.conf
- - cd ev3rt-hrp2
+ - rm -rf RB-ev3rt-hrp2/sdk/*
+ - cp -rv common/ RB-ev3rt-hrp2/sdk/common/
+ - cp -rv workspace/ RB-ev3rt-hrp2/sdk/workspace/
+ - cp Makefile.sdk.conf RB-ev3rt-hrp2/sdk/Makefile.sdk.conf
+ - cd RB-ev3rt-hrp2
  - cd cfg
  - make
  - cd ../base-workspace
  - make app=loader
  - cd ../sdk/workspace
 
-script: make app=helloev3
+script: 
+ - make app=helloev3
+ - make app=test-motor-rotate
+ - make app=ev3cxx_tests/ev3cxx-test
+ - make app=ev3cxx_tests/ev3cxx-motor
+ - make app=ev3cxx_tests/ev3cxx-display
+ - make app=ev3cxx_tests/ev3cxx-file
+ - make app=ev3cxx_tests/ev3cxx-bluetooth
+ - make app=ev3cxx_tests/ev3cxx-brick
+ - make app=ev3cxx_tests/ev3cxx-sensor
+ - make app=ev3cxx_tests/ev3cxx-color_sensor_2x
+# ev3cxx-cppstl temporary remove from tests
+# - make app=ev3cxx-cppstl
+
+# ev3cxx_robotutorial
+ - make app=ev3cxx_robotutorial/01-triangle
+ - make app=ev3cxx_robotutorial/02-square
+ - make app=ev3cxx_robotutorial/03-draw_house
+ - make app=ev3cxx_robotutorial/04-catch_and_return
+ - make app=ev3cxx_robotutorial/05-switch
+ - make app=ev3cxx_robotutorial/06-line_simple
+ - make app=ev3cxx_robotutorial/07-line_simple_plus
+ - make app=ev3cxx_robotutorial/08-line_advance
+ - ls -la

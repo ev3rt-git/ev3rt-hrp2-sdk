@@ -1,0 +1,3 @@
+[submodule "workspace/ev3cxx_tests/ev3cxx-color_sensor_2x/atoms"]
+	path = workspace/ev3cxx_tests/ev3cxx-color_sensor_2x/atoms
+	url = https://github.com/JarekParal/Atoms

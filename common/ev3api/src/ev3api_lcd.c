@@ -26,16 +26,27 @@ ER ev3_lcd_set_font(lcdfont_t font) {
 }
 
 
-ER ev3_font_get_size(lcdfont_t font, int32_t *width, int32_t *height) {
+ER ev3_font_get_size(lcdfont_t font, int32_t *p_width, int32_t *p_height) {
 	switch(font) {
 	case EV3_FONT_SMALL:
 	case EV3_FONT_MEDIUM:
-		if (width != NULL) *width = fonts[font]->width;
-		if (height != NULL) *height = fonts[font]->height;
+		if (p_width != NULL) *p_width = fonts[font]->width;
+		if (p_height != NULL) *p_height = fonts[font]->height;
 		return E_OK;
 	default:
 		return E_ID;
 	}
+}
+
+ER ev3_lcd_draw_character(const char ch, int32_t x, int32_t y) {
+    bitmap_t *def_char = utf8_char_bitmap('?', fonts[default_font]); // Default character
+
+    bitmap_t *bitmap = utf8_char_bitmap(ch, fonts[default_font]);
+    if (bitmap == NULL) bitmap = def_char; // Fall-back -> ch = unknown character 
+
+    bitmap_bitblt(bitmap, 0, 0, lcd_screen, x, y, bitmap->width, bitmap->height, ROP_COPY);
+
+	return E_OK;
 }
 
 ER ev3_lcd_draw_string(const char *str, int32_t x, int32_t y) {

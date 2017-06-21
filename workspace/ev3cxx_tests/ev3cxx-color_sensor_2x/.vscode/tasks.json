@@ -1,0 +1,42 @@
+{
+    // Support task for EV3RT and EV3CXX
+    // Author: Jaroslav Páral (jarekparal)
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "build",
+            "command": "C:\\RB3rt\\Make.bat",
+            "isShellCommand": true,
+            "args": ["-b", "${fileDirname}"],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "upload",
+            "command": "C:\\RB3rt\\Make.bat",
+            "isShellCommand": true,
+            "args": ["-u"],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "make",
+            "command": "C:\\RB3rt\\Make.bat",
+            "isShellCommand": true,
+            "args": ["-m", "${fileDirname}"],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "lorris",
+            "command": "c:\\Lorris\\Lorris.exe",
+            "isShellCommand": true,
+            "args": [""],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "help",
+            "command": "start",
+            "isShellCommand": true,
+            "args": ["", "https://RB3rt.readthedocs.org"],
+            "showOutput": "always"
+        }
+    ]
+}
