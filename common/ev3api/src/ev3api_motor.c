@@ -245,12 +245,17 @@ ER ev3_motor_reset_counts(motor_port_t port) {
 
     char buf[2];
 
-#if 0 // TODO: check this
+    /**
+     * Reset the counts when used as a motor.
+     * Useful when the position of a motor is changed by hand.
+     */
     buf[0] = opOUTPUT_RESET;
     buf[1] = 1 << port;
     motor_command(buf, sizeof(buf));
-#endif
 
+    /**
+     * Reset then counts when used as a tacho sensor.
+     */
     buf[0] = opOUTPUT_CLR_COUNT;
     buf[1] = 1 << port;
     motor_command(buf, sizeof(buf));
@@ -334,6 +339,10 @@ ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t b
 
 	CHECK_PORT(port);
 	CHECK_PORT_CONN(port);
+
+    // Float the motor first if it is busy
+    if (*pMotorReadyStatus & (1 << port))
+        ev3_motor_stop(port, false);
 
     STEPSPEED ss;
     ss.Cmd = opOUTPUT_STEP_SPEED;
