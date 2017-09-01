@@ -119,6 +119,7 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
 		break;
 
     case HT_NXT_ACCEL_SENSOR:
+    case HT_NXT_COLOR_SENSOR:
     case NXT_TEMP_SENSOR:
     	ercd = uart_sensor_config(port, 0xFF /* TODO:MODE_NONE_UART_SENSOR */);
     	assert(ercd == E_OK);
@@ -460,6 +461,46 @@ error_exit:
 	return false;
 }
 
+bool_t ht_nxt_color_sensor_measure_color(sensor_port_t port, uint8_t *color) {
+	ER ercd;
+
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == HT_NXT_COLOR_SENSOR, E_OBJ);
+	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+
+    *color = pI2CSensorData[port].raw[0];
+
+	ercd = start_i2c_transaction(port, 0x1, "\x42", 1, 1);
+	assert(ercd == E_OK);
+
+	return true;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return false;
+}
+
+bool_t ht_nxt_color_sensor_measure_rgb(sensor_port_t port, rgb_raw_t *val) {
+	ER ercd;
+
+	CHECK_PORT(port);
+	CHECK_COND(ev3_sensor_get_type(port) == HT_NXT_COLOR_SENSOR, E_OBJ);
+	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+
+    val->r = pI2CSensorData[port].raw[0];
+    val->g = pI2CSensorData[port].raw[1];
+    val->b = pI2CSensorData[port].raw[2];
+
+	ercd = start_i2c_transaction(port, 0x1, "\x43", 1, 3);
+	assert(ercd == E_OK);
+
+	return true;
+
+error_exit:
+	syslog(LOG_WARNING, "%s(): ercd %d", __FUNCTION__, ercd);
+	return false;
+}
+
 bool_t nxt_temp_sensor_measure(sensor_port_t port, float *temp) {
 	ER ercd;
 
@@ -482,132 +523,3 @@ error_exit:
 	return false;
 }
 
-#if 0 // Legacy code
-
-short ev3_uart_sensor_get_short(sensor_port_t port) {
-    volatile const int8_t* raw = uart_sensor_get_raw(port);
-    short res = (unsigned short)raw[0];
-    res |= ((unsigned short)raw[1]) << 8;
-    return res;
-}
-
-void ev3_sensors_init(sensor_type_t type1, sensor_type_t type2, sensor_type_t type3, sensor_type_t type4) {
-	ER ercd;
-
-	if (has_inited) {
-		API_ERROR("Sensor ports already initialized");
-		return;
-	} else
-		has_inited = true;
-
-	sensors[Port1] = type1;
-	sensors[Port2] = type2;
-	sensors[Port3] = type3;
-	sensors[Port4] = type4;
-
-	for (int i = Port1; i < TNUM_SENSOR_PORT; ++i) {
-		switch (sensors[i]) {
-		case NONE_SENSOR:
-		case TOUCH_SENSOR:
-			// Do nothing for analog sensor or no sensor
-			break;
-
-	    case ULTRASONIC_SENSOR:
-	    case INFRARED_SENSOR:
-	    case GYRO_SENSOR:
-	    case COLOR_SENSOR:
-	        // Configure UART sensor
-	    	ercd = uart_sensor_config(i, 0);
-	    	assert(ercd == E_OK);
-			break;
-
-		default:
-			API_ERROR("Invalid sensor type %d", sensors[i]);
-			return;
-		}
-	}
-
-	pUartSensorData = driver_data_pointer(DPID_UART_SENSOR);
-	pAnalogSensorData = driver_data_pointer(DPID_ANALOG_SENSOR);
-
-	for (int i = Port1; i < TNUM_SENSOR_PORT; ++i) {
-		switch (sensors[i]) {
-	    case ULTRASONIC_SENSOR:
-	    case GYRO_SENSOR:
-	    case COLOR_SENSOR:
-	        // Wait UART sensor to finish initialization
-	    	while(!uart_sensor_data_ready(i));
-			break;
-
-	    default:
-	    	break;
-		}
-	}
-
-//	dump_uart_sensor_types();
-}
-
-void ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
-	ER ercd;
-
-	if (!has_inited) {
-		API_ERROR("Sensor ports must be initialized before reconfiguration");
-		return;
-	}
-
-	sensors[port] = type;
-
-	switch (type) {
-	case NONE_SENSOR:
-	case TOUCH_SENSOR:
-		// Do nothing for analog sensor or no sensor
-		break;
-
-    case ULTRASONIC_SENSOR:
-    case INFRARED_SENSOR:
-    case GYRO_SENSOR:
-    case COLOR_SENSOR:
-        // Configure UART sensor
-    	ercd = uart_sensor_config(port, 0);
-    	assert(ercd == E_OK);
-        // Wait UART sensor to finish initialization
-    	while(!uart_sensor_data_ready(port));
-		break;
-
-	default:
-		API_ERROR("Invalid sensor type %d", type);
-		return;
-	}
-}
-
-
-/**
- * Interface to check the data-ready status of a UART sensor port.
- * @param port a sensor port
- * @retval true  UART_DATA_READY
- * @retval false !UART_DATA_READY
- */
-static inline
-bool_t uart_sensor_data_ready(sensor_port_t port) {
-	return (*pUartSensorData[port].status) & UART_DATA_READY;
-}
-
-static inline
-void uart_sensor_switch_mode(sensor_port_t port, uint8_t mode) {
-	ER ercd = uart_sensor_config(port, mode);
-	assert(ercd == E_OK);
-	while(!uart_sensor_data_ready(port));
-}
-
-/**
- * Interface to get the latest raw data of a UART sensor port.
- * @param port a sensor port
- * @return a pointer to the raw data
- */
-static inline
-volatile const int8_t* uart_sensor_get_raw(sensor_port_t port) {
-	return pUartSensorData[port].raw[*pUartSensorData[port].actual];
-}
-
-
-#endif

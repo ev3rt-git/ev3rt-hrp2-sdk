@@ -48,6 +48,7 @@ typedef enum {
     COLOR_SENSOR,	     //!< \~English Color sensor					  \~Japanese カラーセンサ
     INFRARED_SENSOR,     //!< \~English Infra-Red sensor				  \~Japanese 赤外線センサー
 	HT_NXT_ACCEL_SENSOR, //!< \~English HiTechnic NXT acceleration sensor \~Japanese 加速度センサ（HiTechnic社製）
+	HT_NXT_COLOR_SENSOR, //!< \~English HiTechnic NXT color sensor        \~Japanese カラーセンサ（HiTechnic社製）
 	NXT_TEMP_SENSOR,     //!< \~English NXT temperature sensor            \~Japanese NXT温度センサ
     TNUM_SENSOR_TYPE     //!< \~English Number of sensor types 			  \~Japanese センサタイプの数
 } sensor_type_t;
@@ -359,6 +360,44 @@ bool_t ev3_touch_sensor_is_pressed(sensor_port_t port);
  * \retval false axes[]は変更されなかった（前回のI2C操作が完成していない）
  */
 bool_t ht_nxt_accel_sensor_measure(sensor_port_t port, int16_t axes[3]);
+
+/**
+ * \~English
+ * \brief        Measure color with a HiTechnic NXT color sensor (NCO1038).
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output)
+ * \param port   Sensor port to be inquired
+ * \param color  Pointer to store color number (0-17)
+ * \retval true  color is updated
+ * \retval false color is unchanged due to I2C busy
+ *
+ * \~Japanese
+ * \brief        カラーセンサ（HiTechnic社製）でカラーを測定する．
+ * \details      不正のセンサポート番号を指定した場合，常に \a false を返す（エラーログが出力される）．
+ * \param  port  センサポート番号
+ * \param  color カラーの番号（0-17）を格納するためのポインタ
+ * \retval true  colorは更新された
+ * \retval false colorは変更されなかった（前回のI2C操作が完成していない）
+ */
+bool_t ht_nxt_color_sensor_measure_color(sensor_port_t port, uint8_t *color);
+
+/**
+ * \~English
+ * \brief        Measure RGB raw value with a HiTechnic NXT color sensor (NCO1038).
+ * \details      When an invalid sensor support number is specified, always returns false (error log is output)
+ * \param port   Sensor port to be inquired
+ * \param val    Pointer to store RGB raw value
+ * \retval true  val is updated
+ * \retval false val is unchanged due to I2C busy
+ *
+ * \~Japanese
+ * \brief        カラーセンサ（HiTechnic社製）でRGB Raw値を測定する．
+ * \details      不正のセンサポート番号を指定した場合，常に \a false を返す（エラーログが出力される）．
+ * \param  port  センサポート番号
+ * \param  val   RGB Raw値を格納するためのポインタ
+ * \retval true  valは更新された
+ * \retval false valは変更されなかった（前回のI2C操作が完成していない）
+ */
+bool_t ht_nxt_color_sensor_measure_rgb(sensor_port_t port, rgb_raw_t *val);
 
 /**
  * \~English

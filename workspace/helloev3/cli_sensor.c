@@ -84,6 +84,7 @@ void connect_sensor(intptr_t unused) {
         if (cme_type->exinf == I2C_SENSOR) {
 	        static const CliMenuEntry entry_tab[] = {
 		        { .key = '1', .title = "HT Acc. sensor", .exinf = HT_NXT_ACCEL_SENSOR },
+		        { .key = '3', .title = "HT Color sensor", .exinf = HT_NXT_COLOR_SENSOR },
 		        { .key = '2', .title = "NXT Temp. sensor", .exinf = NXT_TEMP_SENSOR },
 		        { .key = 'Q', .title = "Cancel", .exinf = -1 },
 	        };
@@ -545,6 +546,74 @@ void test_ht_nxt_accel_sensor(sensor_port_t port) {
 }
 
 static
+void test_ht_nxt_color_sensor(sensor_port_t port) {
+
+	static const CliMenuEntry entry_tab[] = {
+		{ .key = '1', .title = "Color", .exinf = COL_COLOR },
+		{ .key = '2', .title = "RGB", .exinf = COL_RGBRAW },
+		{ .key = 'Q', .title = "Cancel", .exinf = -1 },
+	};
+
+	static const CliMenu climenu = {
+		.title     = "Select Mode",
+		.entry_tab = entry_tab,
+		.entry_num = sizeof(entry_tab) / sizeof(CliMenuEntry),
+	};
+
+	bool_t change_mode = true;
+
+	while(change_mode) {
+		const CliMenuEntry* cme_mode = NULL;
+		while (cme_mode == NULL) {
+			show_cli_menu(&climenu, 0, MENU_FONT_HEIGHT * 0, MENU_FONT);
+			cme_mode = select_menu_entry(&climenu, 0, MENU_FONT_HEIGHT * 1, MENU_FONT);
+		}
+
+		if (cme_mode->exinf == -1)
+			return;
+
+		// Draw title
+		char msgbuf[100];
+		ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, EV3_LCD_WHITE); // Clear menu area
+		ev3_lcd_draw_string("Test Sensor", (EV3_LCD_WIDTH - strlen("Test Sensor") * MENU_FONT_WIDTH) / 2, 0);
+		sprintf(msgbuf, "Type: HT NXT Color");
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 1);
+		sprintf(msgbuf, "Port: %c", '1' + port);
+		ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 2);
+
+        uint8_t color = 0;
+        rgb_raw_t rgb;
+
+		switch (cme_mode->exinf) {
+		case COL_COLOR:
+			VIEW_SENSOR({
+		        bool_t val = ht_nxt_color_sensor_measure_color(port, &color);
+		        assert(val);
+				sprintf(msgbuf, "Color: %d", color);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				tslp_tsk(10);
+			});
+			break;
+		case COL_RGBRAW:
+			VIEW_SENSOR({
+		        bool_t val = ht_nxt_color_sensor_measure_rgb(port, &rgb);
+		        assert(val);
+				sprintf(msgbuf, "Red:   %-4d", rgb.r);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+				sprintf(msgbuf, "Green: %-4d", rgb.g);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 4);
+				sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+				ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 5);
+				tslp_tsk(10);
+			});
+			break;
+		default:
+			assert(false);
+		}
+	}
+}
+
+static
 void test_nxt_temp_sensor(sensor_port_t port) {
 	// Draw title
 	char msgbuf[100];
@@ -565,6 +634,7 @@ void test_nxt_temp_sensor(sensor_port_t port) {
 		tslp_tsk(10);
 	});
 }
+
 void test_sensor(intptr_t unused) {
 	const CliMenuEntry* cme_port = NULL;
 	while(cme_port == NULL) {
@@ -593,6 +663,9 @@ void test_sensor(intptr_t unused) {
 		break;
 	case HT_NXT_ACCEL_SENSOR:
 		test_ht_nxt_accel_sensor(cme_port->exinf);
+		break;
+	case HT_NXT_COLOR_SENSOR:
+		test_ht_nxt_color_sensor(cme_port->exinf);
 		break;
 	case NXT_TEMP_SENSOR:
 		test_nxt_temp_sensor(cme_port->exinf);
