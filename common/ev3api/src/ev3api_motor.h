@@ -20,6 +20,70 @@
 
 /**
  * \~English
+ * \brief Structure containing move parameters.
+ */
+typedef struct {
+    /**
+     * \~English
+     * \brief How fast the motor will rotate.
+     * \details Units: percent of max power/speed; sign indicates direction
+     */
+    int8_t   speed;
+    /**
+     * \~English
+     * \brief How long will the motor accelerate.
+     * \details Units: degrees or milliseconds
+     */
+    uint32_t rampup;
+    /**
+     * \~English
+     * \brief How long will the motor run at the provided power/speed.
+     * \details Units: degrees or milliseconds
+     */
+    uint32_t sustain;
+    /**
+     * \~English
+     * \brief How long will the motor decelerate.
+     * \details Units: degrees or milliseconds
+     */
+    uint32_t rampdown;
+    /**
+     * \~English
+     * \brief Whether the motor will be braked or left floating.
+     */
+    bool_t   brake;
+} ev3_motor_ex_moveparams_t;
+
+/**
+ * \~English
+ * \brief Structure containing sync-move parameters.
+ */
+typedef struct {
+    /**
+     * \~English
+     * \brief How fast the motor will rotate.
+     * \details Units: percent of max power/speed
+     */
+    int8_t  speed;
+    /**
+     * \brief How much will the robot turn. Direction unknown.
+     * \details Integer (probably unbounded?); zero means straight, absolute value of 100 makes one motor stop.
+     */
+    int16_t turn_ratio;
+    /**
+     * \brief How long will the motors run.
+     * \details Units: degrees or milliseconds
+     */
+    uint32_t length;
+    /**
+     * \~English
+     * \brief Whether the motor will be braked or left floating.
+     */
+    bool_t   brake;
+} ev3_motor_ex_syncparams_t;
+
+/**
+ * \~English
  * \brief ID for supported motor ports
  *
  * \~Japanese
@@ -35,15 +99,27 @@ typedef enum {
 
 /**
  * \~English
+ * \brief ID mask for operating on multiple motors at once
+ */
+typedef enum {
+    EV3_PORTBIT_A = 0x1,	//!< \~English Port A				 \~Japanese ポートA
+    EV3_PORTBIT_B = 0x2,	//!< \~English Port B 				 \~Japanese ポートB
+    EV3_PORTBIT_C = 0x4,	//!< \~English Port C 				 \~Japanese ポートC
+    EV3_PORTBIT_D = 0x8,	//!< \~English Port D 			     \~Japanese ポートD
+    TNUM_MOTOR_MASK = 4
+} motor_mask_t;
+
+/**
+ * \~English
  * \brief Enumeration type for supported motor types
  *
  * \~Japanese
  * \brief サポートするモータタイプ
  */
 typedef enum {
-    NONE_MOTOR = 0,	   //!< \~English Not connected         \~Japanese モータ未接続
-    MEDIUM_MOTOR,	   //!< \~English Medium servo motor    \~Japanese サーボモータM
-    LARGE_MOTOR,	   //!< \~English Large servo motor     \~Japanese サーボモータL
+    NONE_MOTOR = 0,    //!< \~English Not connected         \~Japanese モータ未接続
+    MEDIUM_MOTOR,      //!< \~English Medium servo motor    \~Japanese サーボモータM
+    LARGE_MOTOR,       //!< \~English Large servo motor     \~Japanese サーボモータL
     UNREGULATED_MOTOR, //!< \~English Unregulated motor     \~Japanese 未調整モータ
     TNUM_MOTOR_TYPE    //!< \~English Number of motor types \~Japanese モータタイプの数
 } motor_type_t;
@@ -68,6 +144,16 @@ typedef enum {
  * \retval E_PAR 不正のモータタイプ
  */
 ER ev3_motor_config(motor_port_t port, motor_type_t type);
+
+/**
+ * \~English
+ * \brief       Configure all motor ports at once.
+ * \details     Set the type of motors connected to all motor ports at once. You can also specify a new motor type even if you have already set it.
+ * \param types Pointer to four motor types.
+ * \retval E_OK  Successful completion
+ * \retval E_PAR Illegal motor type
+ */
+ER ev3_motor_config_all(motor_type_t *types);
 
 /**
  * \~English
@@ -118,6 +204,19 @@ int32_t ev3_motor_get_counts(motor_port_t port);
  * \retval E_OBJ  モータ未接続
  */
 ER ev3_motor_reset_counts(motor_port_t port);
+
+/**
+ * \~English
+ * \brief         Get the measured rotational speed of the motor
+ * \details       Asks the kernel driver for the current derivation of the motor position.
+ * \param port    Motor port to be inquired
+ * \param pDst    Where to store the velocity
+ * \retval E_OK   Successful completion
+ * \retval E_ID   Illegal motor port number
+ * \retval E_OBJ  Motor port has not been initialized
+ * \retval E_PAR  Destination pointer is not accessible
+ */
+ER ev3_motor_get_velocity(motor_port_t port, int *pVal);
 
 /**
  * \~English
@@ -224,94 +323,149 @@ ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t b
 ER ev3_motor_steer(motor_port_t left_motor, motor_port_t right_motor, int power, int turn_ratio);
 
 /**
+ * \~English
+ * \brief         Reset tacho counts on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_reset_counts(motor_mask_t mask);
+
+/**
+ * \~English
+ * \brief         Set output power (unregulated) on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param power   Integer in range <-100; +100>, negative value indicates going backward.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_setpower(motor_mask_t mask, int8_t power);
+
+/**
+ * \~English
+ * \brief         Set output speed (regulated) on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param speed   Integer in range <-100; +100>, negative value indicates going backward.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_setspeed(motor_mask_t mask, int8_t speed);
+
+/**
+ * \~English
+ * \brief         Start unlimited move on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_start   (motor_mask_t mask);
+
+/**
+ * \~English
+ * \brief         Stop multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param brake   Whether the motors will be braked (= true) or just left floated (= false) at the end of the move.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_stop    (motor_mask_t mask, bool_t brake);
+
+/**
+ * \~English
+ * \brief         Start unregulated limited move on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param params  Move parameters (power + milliseconds).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_unreg_time(motor_mask_t mask, const ev3_motor_ex_moveparams_t *params);
+
+/**
+ * \~English
+ * \brief         Start unregulated limited move on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param params  Move parameters (power + degrees).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_unreg_step(motor_mask_t mask, const ev3_motor_ex_moveparams_t *params);
+
+/**
+ * \~English
+ * \brief         Start regulated limited move on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param params  Move parameters (speed + milliseconds).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_reg_time  (motor_mask_t mask, const ev3_motor_ex_moveparams_t *params);
+
+/**
+ * \~English
+ * \brief         Start regulated limited move on multiple motors at once.
+ * \param mask    Port bit mask.
+ * \param params  Move parameters (speed + degrees).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_reg_step  (motor_mask_t mask, const ev3_motor_ex_moveparams_t *params);
+
+/**
+ * \~English
+ * \brief         Start synced move.
+ * \param left    Left motor to use.
+ * \param right   Right motor to use.
+ * \param params  Move parameters (speed + milliseconds).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_sync_time (motor_port_t left, motor_port_t right, ev3_motor_ex_syncparams_t *params);
+
+/**
+ * \~English
+ * \brief         Start synced move.
+ * \param left    Left motor to use.
+ * \param right   Right motor to use.
+ * \param params  Move parameters (speed + degrees).
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER ev3_motor_ex_sync_step (motor_port_t left, motor_port_t right, ev3_motor_ex_syncparams_t *params);
+
+/**
+ * \~English
+ * \brief         Check whether specified motors are running.
+ * \param mask    Port bit mask.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER_UINT ev3_motor_ex_running(motor_mask_t mask);
+
+/**
+ * \~English
+ * \brief         Wait until all of the specified motors are stopped.
+ * \param mask    Port bit mask.
+ * \retval E_OK   Success
+ * \retval E_ID   Invalid ID of motor port
+ * \retval E_OBJ  Motor port has not been initialized.
+ */
+ER      ev3_motor_ex_poll   (motor_mask_t mask);
+
+
+
+
+/**
  * @} // End of group
  */
-
-#if 0 // Legacy code or unfinished work
-
-/**
- * \~English
- * \brief 	   Reset the angular position of a motor port to zero.
- * \param port Motor port to be reset
- *
- * \~Japanese
- * \brief 	    モータポートの角位置をゼロにリセットする
- * \param  port モータポート
- * \retval E_OK 正常終了
- * \retval E_ID 不正のモータポート番号
- * \retval E_ID 不正のモータポート番号
- */
-ER ev3_motor_reset(ID port);
-
-/**
- * \~English
- * [TODO: sync with jp version]
- * \brief 	    Set the speed for a motor port.
- * \param port  Motor port to be set
- * \param speed The percentage of full speed, ranging from -100 to +100. A negative value makes the motor rotate backwards.
- *
- * \~Japanese
- * \brief 	    モータの速度設定
- * \param port  モータポートのID番号
- * \param speed モータポートのフルスピードのパーセント値（-100〜+100）．マイナスの値でモータを逆方向に回転させることができる
- */
-ER ev3_motor_set_speed(ID port, int speed);
-
-/**
- * \~English
- * \brief 	    Set the unregulated power for a motor port.
- * \param port  Motor port to be set
- * \param power The percentage of full power, ranging from -100 to +100. A negative value makes the motor rotate backwards.
- *
- * \~Japanese
- * \brief 	    モータポートの未調整パワーの設定
- * \param port  モータポート
- * \param power モータポートのフルパワーのパーセント値（-100〜+100）．マイナスの値でモータを逆方向に回転させることができる
- */
-ER ev3_motor_set_power(ID port, int power);
-
-/**
- * \~English
- * \brief 		Initialize all motor ports.
- * \param typeA Motor type for motor port A
- * \param typeB Motor type for motor port B
- * \param typeC Motor type for motor port C
- * \param typeD Motor type for motor port D
- *
- * \~Japanese
- * \brief 		モータポートの初期化を行う．
- * \details     モータポートに接続しているモータのタイプを指定して初期化を行う．
- * \param typeA モータポートAのモータタイプ
- * \param typeB モータポートBのモータタイプ
- * \param typeC モータポートCのモータタイプ
- * \param typeD モータポートDのモータタイプ
- */
-ER ev3_motors_init(motor_type_t typeA, motor_type_t typeB, motor_type_t typeC, motor_type_t typeD);
-
-/*
- * TODO: documented this
- * -100 <= speed <= 100, -100(left) <= turn_ration <= 100(right)
- * Motor with smaller port number will be treated as left motor.
- */
-//extern void ev3_motor_sync(MotorPort portA, MotorPort portB, int speed, int turn_ratio);
-
-//extern ER ev3_motor_steer_for_degrees(ID left_motor, ID right_motor, int power, int turn_ratio, int degrees);
-
-/**
- * \~English
- * [TODO: sync with jp version]
- * \brief 	   Get the angular position of a motor port.
- * \param port Motor port to be inquired
- * \return     Angular position in degrees. A negative value means the motor rotate has rotated backwards.
- *
- * \~Japanese
- * \brief 	      モータの角位置を設定する．
- * \details       モータの角位置センサの値を設定するだけ，モータの実際のパワーと位置に影響を与えない．
- * \param  port   モータポート番号
- * \param  counts モータの角位置の値
- * \retval E_OK   正常終了
- * \retval E_ID   不正のモータポート番号
- */
-ER ev3_motor_set_counts(motor_port_t port, int32_t counts);
-
-#endif

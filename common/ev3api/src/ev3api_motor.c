@@ -8,6 +8,7 @@
 #include "ev3api.h"
 #include "platform_interface_layer.h"
 #include "api_common.h"
+#include <string.h>
 
 /**
  * TODO: Undocumented source code from 'lms2012.h'
@@ -73,6 +74,30 @@ typedef   enum
 }
 OP;
 
+typedef enum {
+    STOP_FLOAT = 0,
+    STOP_BRAKE = 1,
+} stop_type;
+
+typedef struct {
+  DATA8   Cmd;
+  DATA8   Nos;
+  DATA8   PowerOrSpeed;
+  DATA32  StepOrTime1;
+  DATA32  StepOrTime2;
+  DATA32  StepOrTime3;
+  DATA8   Brake;
+} cmd_step_time;
+
+typedef struct {
+  DATA8   Cmd;
+  DATA8   Nos;
+  DATA8   Speed;
+  DATA16  Turn;
+  DATA32  StepOrTime;
+  DATA8   Brake;
+} cmd_sync;
+
 typedef struct
 {
   DATA8   Cmd;
@@ -98,13 +123,33 @@ typedef struct
  * Check whether a port number is valid
  */
 #define CHECK_PORT(port) CHECK_COND((port) >= EV3_PORT_A && (port) <= EV3_PORT_D, E_ID)
+#define CHECK_MASK(mask) CHECK_COND((mask & ~0x0F) == 0, E_ID)
+#define CHECK_PORT_DIFFERENT(portA,portB) CHECK_COND(portA != portB, E_ILUSE)
 
 /**
  * Check whether a port is connected (or initialized)
  */
 #define CHECK_PORT_CONN(port) CHECK_COND(getDevType(mts[(port)]) != TYPE_NONE, E_OBJ)
-#define CHECK_MOTOR_TYPE(type) CHECK_COND(type >= NONE_MOTOR && type <= (NONE_MOTOR + TNUM_MOTOR_TYPE - 1), E_PAR)
+#define CHECK_MASK_CONN(mask) do {                          \
+        for(int _i = EV3_PORT_A; _i <= EV3_PORT_D; _i++) {  \
+            if (mask & (1 << _i)) {                         \
+                CHECK_PORT_CONN(_i);                        \
+            }                                               \
+        }                                                   \
+    } while (0)
 
+#define CHECK_MOTOR_TYPE(type) CHECK_COND(type >= NONE_MOTOR && type <= (NONE_MOTOR + TNUM_MOTOR_TYPE - 1), E_PAR)
+#define CHECK_RDACCESS(pointer) CHECK_COND(pointer != NULL, E_PAR)
+#define CHECK_WRACCESS(pointer) CHECK_COND(pointer != NULL, E_PAR)
+#define CLIP(dst,src,min,max) do {  \
+    if ((src) < (min)) {            \
+        (dst) = (min);              \
+    } else if ((src) > (max)) {     \
+        (dst) = (max);              \
+    } else {                        \
+        (dst) = (src);              \
+    }                               \
+} while(0)
 
 /**
  * Type of motors
@@ -126,7 +171,7 @@ int getDevType(motor_type_t type) {
 		break;
 
 	case LARGE_MOTOR:
-	case UNREGULATED_MOTOR: // TODO: check this
+	case UNREGULATED_MOTOR: // TODO: this is just wrong, but let's keep it here for compatibility
 		return TYPE_TACHO;
 		break;
 
@@ -154,38 +199,71 @@ void _initialize_ev3api_motor() {
 	}
 }
 
-ER ev3_motor_config(motor_port_t port, motor_type_t type) {
-	ER ercd;
+ER loadMotors(motor_type_t *types) {
+    ER           ercd  = E_SYS;
+    motor_type_t utype;
+    int          ktype;
+    int          prt;
+    char         buf[1 + TNUM_MOTOR_PORT];
 
-	CHECK_PORT(port);
-	CHECK_MOTOR_TYPE(type);
+    CHECK_RDACCESS(types);
 
-//	lazy_initialize();
-
-	mts[port] = type;
-
-    /*
-     * Set Motor Type
-     */
-    char buf[TNUM_MOTOR_PORT + 1];
     buf[0] = opOUTPUT_SET_TYPE;
-    for (int i = EV3_PORT_A; i < TNUM_MOTOR_PORT; ++i)
-        buf[i + 1] = getDevType(mts[i]);
-    motor_command(buf, sizeof(buf));
 
-    /*
-     * Set initial state to IDLE
-     */
-    buf[0] = opOUTPUT_STOP;
-    buf[1] = 1 << port;
-    buf[2] = 0;
+    for (prt = EV3_PORT_A; prt <= EV3_PORT_D; prt++) {
+        utype = types[prt];
+        CHECK_MOTOR_TYPE(utype);
+    }
+
+    for (prt = EV3_PORT_A; prt <= EV3_PORT_D; prt++) {
+        utype = types[prt];
+        ktype = getDevType(utype);
+
+        mts[prt]   = utype;
+        buf[prt+1] = ktype;
+    }
     motor_command(buf, sizeof(buf));
 
     ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_config(motor_port_t port, motor_type_t type) {
+    ER ercd;
+
+    motor_type_t copy[TNUM_MOTOR_PORT];
+    memcpy(copy, mts, TNUM_MOTOR_PORT * sizeof(motor_type_t));
+    copy[port] = type;
+
+    ercd = loadMotors(copy);
+
+    if (ercd != E_OK)
+        goto error_exit;
+
+    ercd = ev3_motor_ex_stop(1 << port, false);
 
 error_exit:
     return ercd;
 }
+
+ER ev3_motor_config_all(motor_type_t *types) {
+    ER ercd;
+
+    ercd = loadMotors(types);
+
+    if (ercd != E_OK)
+        goto error_exit;
+    /*
+     * Set initial state to IDLE
+     */
+    ercd = ev3_motor_ex_stop(0x0F, false);
+
+error_exit:
+    return ercd;
+}
+
+
 
 ER_UINT ev3_motor_get_type(motor_port_t port) {
 	ER ercd;
@@ -217,7 +295,6 @@ error_exit:
 	return 0;
 }
 
-
 int ev3_motor_get_power(motor_port_t port) {
 	// TODO: Should use ER & pointer instead ?
 	ER ercd;
@@ -236,12 +313,111 @@ error_exit:
 }
 
 ER ev3_motor_reset_counts(motor_port_t port) {
-	ER ercd;
+    return ev3_motor_ex_reset_counts(1 << port);
+}
 
-//	lazy_initialize();
+ER ev3_motor_get_velocity(motor_port_t port, int *pVal) {
+    ER ercd;
 
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
+    CHECK_PORT(port);
+    CHECK_PORT_CONN(port);
+    CHECK_WRACCESS(pVal);
+
+    /**
+     * Use the shmem-provided tacho derivative
+     */
+    *pVal = *pMotorData[port].speed;
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_set_power(motor_port_t port, int power) {
+    ER ercd;
+
+    CHECK_PORT(port);
+    CHECK_PORT_CONN(port);
+
+    motor_type_t mt = mts[port];
+    if (mt == UNREGULATED_MOTOR) {
+        ercd = ev3_motor_ex_setpower(1 << port, power);
+    } else {
+        ercd = ev3_motor_ex_setspeed(1 << port, power);
+    }
+
+    if (ercd != E_OK)
+        goto error_exit;
+
+    ercd = ev3_motor_ex_start(1 << port);
+
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_stop(motor_port_t port, bool_t brake) {
+    return ev3_motor_ex_stop(1 << port, brake);
+}
+
+ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking) {
+    ER ercd;
+    ev3_motor_ex_moveparams_t params;
+
+    CHECK_PORT(port);
+    CHECK_PORT_CONN(port);
+
+    motor_mask_t mask = 1 << port;
+
+    ER_UINT run = ev3_motor_ex_running(mask);
+    if (run < 0) {
+        ercd = run;
+    } else if (run) {
+        ev3_motor_ex_stop(mask, false);
+    }
+
+    int sgnDeg = (degrees < 0) ? -1 : 1;
+    int absDeg = degrees * sgnDeg;
+
+    params.speed    = speed_abs * sgnDeg;
+    params.rampup   = 0;
+    params.sustain  = absDeg;
+    params.rampdown = 0;
+    params.brake    = true;
+    ercd = ev3_motor_ex_reg_step(mask, &params);
+
+    if (ercd != E_OK)
+        goto error_exit;
+
+    if (blocking) {
+        ercd = ev3_motor_ex_poll(mask);
+    } else {
+        ercd = E_OK;
+    }
+
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_steer(motor_port_t left_motor, motor_port_t right_motor, int power, int turn_ratio) {
+    ev3_motor_ex_syncparams_t params;
+
+    params.speed      = power;
+    CLIP(params.turn_ratio, turn_ratio, INT16_MIN, INT16_MAX);
+    params.length     = 0;
+    params.brake      = false;
+
+    return ev3_motor_ex_sync_step(left_motor, right_motor, &params);
+}
+
+/*
+ * Extended API
+ */
+
+ER ev3_motor_ex_reset_counts(motor_mask_t mask) {
+    ER ercd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
 
     char buf[2];
 
@@ -250,14 +426,14 @@ ER ev3_motor_reset_counts(motor_port_t port) {
      * Useful when the position of a motor is changed by hand.
      */
     buf[0] = opOUTPUT_RESET;
-    buf[1] = 1 << port;
+    buf[1] = mask;
     motor_command(buf, sizeof(buf));
 
     /**
      * Reset then counts when used as a tacho sensor.
      */
     buf[0] = opOUTPUT_CLR_COUNT;
-    buf[1] = 1 << port;
+    buf[1] = mask;
     motor_command(buf, sizeof(buf));
 
     ercd = E_OK;
@@ -266,260 +442,251 @@ error_exit:
     return ercd;
 }
 
-ER ev3_motor_set_power(motor_port_t port, int power) {
-	ER ercd;
+ER ev3_motor_ex_setpower(motor_mask_t mask, int8_t power) {
+    char buf[3];
+    ER ercd;
 
-//	lazy_initialize();
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CLIP(power, power, -100, 100);
 
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-
-	motor_type_t mt = mts[port];
-
-	if (power < -100 || power > 100) {
-		int old_power = power;
-		if (old_power > 0)
-			power = 100;
-		else
-			power = -100;
-		syslog(LOG_WARNING, "%s(): power %d is out-of-range, %d is used instead.", __FUNCTION__, old_power, power);
-	}
-
-	char buf[3];
-
-	if (mt == UNREGULATED_MOTOR) {
-	    // Set unregulated power
-	    buf[0] = opOUTPUT_POWER;
-	} else {
-		// Set regulated speed
-	    buf[0] = opOUTPUT_SPEED;
-	}
-    buf[1] = 1 << port;
+    buf[0] = opOUTPUT_POWER;
+    buf[1] = mask;
     buf[2] = power;
-	motor_command(buf, sizeof(buf));
-
-    /**
-     * Start the motor
-     */
-    motor_command(buf, sizeof(buf));
-    buf[0] = opOUTPUT_START;
-    buf[1] = 1 << port;
     motor_command(buf, sizeof(buf));
 
     ercd = E_OK;
-
 error_exit:
     return ercd;
 }
 
-ER ev3_motor_stop(motor_port_t port, bool_t brake) {
-	ER ercd;
-
-//	lazy_initialize();
-
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-
+ER ev3_motor_ex_setspeed(motor_mask_t mask, int8_t speed) {
+    ER ercd;
     char buf[3];
-    buf[0] = opOUTPUT_STOP;
-    buf[1] = 1 << port;
-    buf[2] = brake;
-    motor_command(buf, sizeof(buf));
 
-    ercd = E_OK;
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CLIP(speed, speed, -100, 100);
 
-error_exit:
-    return ercd;
-}
-
-ER ev3_motor_rotate(motor_port_t port, int degrees, uint32_t speed_abs, bool_t blocking) {
-	ER ercd;
-
-//	lazy_initialize();
-
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-
-    // Float the motor first if it is busy
-    if (*pMotorReadyStatus & (1 << port))
-        ev3_motor_stop(port, false);
-
-    STEPSPEED ss;
-    ss.Cmd = opOUTPUT_STEP_SPEED;
-    ss.Speed = speed_abs * (degrees < 0 ? -1 : 1);
-    ss.Step1 = 0;         // Up to Speed
-    ss.Step2 = (degrees < 0 ? -degrees : degrees);   // Keep Speed
-    ss.Step3 = 0;         // Down to Speed
-    ss.Brake = true;
-    ss.Nos = 1 << port;
-    motor_command(&ss, sizeof(ss));
-    if (blocking) // TODO: What if pMotorReadyStatus is kept busy by other tasks?
-        while (*pMotorReadyStatus & (1 << port));
-
-    ercd = E_OK;
-
-error_exit:
-	return ercd;
-}
-
-ER ev3_motor_steer(motor_port_t left_motor, motor_port_t right_motor, int power, int turn_ratio) {
-	ER ercd;
-
-//	lazy_initialize();
-
-	CHECK_PORT(left_motor);
-	CHECK_PORT_CONN(left_motor);
-	CHECK_PORT(right_motor);
-	CHECK_PORT_CONN(right_motor);
-
-	// TODO: check if this is correct
-	if (right_motor > left_motor)
-		turn_ratio = turn_ratio * (-1);
-    STEPSYNC ts;
-//    DATA8   Cmd;
-//    DATA8   Nos;
-//    DATA8   Speed;
-//    DATA16  Turn;
-//    DATA32  Time;
-//    DATA8   Brake;
-    ts.Cmd = opOUTPUT_STEP_SYNC;
-    ts.Nos = (1 << left_motor) | (1 << right_motor);
-    ts.Speed = power;
-    ts.Turn = turn_ratio;
-    ts.Step = 0;
-    ts.Brake = false;
-    motor_command(&ts, sizeof(ts));
-
-    ercd = E_OK;
-
-error_exit:
-	return ercd;
-}
-
-
-#if 0 // Legacy code
-
-ER ev3_motors_init(motor_type_t typeA, motor_type_t typeB, motor_type_t typeC, motor_type_t typeD) {
-	ER ercd;
-
-	CHECK_MOTOR_TYPE(typeA);
-	CHECK_MOTOR_TYPE(typeB);
-	CHECK_MOTOR_TYPE(typeC);
-	CHECK_MOTOR_TYPE(typeD);
-
-	lazy_initialize();
-
-	mts[EV3_PORT_A] = typeA;
-	mts[EV3_PORT_B] = typeB;
-	mts[EV3_PORT_C] = typeC;
-	mts[EV3_PORT_D] = typeD;
-
-    /**
-     * Set device types
-     */
-    char buf[TNUM_MOTOR_PORT + 1];
-    buf[0] = opOUTPUT_SET_TYPE;
-    for (int i = EV3_PORT_A; i < TNUM_MOTOR_PORT; ++i)
-        buf[i + 1] = getDevType(mts[i]);
-    ercd = motor_command(buf, sizeof(buf));
-    assert(ercd == E_OK);
-
-    /**
-     * Set initial state to IDLE
-     */
-    buf[0] = opOUTPUT_STOP;
-    buf[1] = 0xF;
-    buf[2] = 0;
-    ercd = motor_command(buf, sizeof(buf));
-    assert(ercd == E_OK);
-
-    ercd = E_OK;
-
-error_exit:
-    return ercd;
-}
-
-ER ev3_motor_set_speed(ID port, int speed) {
-	ER ercd;
-
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-    assert(speed >= -100 && speed <= 100);
-
-    /*
-     * Set speed and start
-     */
-    char buf[3];
     buf[0] = opOUTPUT_SPEED;
-    buf[1] = 1 << port;
+    buf[1] = mask;
     buf[2] = speed;
     motor_command(buf, sizeof(buf));
-    buf[0] = opOUTPUT_START;
-    buf[1] = 1 << port;
-    motor_command(buf, sizeof(buf));
 
     ercd = E_OK;
-
 error_exit:
     return ercd;
 }
 
-ER ev3_motor_set_power(ID port, int power) {
-	ER ercd;
+ER ev3_motor_ex_start(motor_mask_t mask) {
+    ER ercd;
+    char buf[2];
 
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-    assert(power >= -100 && power <= 100);
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
 
-    /*
-     * Set power and start
-     */
+    buf[0] = opOUTPUT_START;
+    buf[1] = mask;
+    motor_command(buf, sizeof(buf));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_ex_stop(motor_mask_t mask, bool_t brake) {
+    ER ercd;
     char buf[3];
-    buf[0] = opOUTPUT_POWER;
-    buf[1] = 1 << port;
-    buf[2] = power;
-    motor_command(buf, sizeof(buf));
-    buf[0] = opOUTPUT_START;
-    buf[1] = 1 << port;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+
+    buf[0] = opOUTPUT_STOP;
+    buf[1] = mask;
+    buf[2] = brake ? 0x01 : 0x00;
     motor_command(buf, sizeof(buf));
 
     ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+/*
+ * Motor state
+ */
+ER_UINT ev3_motor_ex_running(motor_mask_t mask) {
+    ER ercd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+
+    return ~(*pMotorReadyStatus) & mask;
 
 error_exit:
     return ercd;
 }
 
+ER ev3_motor_ex_poll(motor_mask_t mask) {
+    ER ercd;
 
-ER ev3_motor_sync(ID portA, ID portB, int speed, int turn_ratio) {
-	ER ercd;
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
 
-	lazy_initialize();
-
-	CHECK_PORT(portA);
-	CHECK_PORT_CONN(portA);
-	CHECK_PORT(portB);
-	CHECK_PORT_CONN(portB);
-
-    STEPSYNC ts;
-//    DATA8   Cmd;
-//    DATA8   Nos;
-//    DATA8   Speed;
-//    DATA16  Turn;
-//    DATA32  Time;
-//    DATA8   Brake;
-    ts.Cmd = opOUTPUT_STEP_SYNC;
-    ts.Nos = (1 << portA) | (1 << portB);
-    ts.Speed = speed;
-    ts.Turn = turn_ratio;
-    ts.Step = 0;
-    ts.Brake = false;
-    motor_command(&ts, sizeof(ts));
+    while((*pMotorReadyStatus & mask) != 0) {
+        // busy loop
+    }
 
     ercd = E_OK;
-
 error_exit:
-	return ercd;
+    return ercd;
+}
+
+/*
+ * Regulated moves
+ */
+
+#ifndef ABS
+#define ABS(v)  ((v) < 0 ? -(v) : (v))
+#endif
+
+void fillMoveStruct(uint8_t op, motor_mask_t mask, const const ev3_motor_ex_moveparams_t *in, cmd_step_time *out) {
+    int sgnSpd = (in->speed >= 0) ? 1 : -1;
+
+    out->Cmd          = op;
+    out->Nos          = mask;
+    CLIP(out->PowerOrSpeed, in->speed, -100, 100);
+    CLIP(out->StepOrTime1,  in->rampup,   0, INT32_MAX);
+    CLIP(out->StepOrTime2,  in->sustain,  0, INT32_MAX);
+    CLIP(out->StepOrTime3,  in->rampdown, 0, INT32_MAX);
+    out->StepOrTime1 *= sgnSpd;
+    out->StepOrTime2 *= sgnSpd;
+    out->StepOrTime3 *= sgnSpd;
+    out->Brake        = in->brake ? 0x01 : 0x00;
+}
+
+/*
+ * TODO: documented this
+ * -100 <= speed <= 100, -100(left) <= turn_ration <= 100(right)
+ * Motor with smaller port number will be treated as left motor.
+ *
+ * JakubVanek: I don't agree with the limits of turn_ratio.
+ */
+
+void fillSyncStruct(uint8_t op, motor_port_t left, motor_port_t right, const const ev3_motor_ex_syncparams_t *in, cmd_sync *out) {
+    int sgnSpd = (in->speed >= 0) ? 1 : -1;
+
+    // TODO: check if this is correct
+    out->Cmd          = op;
+    out->Nos          = (1 << left) | (1 << right);
+    CLIP(out->Speed, in->speed, -100, 100);
+    out->Turn         = (right > left) ? -in->turn_ratio : in->turn_ratio;
+    CLIP(out->StepOrTime, in->length, 0, INT32_MAX);
+    out->StepOrTime *= sgnSpd;
+    out->Brake        = in->brake ? 0x01 : 0x00;
 }
 
 
-#endif
+// Unregulated move
+ER ev3_motor_ex_unreg_time(motor_mask_t mask, const ev3_motor_ex_moveparams_t *params) {
+    ER ercd;
+    cmd_step_time cmd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CHECK_RDACCESS(params);
+
+    fillMoveStruct(opOUTPUT_TIME_POWER, mask, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_ex_unreg_step(motor_mask_t mask, const ev3_motor_ex_moveparams_t *params) {
+    ER ercd;
+    cmd_step_time cmd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CHECK_RDACCESS(params);
+
+    fillMoveStruct(opOUTPUT_STEP_POWER, mask, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+// Regulated move
+ER ev3_motor_ex_reg_time  (motor_mask_t mask, const ev3_motor_ex_moveparams_t *params) {
+    ER ercd;
+    cmd_step_time cmd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CHECK_RDACCESS(params);
+
+    fillMoveStruct(opOUTPUT_TIME_SPEED, mask, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_ex_reg_step  (motor_mask_t mask, const ev3_motor_ex_moveparams_t *params) {
+    ER ercd;
+    cmd_step_time cmd;
+
+    CHECK_MASK(mask);
+    CHECK_MASK_CONN(mask);
+    CHECK_RDACCESS(params);
+
+    fillMoveStruct(opOUTPUT_STEP_SPEED, mask, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+// Regulated & synced move
+ER ev3_motor_ex_sync_time (motor_port_t left, motor_port_t right, ev3_motor_ex_syncparams_t *params) {
+    ER ercd;
+    cmd_sync cmd;
+
+    CHECK_PORT(left);
+    CHECK_PORT(right);
+    CHECK_PORT_DIFFERENT(left,right);
+    CHECK_PORT_CONN(left);
+    CHECK_PORT_CONN(right);
+    CHECK_RDACCESS(params);
+
+    fillSyncStruct(opOUTPUT_TIME_SYNC, left, right, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
+
+ER ev3_motor_ex_sync_step (motor_port_t left, motor_port_t right, ev3_motor_ex_syncparams_t *params) {
+    ER ercd;
+    cmd_sync cmd;
+
+    CHECK_PORT(left);
+    CHECK_PORT(right);
+    CHECK_PORT_DIFFERENT(left,right);
+    CHECK_PORT_CONN(left);
+    CHECK_PORT_CONN(right);
+    CHECK_RDACCESS(params);
+
+    fillSyncStruct(opOUTPUT_STEP_SYNC, left, right, params, &cmd);
+    motor_command(&cmd, sizeof(cmd));
+
+    ercd = E_OK;
+error_exit:
+    return ercd;
+}
