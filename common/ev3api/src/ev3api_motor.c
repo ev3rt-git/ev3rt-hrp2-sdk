@@ -372,20 +372,14 @@ ER ev3_motor_steer(motor_port_t left_motor, motor_port_t right_motor, int power,
 	CHECK_PORT(right_motor);
 	CHECK_PORT_CONN(right_motor);
 
-	// TODO: check if this is correct
-	if (right_motor > left_motor)
+	if (right_motor < left_motor)
 		turn_ratio = turn_ratio * (-1);
+
     STEPSYNC ts;
-//    DATA8   Cmd;
-//    DATA8   Nos;
-//    DATA8   Speed;
-//    DATA16  Turn;
-//    DATA32  Time;
-//    DATA8   Brake;
     ts.Cmd = opOUTPUT_STEP_SYNC;
     ts.Nos = (1 << left_motor) | (1 << right_motor);
     ts.Speed = power;
-    ts.Turn = turn_ratio;
+    ts.Turn = turn_ratio * 2;
     ts.Step = 0;
     ts.Brake = false;
     motor_command(&ts, sizeof(ts));
@@ -396,130 +390,3 @@ error_exit:
 	return ercd;
 }
 
-
-#if 0 // Legacy code
-
-ER ev3_motors_init(motor_type_t typeA, motor_type_t typeB, motor_type_t typeC, motor_type_t typeD) {
-	ER ercd;
-
-	CHECK_MOTOR_TYPE(typeA);
-	CHECK_MOTOR_TYPE(typeB);
-	CHECK_MOTOR_TYPE(typeC);
-	CHECK_MOTOR_TYPE(typeD);
-
-	lazy_initialize();
-
-	mts[EV3_PORT_A] = typeA;
-	mts[EV3_PORT_B] = typeB;
-	mts[EV3_PORT_C] = typeC;
-	mts[EV3_PORT_D] = typeD;
-
-    /**
-     * Set device types
-     */
-    char buf[TNUM_MOTOR_PORT + 1];
-    buf[0] = opOUTPUT_SET_TYPE;
-    for (int i = EV3_PORT_A; i < TNUM_MOTOR_PORT; ++i)
-        buf[i + 1] = getDevType(mts[i]);
-    ercd = motor_command(buf, sizeof(buf));
-    assert(ercd == E_OK);
-
-    /**
-     * Set initial state to IDLE
-     */
-    buf[0] = opOUTPUT_STOP;
-    buf[1] = 0xF;
-    buf[2] = 0;
-    ercd = motor_command(buf, sizeof(buf));
-    assert(ercd == E_OK);
-
-    ercd = E_OK;
-
-error_exit:
-    return ercd;
-}
-
-ER ev3_motor_set_speed(ID port, int speed) {
-	ER ercd;
-
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-    assert(speed >= -100 && speed <= 100);
-
-    /*
-     * Set speed and start
-     */
-    char buf[3];
-    buf[0] = opOUTPUT_SPEED;
-    buf[1] = 1 << port;
-    buf[2] = speed;
-    motor_command(buf, sizeof(buf));
-    buf[0] = opOUTPUT_START;
-    buf[1] = 1 << port;
-    motor_command(buf, sizeof(buf));
-
-    ercd = E_OK;
-
-error_exit:
-    return ercd;
-}
-
-ER ev3_motor_set_power(ID port, int power) {
-	ER ercd;
-
-	CHECK_PORT(port);
-	CHECK_PORT_CONN(port);
-    assert(power >= -100 && power <= 100);
-
-    /*
-     * Set power and start
-     */
-    char buf[3];
-    buf[0] = opOUTPUT_POWER;
-    buf[1] = 1 << port;
-    buf[2] = power;
-    motor_command(buf, sizeof(buf));
-    buf[0] = opOUTPUT_START;
-    buf[1] = 1 << port;
-    motor_command(buf, sizeof(buf));
-
-    ercd = E_OK;
-
-error_exit:
-    return ercd;
-}
-
-
-ER ev3_motor_sync(ID portA, ID portB, int speed, int turn_ratio) {
-	ER ercd;
-
-	lazy_initialize();
-
-	CHECK_PORT(portA);
-	CHECK_PORT_CONN(portA);
-	CHECK_PORT(portB);
-	CHECK_PORT_CONN(portB);
-
-    STEPSYNC ts;
-//    DATA8   Cmd;
-//    DATA8   Nos;
-//    DATA8   Speed;
-//    DATA16  Turn;
-//    DATA32  Time;
-//    DATA8   Brake;
-    ts.Cmd = opOUTPUT_STEP_SYNC;
-    ts.Nos = (1 << portA) | (1 << portB);
-    ts.Speed = speed;
-    ts.Turn = turn_ratio;
-    ts.Step = 0;
-    ts.Brake = false;
-    motor_command(&ts, sizeof(ts));
-
-    ercd = E_OK;
-
-error_exit:
-	return ercd;
-}
-
-
-#endif
