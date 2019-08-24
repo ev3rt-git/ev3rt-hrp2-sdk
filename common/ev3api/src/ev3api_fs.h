@@ -181,6 +181,7 @@ typedef enum {
     EV3_SERIAL_DEFAULT = 0, //!< \~English Default serial port (port for log task)     \~Japanese デフォルトのシリアルポート（ログタスク用ポート）
     EV3_SERIAL_UART = 1,	//!< \~English UART (Sensor port 1) \~Japanese UARTポート（センサポート1）
     EV3_SERIAL_BT = 2,	    //!< \~English Bluetooth SPP        \~Japanese Bluetooth仮想シリアルポート
+    EV3_SERIAL_USB_CDC = 3,	//!< \~English USB CDC Mode         \~Japanese USB仮想シリアルポート
 } serial_port_t;
 
 /**
@@ -210,6 +211,19 @@ FILE* ev3_serial_open_file(serial_port_t port);
  * \retval false     接続切れ．
  */
 bool_t ev3_bluetooth_is_connected();
+
+/**
+ * \~English
+ * \brief            It is checked whether USB CDC (Virtual Serial Port) is connected.
+ * \retval true      Connected. It can communicate with the USB CDC virtual serial port.
+ * \retval false     Unconnected.
+ *
+ * \~Japanese
+ * \brief            USB CDC (Virtual Serial Port)が接続されているかどうかをチェックする．
+ * \retval true      接続済み．USB CDC仮想シリアルポートで通信できる．
+ * \retval false     接続切れ．
+ */
+bool_t ev3_usb_cdc_is_connected();
 
 /**
  * @} // End of group

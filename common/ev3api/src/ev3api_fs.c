@@ -103,6 +103,8 @@ FILE* ev3_serial_open_file(serial_port_t port) {
 		fd = SIO_UART_FILENO;
 	else if (port == EV3_SERIAL_BT)
 		fd = SIO_BT_FILENO;
+	else if (port == EV3_SERIAL_USB_CDC)
+		fd = SIO_USB_CDC_FILENO;
 	else {
 		API_ERROR("Invalid port id %d.", port);
 		return NULL;
@@ -152,5 +154,11 @@ ev3_sdcard_closedir(ID dirid) {
 bool_t ev3_bluetooth_is_connected() {
 	T_SERIAL_RPOR rpor;
 	ER ercd = serial_ref_por(SIO_PORT_BT, &rpor);
+	return ercd == E_OK;
+}
+
+bool_t ev3_usb_cdc_is_connected() {
+	T_SERIAL_RPOR rpor;
+	ER ercd = serial_ref_por(SIO_PORT_USB_CDC, &rpor);
 	return ercd == E_OK;
 }
