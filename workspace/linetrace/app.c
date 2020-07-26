@@ -40,7 +40,7 @@ static void button_clicked_handler(intptr_t button) {
 }
 
 void main_task(intptr_t unused) {
-    // Register button handlers
+    // Register button hadSSSSSSSSSSSSSSSSSSSSSndlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     // Configure motors
