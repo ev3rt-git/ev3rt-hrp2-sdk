@@ -42,20 +42,31 @@ void main_task(intptr_t unused) {
 
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
+    ev3_motor_reset_counts(a_motor);
     float distance = 0;
     /**
      * PID controller
      */
     float lasterror = 0, integral = 0;
+    ev3_motor_rotate(a_motor,500,13,true);
     while (distance < 3000) {
+        if(ev3_motor_get_counts(a_motor) > 490){
+            ev3_motor_reset_counts(a_motor);
+            ev3_motor_rotate(a_motor,-500,13,false);
+            
+        }
+        if(ev3_motor_get_counts(a_motor) < -490){
+            ev3_motor_reset_counts(a_motor);
+            ev3_motor_rotate(a_motor,500,13,false);
+            
+        }
         distance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
-        float steer = 0.07 * error + 0.4 * integral + 1 * (error - lasterror);
+        float steer = 0.075 * error + 0.5 * integral + 0.4 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
-    ev3_motor_rotate(a_motor,200,10,true);
 }
