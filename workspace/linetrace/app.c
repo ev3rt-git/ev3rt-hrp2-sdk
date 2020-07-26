@@ -1,12 +1,3 @@
-/**
- * This sample program shows a PID controller for line following.
- *
- * Robot construction: Educator Vehicle
- *
- * References:
- * http://robotsquare.com/wp-content/uploads/2013/10/45544_educator.pdf
- * http://thetechnicgear.com/2014/03/howto-create-line-following-robot-using-mindstorms/
- */
 
 #include "ev3api.h"
 #include "app.h"
