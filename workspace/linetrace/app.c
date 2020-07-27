@@ -79,15 +79,12 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    // Register button handlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
-    // Configure motors
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
     ev3_motor_config(a_motor, MEDIUM_MOTOR);
 
-    // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
     ev3_sensor_config(color_sensor3, COLOR_SENSOR);
 
