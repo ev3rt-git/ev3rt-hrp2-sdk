@@ -28,6 +28,7 @@ static void button_clicked_handler(intptr_t button) {
 }
 
 void dashPID(int distance){
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
@@ -39,7 +40,7 @@ void dashPID(int distance){
             ev3_motor_reset_counts(a_motor);
             //ev3_motor_rotate(a_motor,500,13,false);
         }
-        float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+        wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
         float steer = 0.05 * error + 0.5 * integral + 0.25 * (error - lasterror);
@@ -48,7 +49,9 @@ void dashPID(int distance){
         tslp_tsk(1);
     }
     
+    ev3_speaker_play_tone(NOTE_C4, 100);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
+    ev3_speaker_play_tone(NOTE_C4, 100);
     return;
 }
 void linePID(int distance){
@@ -93,8 +96,11 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     dashPID(2000);
+    ev3_speaker_play_tone(NOTE_C4, 100);
     ev3_motor_steer(left_motor, right_motor, 20, -100);
+    ev3_speaker_play_tone(NOTE_C4, 100);
     tslp_tsk(1000);
+    ev3_speaker_play_tone(NOTE_C4, 100);
     ev3_motor_steer(left_motor, right_motor, 20, 0);
     tslp_tsk(1000);
     dashPID(1000);
