@@ -27,9 +27,9 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
-static void dashPID(int distance){
+void dashPID(int distance){
     float lasterror = 0, integral = 0;
-    while (wheelDistance < 1800) {
+    while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
             ev3_motor_reset_counts(a_motor);
             //ev3_motor_rotate(a_motor,-500,13,false);
@@ -47,13 +47,16 @@ static void dashPID(int distance){
         lasterror = error;
         tslp_tsk(1);
     }
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    return;
 }
-static void linePID(int distance){
+void linePID(int distance){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
-    while (wheelDistance < 1800) {
+    while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
             ev3_motor_reset_counts(a_motor);
             //ev3_motor_rotate(a_motor,-500,13,false);
@@ -63,7 +66,7 @@ static void linePID(int distance){
             ev3_motor_reset_counts(a_motor);
             //ev3_motor_rotate(a_motor,500,13,false);
         }
-        float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+        wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
         float steer = 0.04 * error + 0.5 * integral + 0.25 * (error - lasterror);
@@ -72,6 +75,7 @@ static void linePID(int distance){
         tslp_tsk(1);
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
+    return;
 }
 
 void main_task(intptr_t unused) {
@@ -90,6 +94,9 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    dashPID(1900);
+    dashPID(2000);
+    ev3_motor_steer(left_motor, right_motor, 20, -100);
+    tslp_tsk(1000);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
+
 }
