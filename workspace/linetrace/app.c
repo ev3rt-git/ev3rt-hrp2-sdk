@@ -94,7 +94,7 @@ void main_task(intptr_t unused) {
     dashPID(2000);
     ev3_motor_steer(left_motor, right_motor, 20, -100);
     tslp_tsk(1000);
-    dashPID(2000);
+    dashPID(1000);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
 
 }
