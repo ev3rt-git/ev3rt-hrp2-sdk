@@ -49,9 +49,7 @@ void dashPID(int distance){
         tslp_tsk(1);
     }
     
-    ev3_speaker_play_tone(NOTE_C4, 100);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
-    ev3_speaker_play_tone(NOTE_C4, 100);
     return;
 }
 void linePID(int distance){
@@ -95,14 +93,10 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    dashPID(2000);
-    ev3_speaker_play_tone(NOTE_C4, 100);
-    ev3_motor_steer(left_motor, right_motor, 20, -100);
-    ev3_speaker_play_tone(NOTE_C4, 100);
-    tslp_tsk(1000);
-    ev3_speaker_play_tone(NOTE_C4, 100);
-    ev3_motor_steer(left_motor, right_motor, 20, 0);
-    tslp_tsk(1000);
+    //dashPID(2000);
+    ev3_motor_steer(left_motor, right_motor, 20, 100);
+    tslp_tsk(500);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
     dashPID(1000);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
 
