@@ -85,7 +85,11 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[][] = [[32,-3],[36,3],[121,-3],[139,3]];
+    int snow1[][] = [[32,-150],[36,150],[121,-150],[139,150]];
+    int snow2[][] = [[32,-300],[36,300];
+    int index = 0;
+    bool isTurning = false;
+    int turnReturn = 0;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -99,17 +103,15 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     
-    ev3_motor_rotate(a_motor,-500,15,true);
+    ev3_motor_rotate(a_motor,-260,15,true);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
-        if(ev3_motor_get_counts(a_motor) > 490){
-            ev3_motor_reset_counts(a_motor);
-            ev3_motor_rotate(a_motor,-500,13,false);
-        }
-        if(ev3_motor_get_counts(a_motor) < -490){
-            ev3_motor_reset_counts(a_motor);
-            ev3_motor_rotate(a_motor,500,13,false);
+        if(wheelDistance > snow1[index][0] - 30 && isTurning === false){
+            index ++;
+            isTurning = true;
+            turnReturn = snow1[index][1] * -1;
+            ev3_motor_rotate(a_motor,snow1[index][1],15,true);
         }
         wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
