@@ -28,17 +28,20 @@ static void button_clicked_handler(intptr_t button) {
 }
 
 void dashPID(int distance){
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
+    ev3_motor_reset_counts(a_motor);
+    ev3_motor_rotate(a_motor,-500,15,true);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
             ev3_motor_reset_counts(a_motor);
-            //ev3_motor_rotate(a_motor,-500,13,false);
-            
+            ev3_motor_rotate(a_motor,-500,13,false);
         }
         if(ev3_motor_get_counts(a_motor) < -490){
             ev3_motor_reset_counts(a_motor);
-            //ev3_motor_rotate(a_motor,500,13,false);
+            ev3_motor_rotate(a_motor,500,13,false);
         }
         wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
@@ -56,17 +59,18 @@ void linePID(int distance){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    ev3_motor_rotate(a_motor,-500,15,true);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
             ev3_motor_reset_counts(a_motor);
-            //ev3_motor_rotate(a_motor,-500,13,false);
+            ev3_motor_rotate(a_motor,-500,13,false);
             
         }
         if(ev3_motor_get_counts(a_motor) < -490){
             ev3_motor_reset_counts(a_motor);
-            //ev3_motor_rotate(a_motor,500,13,false);
+            ev3_motor_rotate(a_motor,500,13,false);
         }
         wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
@@ -81,6 +85,7 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
+    int snow[][] = [[32,-3],[36,3],[121,-3],[139,3]];
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -93,11 +98,13 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    dashPID(2000);
+    dashPID(1950);
     ev3_motor_steer(left_motor, right_motor, 20, 100);
-    tslp_tsk(500);
+    tslp_tsk(480);
     ev3_motor_steer(left_motor, right_motor, 0, 0);
-    dashPID(1000);
-    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    tslp_tsk(1000);
+    //ev3_speaker_play_tone(NOTE_C4, 100);
+    linePID(1000);
+    //ev3_speaker_play_tone(NOTE_C4, 100);
 
 }
