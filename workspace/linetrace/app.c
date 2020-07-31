@@ -77,7 +77,7 @@ void linePID(int distance){
         integral = error + integral * 0.5;
         float steer = 0.04 * error + 0.5 * integral + 0.25 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 30, steer);
-        lasterror = error;
+        lasterror = error;  
         tslp_tsk(1);
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
@@ -85,10 +85,16 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[][] = [[32,-150],[36,150],[121,-150],[139,150]];
-    int snow2[][] = [[32,-300],[36,300];
+    int snow1[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
+    int snow2[2][2] = {{32,-300},{36,300}};
+    int snow3[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
+    int snow4[2][2] = {{32,-300},{36,300}};
+    int snow5[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
+    int snow6[2][2] = {{32,-300},{36,300}};
+    int snow7[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
+    int snow8[2][2] = {{32,-300},{36,300}};
     int index = 0;
-    bool isTurning = false;
+    int isTurning = false;
     int turnReturn = 0;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
@@ -103,21 +109,33 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     
-    ev3_motor_rotate(a_motor,-260,15,true);
+    
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
-    while (wheelDistance < distance) {
-        if(wheelDistance > snow1[index][0] - 30 && isTurning === false){
-            index ++;
-            isTurning = true;
+    while (wheelDistance < 3000) {
+        if((wheelDistance > snow1[index][0] - 5 )&& (isTurning == 0 )&& (ev3_motor_get_power(a_motor) == 0) && index < 3){
+            isTurning = 1;
             turnReturn = snow1[index][1] * -1;
-            ev3_motor_rotate(a_motor,snow1[index][1],15,true);
+            ev3_motor_rotate(a_motor,snow1[index][1],35,false);
+            ev3_speaker_play_tone(NOTE_C4, 200);
+            if(index == 3){
+
+            }
+            else{
+                index = index + 1;
+            }
         }
-        wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+        tslp_tsk(10);
+        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index][0] + 5){
+            isTurning = 0;
+            ev3_motor_rotate(a_motor,turnReturn,35,false);
+            ev3_speaker_play_tone(NOTE_C5, 100);
+        }
+        wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
-        float steer = 0.05 * error + 0.5 * integral + 0.25 * (error - lasterror);
-        ev3_motor_steer(left_motor, right_motor, 30, steer);
+        float steer = 0.05 * error + 0.4 * integral + 0.2 * (error - lasterror);
+        ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
     }
