@@ -85,7 +85,7 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
+    int snow1[4][2] = {{18,-300},{49,300},{119,-300},{139,300}};
     int snow2[2][2] = {{32,-300},{36,300}};
     int snow3[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow4[2][2] = {{32,-300},{36,300}};
@@ -113,12 +113,12 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((wheelDistance > snow1[index][0] - 2) && (isTurning == 0 )&& (ev3_motor_get_power(a_motor) == 0) && index < 3){
+        if((wheelDistance > snow1[index][0] - 5) && (isTurning == 0 )&& (ev3_motor_get_power(a_motor) == 0) && index < 4){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],35,false);
             ev3_speaker_play_tone(NOTE_C4, 200);
-            if(index == 3){
+            if(index == 4){
 
             }
             else{
@@ -126,7 +126,7 @@ void main_task(intptr_t unused) {
             }
         }
         tslp_tsk(10);
-        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 2){
+        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 5){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
             ev3_speaker_play_tone(NOTE_C5, 100);
@@ -134,7 +134,7 @@ void main_task(intptr_t unused) {
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
-        float steer = 0.05 * error + 0.4 * integral + 0.2 * (error - lasterror);
+        float steer = 0.04 * error + 0.55 * integral + 0.2 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
