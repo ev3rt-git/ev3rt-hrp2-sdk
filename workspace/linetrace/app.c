@@ -97,7 +97,6 @@ void main_task(intptr_t unused) {
     int isTurning = 0;
     int turnReturn = 0;
     int colorDashes = 0;
-    int isWhite = 0;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
