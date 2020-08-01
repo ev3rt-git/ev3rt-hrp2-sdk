@@ -123,7 +123,7 @@ void main_task(intptr_t unused) {
                 index = index + 1;
             }
         }
-        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 2){
+        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 4){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
             ev3_speaker_play_tone(NOTE_C5, 100);
