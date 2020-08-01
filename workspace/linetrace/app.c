@@ -111,7 +111,7 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((wheelDistance > snow1[index][0] + 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
+        if((wheelDistance > snow1[index][0] - 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],35,false);
