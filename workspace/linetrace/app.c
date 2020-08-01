@@ -85,7 +85,7 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[4][2] = {{18,-300},{49,300},{119,-300},{139,300}};
+    int snow1[4][2] = {{1,-300},{4,300},{11,-300},{14,300}};
     int snow2[2][2] = {{32,-300},{36,300}};
     int snow3[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow4[2][2] = {{32,-300},{36,300}};
@@ -94,8 +94,9 @@ void main_task(intptr_t unused) {
     int snow7[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow8[2][2] = {{32,-300},{36,300}};
     int index = 0;
-    int isTurning = false;
     int turnReturn = 0;
+    int colorDashes = 0;
+    int isWhite = 0;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -113,11 +114,10 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((wheelDistance > snow1[index][0] - 5) && (isTurning == 0 )&& (ev3_motor_get_power(a_motor) == 0) && index < 4){
+        if((colorDashes >= snow1[index][0]) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],35,false);
-            ev3_speaker_play_tone(NOTE_C4, 200);
             if(index == 4){
 
             }
@@ -125,12 +125,23 @@ void main_task(intptr_t unused) {
                 index = index + 1;
             }
         }
-        tslp_tsk(10);
-        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 5){
+        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 1){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
-            ev3_speaker_play_tone(NOTE_C5, 100);
         }
+        if(ev3_color_sensor_get_reflect(color_sensor2) > 65 && ev3_color_sensor_get_reflect(color_sensor3) > 65 && isWhite == 0){
+            isWhite = 1;
+            ev3_speaker_play_tone(NOTE_C5, 100);
+
+            colorDashes += 1;
+        }
+        if(ev3_color_sensor_get_reflect(color_sensor2) < 65 && ev3_color_sensor_get_reflect(color_sensor3) < 65 && isWhite == 1){
+            isWhite = 0;
+            ev3_speaker_play_tone(NOTE_C4, 100);
+
+            colorDashes += 1;
+        }
+        //fprintf
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
