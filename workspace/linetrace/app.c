@@ -85,7 +85,7 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[4][2] = {{1,-300},{4,300},{96,-300},{14,300}};
+    int snow1[4][2] = {{7,-300},{34,300},{96,-300},{109,300}};
     int snow2[2][2] = {{32,-300},{36,300}};
     int snow3[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow4[2][2] = {{32,-300},{36,300}};
@@ -113,7 +113,7 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((colorDashes >= snow1[index][0]) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
+        if((wheelDistance > snow1[index][0] + 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],35,false);
@@ -124,7 +124,7 @@ void main_task(intptr_t unused) {
                 index = index + 1;
             }
         }
-        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 1){
+        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 2){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
         }
