@@ -115,6 +115,7 @@ void main_task(intptr_t unused) {
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],35,false);
+            ev3_speaker_play_tone(NOTE_C4, 100);
             if(index == 4){
 
             }
