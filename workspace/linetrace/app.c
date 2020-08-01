@@ -126,7 +126,7 @@ void main_task(intptr_t unused) {
         if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 2){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
-    ev3_speaker_play_tone(NOTE_C4, 100);
+        ev3_speaker_play_tone(NOTE_C4, 100);
         }
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
