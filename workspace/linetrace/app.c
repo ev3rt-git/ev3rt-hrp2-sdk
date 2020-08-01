@@ -85,7 +85,7 @@ void linePID(int distance){
 }
 
 void main_task(intptr_t unused) {
-    int snow1[4][2] = {{1,-300},{4,300},{11,-300},{14,300}};
+    int snow1[4][2] = {{1,-300},{4,300},{96,-300},{14,300}};
     int snow2[2][2] = {{32,-300},{36,300}};
     int snow3[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow4[2][2] = {{32,-300},{36,300}};
@@ -94,6 +94,7 @@ void main_task(intptr_t unused) {
     int snow7[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
     int snow8[2][2] = {{32,-300},{36,300}};
     int index = 0;
+    int isTurning = 0;
     int turnReturn = 0;
     int colorDashes = 0;
     int isWhite = 0;
@@ -109,8 +110,6 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    
-    
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
@@ -129,19 +128,18 @@ void main_task(intptr_t unused) {
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) > 65 && ev3_color_sensor_get_reflect(color_sensor3) > 65 && isWhite == 0){
+        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0){
             isWhite = 1;
             ev3_speaker_play_tone(NOTE_C5, 100);
 
             colorDashes += 1;
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) < 65 && ev3_color_sensor_get_reflect(color_sensor3) < 65 && isWhite == 1){
+        if(ev3_color_sensor_get_reflect(color_sensor2) < 60 && ev3_color_sensor_get_reflect(color_sensor3) < 60 && isWhite == 1){
             isWhite = 0;
             ev3_speaker_play_tone(NOTE_C4, 100);
 
             colorDashes += 1;
         }
-        //fprintf
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
