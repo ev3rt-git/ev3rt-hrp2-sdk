@@ -128,18 +128,6 @@ void main_task(intptr_t unused) {
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,35,false);
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0){
-            isWhite = 1;
-            ev3_speaker_play_tone(NOTE_C5, 100);
-
-            colorDashes += 1;
-        }
-        if(ev3_color_sensor_get_reflect(color_sensor2) < 60 && ev3_color_sensor_get_reflect(color_sensor3) < 60 && isWhite == 1){
-            isWhite = 0;
-            ev3_speaker_play_tone(NOTE_C4, 100);
-
-            colorDashes += 1;
-        }
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
         integral = error + integral * 0.5;
