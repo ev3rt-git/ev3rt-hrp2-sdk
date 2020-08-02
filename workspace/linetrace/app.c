@@ -87,7 +87,7 @@ void linePID(int distance){
 void main_task(intptr_t unused) {
     //int snow1[4][2] = {{7,-300},{34,300},{96,-300},{110,300}};
     //int snow1[4][2] = {{8,-300},{38,300},{109,-300},{131,300}};
-    
+
     int snow1[4][2] = {{11,150},{16,-150},{121,-150},{139,150}};
     int snow4[2][2] = {{32,-300},{36,300}};
     int snow5[4][2] = {{32,-150},{36,150},{121,-150},{139,150}};
@@ -112,7 +112,7 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((wheelDistance > snow1[index][0] - 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 4){
+        if((wheelDistance > snow1[index][0] - 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],50,false);
