@@ -139,6 +139,8 @@ void main_task(intptr_t unused) {
         tslp_tsk(1);
     }
     wheelDistance = 0;
+    ev3_motor_steer(left_motor, right_motor, 15, 15);
+    tslp_tsk(1000);
     
     while (wheelDistance < 58) {
         if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
