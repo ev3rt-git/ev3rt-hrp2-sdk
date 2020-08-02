@@ -112,7 +112,7 @@ void main_task(intptr_t unused) {
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < 3000) {
-        if((wheelDistance > snow1[index][0] - 2) && (isTurning == 0) && (ev3_motor_get_power(a_motor) == 0) && index < 2){
+        if((wheelDistance >= snow1[index][0] - 2) && (isTurning == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],50,false);
@@ -124,7 +124,7 @@ void main_task(intptr_t unused) {
                 index = index + 1;
             }
         }
-        if((isTurning == 1) && (ev3_motor_get_power(a_motor) == 0) && wheelDistance > snow1[index - 1][0] + 2){
+        if((isTurning == 1) && wheelDistance >= snow1[index - 1][0] + 2){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
