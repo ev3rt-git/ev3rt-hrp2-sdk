@@ -234,13 +234,13 @@ void main_task(intptr_t unused) {
             
         }
     }
-    int chtra = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra1 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra2 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra3 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra5 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-    int chtra = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
-
+    bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
+	assert(val);
+	sprintf(msgbuf, "Red:   %-4d", rgb.r);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+	sprintf(msgbuf, "Green: %-4d", rgb.g);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 4);
+	printf(msgbuf, "Blue:  %-4d", rgb.b);
+	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 5);
+	tslp_tsk(10);
 }
