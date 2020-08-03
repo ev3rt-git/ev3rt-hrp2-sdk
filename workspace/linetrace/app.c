@@ -199,7 +199,7 @@ void main_task(intptr_t unused) {
     if(color1 == 2){
         if(color2 == 1){
             //collect snow from yellow
-            //collect 4 snow from red on wa
+            //collect 4 snow from red on way
         }
         if(color2 == 3){
             //collect snow from yellow
