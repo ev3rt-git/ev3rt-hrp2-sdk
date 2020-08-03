@@ -234,5 +234,5 @@ void main_task(intptr_t unused) {
             
         }
     }
-    ht_nxt_color_sensor_measure_color(csens)
+    ht_nxt_color_sensor_measure_color(cosens)
 }
