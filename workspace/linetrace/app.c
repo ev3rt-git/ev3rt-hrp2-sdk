@@ -240,7 +240,7 @@ void main_task(intptr_t unused) {
     int chtra3 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_COLOR);
     int chtra4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_COLOR);
     int chtra5 = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_COLOR);
-    int chtra = ht_nxt_color_sensor_measure_color(color_sensor4, COL_COLOR);
+    int chtra = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_COLOR);
     int chtra = ht_nxt_color_sensor_measure_color(color_sensor4, COL_COLOR);
 
 }
