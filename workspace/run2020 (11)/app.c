@@ -234,6 +234,7 @@ void main_task(intptr_t unused) {
             
         }
     }
+	char msgbuf[100];
     rgb_raw_t rgb;
     bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
 	assert(val);
