@@ -204,7 +204,7 @@ void main_task(intptr_t unused) {
         }
         if(color2 == 3){
             //collect snow from yellow
-            //collect snow from gr
+            //collect snow from gre
         }
         if(color2 == 4){
             //collect snow from yellow
