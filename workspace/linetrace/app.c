@@ -141,7 +141,7 @@ void main_task(intptr_t unused) {
         tslp_tsk(1);
     }
     wheelDistance = 0;
-    ev3_motor_steer(left_motor, right_motor, 15, 15);
+    /*ev3_motor_steer(left_motor, right_motor, 15, 15);
     tslp_tsk(1000);
     
     ev3_motor_steer(left_motor, right_motor, 15, -15);
@@ -181,5 +181,53 @@ void main_task(intptr_t unused) {
     //ev3_speaker_play_tone(NOTE_C4, 100);
     linePID(1000);
     //ev3_speaker_play_tone(NOTE_C4, 100);
-
+*/
+    int color1 = 0;
+    int color2 = 0;
+    //1:r,2:y,3:g,4:b
+    if(color1 == 1){
+        if(color2 == 2){
+            //collect snow from yellow
+        }
+        if(color2 == 3){
+            
+        }
+        if(color2 == 4){
+            
+        }
+    }
+    if(color1 == 2){
+        if(color2 == 1){
+            //collect snow from yellow
+            //collect 4 snow from 
+        }
+        if(color2 == 3){
+            //collect snow from yellow
+        }
+        if(color2 == 4){
+            //collect snow from yellow
+        }
+    }
+    if(color1 == 3){
+        if(color2 == 1){
+            
+        }
+        if(color2 == 2){
+            
+        }
+        if(color2 == 4){
+            
+        }
+    }
+    if(color1 == 4){
+        if(color2 == 1){
+            
+        }
+        if(color2 == 2){
+            
+        }
+        if(color2 == 3){
+            
+        }
+    }
 }
