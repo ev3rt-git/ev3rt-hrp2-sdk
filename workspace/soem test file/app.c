@@ -19,6 +19,18 @@
 #define _debug(x)
 #endif
 
+static void button_clicked_handler(intptr_t button) {
+    switch(button) {
+    case BACK_BUTTON:
+#if !defined(BUILD_MODULE)
+        syslog(LOG_NOTICE, "Back button clicked.");
+        ev3_motor_steer(left_motor, right_motor, 0, 0);
+        exit(0);
+#endif
+        ev3_motor_steer(left_motor, right_motor, 0, 0);
+        exit(0);
+        break;
+
 /**
  * Define the connection ports of the sensors and motors.
  * By default, this application uses the following ports:
@@ -27,7 +39,9 @@
  * Left motor:   Port B
  * Right motor:  Port C
  */
-const int touch_sensor = EV3_PORT_2, color_sensor = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
+//const int touch_sensor = EV3_PORT_2, color_sensor = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
+const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
+bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
