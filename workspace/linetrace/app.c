@@ -103,6 +103,9 @@ void main_task(intptr_t unused) {
     int index = 0;
     int isTurning = 0;
     int turnReturn = 0;
+    int dashes = 0;
+    int isWhite = 1;
+    int lastDash = 0;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -118,7 +121,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(a_motor);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
-    /*while (wheelDistance < 60) {
+    while (wheelDistance < 60000) {
         if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
@@ -136,15 +139,30 @@ void main_task(intptr_t unused) {
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
+        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
+            isWhite = 1;
+            ev3_speaker_play_tone(NOTE_C5, 100);
+
+            dashes += 1;
+            lastDash = wheelDistance;
+        }
+        if(ev3_color_sensor_get_reflect(color_sensor2) < 60 && ev3_color_sensor_get_reflect(color_sensor3) < 60 && isWhite == 1 && wheelDistance > lastDash + 3){
+            isWhite = 0;
+            ev3_speaker_play_tone(NOTE_C4, 100);
+
+            lastDash = wheelDistance;
+            dashes += 1;
+        }        
         float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
+
+        wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
         float steer = 0.04 * error + 0.55 * integral + 0.2 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
     }
-    wheelDistance = 0;
+    /*wheelDistance = 0;
     ev3_motor_steer(left_motor, right_motor, 15, 15);
     tslp_tsk(1000);
     
@@ -185,7 +203,7 @@ void main_task(intptr_t unused) {
     //ev3_speaker_play_tone(NOTE_C4, 100);
     linePID(1000);
     //ev3_speaker_play_tone(NOTE_C4, 100);
-*/
+
     int color1 = 0;
     int color2 = 0;
     //1:r,2:y,3:g,4:b
@@ -247,5 +265,5 @@ void main_task(intptr_t unused) {
 	ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
 	printf(msgbuf, "Blue:  %-4d", rgb.b);
 	ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-	tslp_tsk(10);
+	tslp_tsk(10);*/
 }
