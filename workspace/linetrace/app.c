@@ -234,6 +234,7 @@ void main_task(intptr_t unused) {
             
         }
     }
+        rgb_raw_t rgb;
     bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
 	assert(val);
 	sprintf(msgbuf, "Red:   %-4d", rgb.r);
