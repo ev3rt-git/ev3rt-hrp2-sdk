@@ -12,7 +12,7 @@
 #endif
 
 
-const int color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
+const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
@@ -108,6 +108,7 @@ void main_task(intptr_t unused) {
 
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
     ev3_sensor_config(color_sensor3, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor4, COLOR_SENSOR);
 
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
@@ -233,5 +234,5 @@ void main_task(intptr_t unused) {
             
         }
     }
-    
+    ht_nxt_color_sensor_measure_color()
 }
