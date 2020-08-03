@@ -2,6 +2,9 @@
 #include "ev3api.h"
 #include "app.h"
 #include "stdlib.h"
+#include <unistd.h>
+#include <ctype.h>
+#include <string.h>
 
 #define DEBUG
 
@@ -142,7 +145,7 @@ void main_task(intptr_t unused) {
         tslp_tsk(1);
     }
     wheelDistance = 0;
-    /*ev3_motor_steer(left_motor, right_motor, 15, 15);
+    ev3_motor_steer(left_motor, right_motor, 15, 15);
     tslp_tsk(1000);
     
     ev3_motor_steer(left_motor, right_motor, 15, -15);
@@ -234,14 +237,15 @@ void main_task(intptr_t unused) {
             
         }
     }
+	char msgbuf[100];
     rgb_raw_t rgb;
-    bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, COL_RGBRAW);
+    bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
 	assert(val);
 	sprintf(msgbuf, "Red:   %-4d", rgb.r);
-	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 3);
+	ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
 	sprintf(msgbuf, "Green: %-4d", rgb.g);
-	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 4);
+	ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
 	printf(msgbuf, "Blue:  %-4d", rgb.b);
-	ev3_lcd_draw_string(msgbuf, 0, MENU_FONT_HEIGHT * 5);
+	ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
 	tslp_tsk(10);
 }
