@@ -234,5 +234,5 @@ void main_task(intptr_t unused) {
             
         }
     }
-    int ht_nxt_color_sensor_measure_color(color_sensor4)
+    int cht_nxt_color_sensor_measure_color(color_sensor4)
 }
