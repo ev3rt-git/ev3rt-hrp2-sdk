@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include "ev3api.h"
 #include "app.h"
-#include <unistd.h>
-#include <ctype.h>
-#include <string.h>
 
 #define DEBUG
 
@@ -21,20 +18,23 @@ position pos = {-1, -1, -1, 0, 0};
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
     case BACK_BUTTON:
+#if !defined(BUILD_MODULE)
+        syslog(LOG_NOTICE, "Back button clicked.");
         ev3_motor_steer(left_motor, right_motor, 0, 0);
         exit(0);
-
+#endif
+        ev3_motor_steer(left_motor, right_motor, 0, 0);
+        exit(0);
+        break;
     }
 }
+
 
 static void exit_program_with_exception() {
-    switch(button) {
-    case BACK_BUTTON:
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
-        exit(1);
-
-    }
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    exit(1);
 }
+
 
 void main_task(intptr_t unused) {
     // Register button handlers
@@ -56,7 +56,7 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor, right_motor, 20, 0);
     while (rgb4->r < 127) {}
     int index;
-    for (index = 0; index < 4; index += 1;) {
+    for (index = 0; index < 4; index++) {
         //read instruction
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
@@ -76,11 +76,7 @@ void main_task(intptr_t unused) {
         }
         // decode instruction
         if (bit1 == 1) {
-            if (bit2 == 1) {
-                exit_program_with_exception();
-            } else {
-                tasks[index] = BLACKMATERIAL;
-            }
+            tasks[index] = BLACKMATERIAL;
         } else {
             if (bit2 == 1) {
                 tasks[index] = BLUEMATERIAL;
@@ -90,10 +86,10 @@ void main_task(intptr_t unused) {
         }
     }
     //display things in a very small font
-    char lcdstr = char[100];
+    char lcdstr[100];
     sprintf(lcdstr, "%d, %d, %d, %d", tasks[BLUE_STREET], tasks[RED_STREET], tasks[GREEN_STREET], tasks[YELLOW_STREET]);
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
     ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, COLOR_WHITE);
-    ev3_lcd_draw_lcdstring(lcdstr, 0, 0);
+    ev3_lcd_draw_string(lcdstr, 0, 0);
     while (1>0) {}
 }

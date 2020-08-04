@@ -1,8 +1,5 @@
 #include "target_test.h"
 
-/*
- *  各タスクの優先度の定義
- */
 #ifndef _TEST_FILE_H_
 #define _TEST_FILE_H_
 
