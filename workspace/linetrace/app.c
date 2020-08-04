@@ -271,6 +271,10 @@ void main_task(intptr_t unused) {
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }
+        if(rgb.r < 100 && rbg.b > 10){
+            sprintf(msgbuf, "no car           ");
+            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+        }
     }
 
 }
