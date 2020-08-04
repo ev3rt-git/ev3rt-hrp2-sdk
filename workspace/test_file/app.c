@@ -30,7 +30,7 @@
 //const int touch_sensor = EV3_PORT_2, color_sensor = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
 const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4;
 rgb_raw_t *rgb4;
-position = { "", -1, -1, 0, 0};
+position = { -1, -1, -1, 0, 0};
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
@@ -54,7 +54,6 @@ void main_task(intptr_t unused) {
 
     bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, rgb4);
 
-    int tasks[4];
     int bit1 = 0;
     int bit2 = 0;
 
@@ -154,7 +153,6 @@ void main_task(intptr_t unused) {
     if (bit1) {
         if (bit2) {
             exit(1);
-            break;
         } else {
             tasks[2] = 2;
         }
