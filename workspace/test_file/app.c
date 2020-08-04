@@ -1,16 +1,10 @@
-/**
- * This sample program shows a PID controller for line following.
- *
- * Robot conlcdstruction: Educator Vehicle
- *
- * References:
- * http://robotsquare.com/wp-content/uploads/2013/10/45544_educator.pdf
- * http://thetechnicgear.com/2014/03/howto-create-line-following-robot-using-mindstorms/
- */
 #include <stdlib.h>
 #include <stdio.h>
 #include "ev3api.h"
 #include "app.h"
+#include <unistd.h>
+#include <ctype.h>
+#include <string.h>
 
 #define DEBUG
 
@@ -20,15 +14,6 @@
 #define _debug(x)
 #endif
 
-/**
- * Define the connection ports of the sensors and motors.
- * By default, this application uses the following ports:
- * Touch sensor: Port 2
- * Color sensor: Port 3
- * Left motor:   Port B
- * Right motor:  Port C
- */
-//const int touch_sensor = EV3_PORT_2, color_sensor = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
 const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4;
 rgb_raw_t *rgb4;
 position pos = {-1, -1, -1, 0, 0};
@@ -70,8 +55,8 @@ void main_task(intptr_t unused) {
     //decode instructions
     ev3_motor_steer(left_motor, right_motor, 20, 0);
     while (rgb4->r < 127) {}
-    int index = 0;
-    for (index < 4) {
+    int index;
+    for (index = 0; index < 4; index += 1;) {
         //read instruction
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
@@ -104,149 +89,7 @@ void main_task(intptr_t unused) {
             }
         }
     }
-    // read instructions for blue road
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    ev3_motor_steer(left_motor, right_motor, 20, 0);
-    while (rgb4->r < 127) {}
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit1 = 1;
-    } else {
-        bit1 = 0;
-    }
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit2 = 1;
-    } else {
-        bit2 = 0;
-    }
-    //determine task 0 (blue)
-    if (bit1) {
-        if (bit2) {
-            exit(1);
-        } else {
-            tasks[BLUE_STREET] = BLACKMATERIAL;
-        }
-    } else {
-        if (bit2) {
-            tasks[BLUE_STREET] = BLUEMATERIAL;
-        } else {
-            tasks[BLUE_STREET] = REMOVESNOW;
-        }
-    }
-    
- /*   // read instructions for green road
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (rgb4->r < 127) {}
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit1 = 1;
-    } else {
-        bit1 = 0;
-    }
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit2 = 1;
-    } else {
-        bit2 = 0;
-    }
-    //determine task 1 (green)
-    if (bit1) {
-        if (bit2) {
-            exit(1);
-        } else {
-            tasks[GREEN_STREET] = BLACKMATERIAL;
-        }
-    } else {
-        if (bit2) {
-            tasks[GREEN_STREET] = BLUEMATERIAL;
-        } else {
-            tasks[GREEN_STREET] = REMOVESNOW;
-        }
-    }
-    
-    // read inlcdstructions for yellow road
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (rgb4->r < 127) {}
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit1 = 1;
-    } else {
-        bit1 = 0;
-    }
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit2 = 1;
-    } else {
-        bit2 = 0;
-    }
-    //determine task 2 (yellow)
-    if (bit1) {
-        if (bit2) {
-            exit(1);
-        } else {
-            tasks[YELLOW_STREET] = BLACKMATERIAL;
-        }
-    } else {
-        if (bit2) {
-            tasks[YELLOW_STREET] = BLUEMATERIAL;
-        } else {
-            tasks[YELLOW_STREET] = REMOVESNOW;
-        }
-    }
-    
-    // read inlcdstructions for red road
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (rgb4->r < 127) {}
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit1 = 1;
-    } else {
-        bit1 = 0;
-    }
-    ev3_motor_reset_counts(EV3_PORT_B);
-    ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
-    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
-        bit2 = 1;
-    } else {
-        bit2 = 0;
-    }
-    //determine task 3 (red)
-    if (bit1) {
-        if (bit2) {
-            exit(1);
-        } else {
-            tasks[RED_STREET] = BLACKMATERIAL;
-        }
-    } else {
-        if (bit2) {
-            tasks[RED_STREET] = BLUEMATERIAL;
-        } else {
-            tasks[RED_STREET] = REMOVESNOW;
-        }
-    }
-
- */
-   //display things in a very small font
+    //display things in a very small font
     char lcdstr = char[100];
     sprintf(lcdstr, "%d, %d, %d, %d", tasks[BLUE_STREET], tasks[RED_STREET], tasks[GREEN_STREET], tasks[YELLOW_STREET]);
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
