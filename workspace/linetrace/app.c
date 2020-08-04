@@ -114,15 +114,15 @@ void main_task(intptr_t unused) {
 
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
     ev3_sensor_config(color_sensor3, COLOR_SENSOR);
-    ev3_sensor_config(color_sensor4, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
 
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
-    while (wheelDistance < 60000) {
-        if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
+    while (wheelDistance < 0) {
+        /*if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index][1],50,false);
@@ -138,7 +138,7 @@ void main_task(intptr_t unused) {
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
-        }
+        }*/
         if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
             isWhite = 1;
             ev3_speaker_play_tone(NOTE_C5, 100);
@@ -254,16 +254,23 @@ void main_task(intptr_t unused) {
         if(color2 == 3){
             
         }
-    }
+    }*/
 	char msgbuf[100];
     rgb_raw_t rgb;
-    bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
-	assert(val);
-	sprintf(msgbuf, "Red:   %-4d", rgb.r);
-	ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-	sprintf(msgbuf, "Green: %-4d", rgb.g);
-	ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-	printf(msgbuf, "Blue:  %-4d", rgb.b);
-	ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-	tslp_tsk(10);*/
+    while(1){
+        bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
+        assert(val);
+        sprintf(msgbuf, "Red:   %-4d", rgb.r);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        sprintf(msgbuf, "Green: %-4d", rgb.g);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+        sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+        tslp_tsk(10);
+        if(rgb.r > 100 && rbg.b < 10){
+            sprintf(msgbuf, "THERE IS A CAR!!!");
+            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+        }
+    }
+
 }
