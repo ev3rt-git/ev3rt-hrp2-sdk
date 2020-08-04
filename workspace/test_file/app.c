@@ -30,6 +30,7 @@
 //const int touch_sensor = EV3_PORT_2, color_sensor = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C;
 const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4;
 rgb_raw_t *rgb4;
+position = { -1, -1, -1, 0, 0};
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
@@ -53,137 +54,148 @@ void main_task(intptr_t unused) {
 
     bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4, rgb4);
 
-    char tasks [4];
-    bool block1 = false;
+    int bit1 = 0;
+    int bit2 = 0;
 
     // read instructions for blue road
-    ev3_motor_reset_counts();
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, 20, 0);
     while (rgb4->r < 127) {}
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block1 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit1 = 1;
     } else {
-        block1 = false;
+        bit1 = 0;
     }
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block2 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit2 = 1;
     } else {
-        block2 = false;
+        bit2 = 0;
     }
     //determine task 0 (blue)
-    if (block1) {
-        if (block2) {
+    if (bit1) {
+        if (bit2) {
             exit(1);
             
         } else {
-            tasks[0] = "black_AM";
+            tasks[0] = 2;
         }
     } else {
-        if (block2) {
-            tasks[0] = "blue_AM";
+        if (bit2) {
+            tasks[0] = 1;
         } else {
-            tasks[0] = "snow_RM";
+            tasks[0] = 0;
         }
     }
     
     // read instructions for green road
-    ev3_motor_reset_counts();
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
     while (rgb4->r < 127) {}
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block1 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit1 = 1;
     } else {
-        block1 = false;
+        bit1 = 0;
     }
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block2 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit2 = 1;
     } else {
-        block2 = false;
+        bit2 = 0;
     }
     //determine task 1 (green)
-    if (block1) {
-        if (block2) {
+    if (bit1) {
+        if (bit2) {
             exit(1);
         } else {
-            tasks[1] = "black_AM";
+            tasks[1] = 2;
         }
     } else {
-        if (block2) {
-            tasks[1] = "blue_AM";
+        if (bit2) {
+            tasks[1] = 1;
         } else {
-            tasks[1] = "snow_RM";
+            tasks[1] = 0;
         }
     }
     
     // read instructions for yellow road
-    ev3_motor_reset_counts();
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
     while (rgb4->r < 127) {}
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block1 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit1 = 1;
     } else {
-        block1 = false;
+        bit1 = 0;
     }
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block2 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit2 = 1;
     } else {
-        block2 = false;
+        bit2 = 0;
     }
     //determine task 2 (yellow)
-    if (block1) {
-        if (block2) {
+    if (bit1) {
+        if (bit2) {
             exit(1);
-            break;
         } else {
-            tasks[2] = "black_AM";
+            tasks[2] = 2;
         }
     } else {
-        if (block2) {
-            tasks[2] = "blue_AM";
+        if (bit2) {
+            tasks[2] = 1;
         } else {
-            tasks[2] = "snow_RM";
+            tasks[2] = 0;
         }
     }
     
     // read instructions for red road
-    ev3_motor_reset_counts();
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
     while (rgb4->r < 127) {}
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block1 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit1 = 1;
     } else {
-        block1 = false;
+        bit1 = 0;
     }
-    ev3_motor_reset_counts();
-    while (ev3_motor_get_counts() < 20) {}
-    if ((rgb4->r + rgb->g + rgb->b) / 3 > 127) {
-        block2 = true;
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 20) {}
+    if ((rgb4->r + rgb4->g + rgb4->b) / 3 > 127) {
+        bit2 = 1;
     } else {
-        block2 = false;
+        bit2 = 0;
     }
     //determine task 3 (red)
-    if (block1) {
-        if (block2) {
+    if (bit1) {
+        if (bit2) {
             exit(1);
         } else {
-            tasks[3] = "black_AM";
+            tasks[3] = 2;
         }
     } else {
-        if (block2) {
-            tasks[3] = "blue_AM";
+        if (bit2) {
+            tasks[3] = 1;
         } else {
-            tasks[3] = "snow_RM";
+            tasks[3] = 0;
         }
     }
 
@@ -199,19 +211,3 @@ void main_task(intptr_t unused) {
     ev3_lcd_draw_string(val4, 5, 60);
     while (1>0) {}
 }
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//HENLO EVERYBODY BIG CURSOR AND BIG MULTITYPING TIME HAHHAHAHHA MULTIPLE CURSORS TAPED TOGETHER!!!!!!!!!!!!!!! HAHAHAHAHAHA!
-//I have multiple cursors that stack like stacked pistons that make the line get longer much faster than if I was typing with one I have multiple cursors that stack like stacked pistons that make the line get longer much faster than if I was typing with one I have multiple cursors that stack like stacked pistons that make the line get longer much faster than if I was typing with one I have multiple cursors that stack like stacked pistons that make the line get longer much faster than if I was typing with one I have multiple cursors that stack like stacked pistons that make the line get longer much faster than if I was typing with one
