@@ -256,9 +256,9 @@ void main_task(intptr_t unused) {
         }
     }*/
 	char msgbuf[100];
-    rgb_raw_t rgb;
     while(1){
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
+        rgb_raw_t rgb;
         assert(val);
         sprintf(msgbuf, "Red:   %-4d", rgb.r);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
