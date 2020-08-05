@@ -18,11 +18,11 @@
 #ifndef _TEST_FILE_H_
 #define _TEST_FILE_H_
 
-void linePID;
-void dashPID;
-void readCode;
-static void button_clicked_handler;
-void display_values;
+void linePID();
+void dashPID();
+void readCode();
+static void button_clicked_handler();
+void display_values();
 
 
 #define BLUE_STREET 	0
