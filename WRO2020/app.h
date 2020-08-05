@@ -20,7 +20,10 @@
 
 void linePID;
 void dashPID;
+void readCode;
 static void button_clicked_handler;
+void display_values;
+
 
 #define BLUE_STREET 	0
 #define GREEN_STREET 	1

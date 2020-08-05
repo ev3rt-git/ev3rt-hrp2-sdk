@@ -12,6 +12,9 @@
 #define BLUEMATERIAL 1
 #define BLACKMATERIAL 2
 
+static void button_clicked_handler();
+void display_values();
+
 typedef struct {
 	int street;
 	int section;
