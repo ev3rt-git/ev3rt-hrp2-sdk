@@ -41,7 +41,7 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor, right_motor, 30, 0);
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
-    while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 300) {
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 300) {
         display_values();
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
@@ -59,7 +59,7 @@ void main_task(intptr_t unused) {
         ev3_motor_steer(left_motor, right_motor, 15, 0);
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
-        while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 60) {}
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 60) {}
         ev3_motor_steer(left_motor, right_motor, 0, 0);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit1 = 1;
@@ -69,7 +69,7 @@ void main_task(intptr_t unused) {
         ev3_motor_steer(left_motor, right_motor, 15, 0);
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
-        while (((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2) < 60) {}
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 60) {}
         ev3_motor_steer(left_motor, right_motor, 0, 0);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit2 = 1;
