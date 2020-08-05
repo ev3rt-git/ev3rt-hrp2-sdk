@@ -256,9 +256,9 @@ void main_task(intptr_t unused) {
         }
     }*/
 	char msgbuf[100];
+    rgb_raw_t rgb;
     while(1){
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
-        rgb_raw_t rgb;
         assert(val);
         sprintf(msgbuf, "Red:   %-4d", rgb.r);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
@@ -266,15 +266,15 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        tslp_tsk(10);
-        if(rgb.r > 100 && rbg.b < 10){
+        if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }
-        if(rgb.r < 100 && rbg.b > 10){
-            sprintf(msgbuf, "what?");
+        else{
+            sprintf(msgbuf, "what??            ");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }
+        tslp_tsk(10);
     }
 
 }
