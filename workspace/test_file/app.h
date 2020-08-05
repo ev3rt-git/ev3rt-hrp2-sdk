@@ -12,6 +12,7 @@
 #define BLUEMATERIAL 1
 #define BLACKMATERIAL 2
 
+void readCode();
 static void button_clicked_handler();
 void display_values();
 
