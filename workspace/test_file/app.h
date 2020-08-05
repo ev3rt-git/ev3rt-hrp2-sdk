@@ -15,7 +15,23 @@
 void readCode();
 static void button_clicked_handler();
 void display_values();
-
+/*
+* street:
+* RED, YELLOW, GREEN, or BLUE
+* 
+* section:
+* RED and YELLOW: Section 1 is the area containing the instructions
+* GREEN and BLUE: Section 1 is the area where the road goes diagonaly into their respective streets
+* Section 1 is the "beginning" of the road, and 3 being the "end"
+* 
+* distance:
+* Distance in centimeters from the start of the road
+* 
+* dash:
+* (Only applicable for streets RED and YELLOW) Dashes from the start of the section, with a dash being a black line
+* 
+* 
+*/
 typedef struct {
 	int street;
 	int section;

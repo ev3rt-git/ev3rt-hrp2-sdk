@@ -43,16 +43,18 @@ void readCode() {
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, 30, -1);
-    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 250) {
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 200) {
         display_values();
     }
-    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
     tslp_tsk(500);
 
     //decode instructions
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (rgb4.g > 30 && rgb4.b > 25) {}
-    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
     tslp_tsk(500);
 
     int index;
@@ -64,7 +66,8 @@ void readCode() {
         while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 60) {
             display_values();
         }
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
+        ev3_motor_stop(left_motor, true);
+        ev3_motor_stop(right_motor, true);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit1 = 1;
         } else {
@@ -76,7 +79,8 @@ void readCode() {
         while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 60) {
             display_values();
         }
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
+        ev3_motor_stop(left_motor, true);
+        ev3_motor_stop(right_motor, true);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit2 = 1;
         } else {
@@ -157,7 +161,6 @@ void display_values() {
     ev3_lcd_draw_string(msg, 8*7, 15*5);
     sprintf(msg, "B: %d  ", rgb4.b);
     ev3_lcd_draw_string(msg, 8*14, 15*5);
-    }
 
     //read linefollow sensors
 /*
