@@ -11,7 +11,7 @@
 #define _debug(x)
 #endif
 
-const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4;
+const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3;
 
 rgb_raw_t rgb4;
 position pos = {-1, -1, -1, 0, 0};
@@ -26,16 +26,20 @@ void main_task(intptr_t unused) {
 
     // Configure sensors
     ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
+    ev3_sensor_config(color_sensor2, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor3, COLOR_SENSOR);
+
 
     //configure brick
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
 
     //run program
     readCode();
+    tslp_tsk(50000000);
 }
 
 void readCode() {
-    //declare and/or define variables
+    //define variables
     int bit1 = -1;
     int bit2 = -1;
 
@@ -52,7 +56,9 @@ void readCode() {
 
     //decode instructions
     ev3_motor_steer(left_motor, right_motor, 10, 1);
-    while (rgb4.g > 30 && rgb4.b > 25) {}
+    while (rgb4.g > 30 && rgb4.b > 25) {
+        display_values();
+    }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
     tslp_tsk(500);
@@ -98,13 +104,21 @@ void readCode() {
             }
         }
     }
+
+    //detect line
+    ev3_motor_steer(left_motor, right_motor, 10, 0);
+    while (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
+
     //display things in a very small font
     char lcdstr[100];
     sprintf(lcdstr, "%d, %d, %d, %d", tasks[BLUE_STREET], tasks[RED_STREET], tasks[GREEN_STREET], tasks[YELLOW_STREET]);
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
     ev3_lcd_fill_rect(0, 0, EV3_LCD_WIDTH, EV3_LCD_HEIGHT, COLOR_WHITE);
     ev3_lcd_draw_string(lcdstr, 0, 0);
-    tslp_tsk(50000000);
 }
 
 static void button_clicked_handler(intptr_t button) {
