@@ -195,8 +195,8 @@ void main_task(intptr_t unused) {
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);*/
         if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55){
-            sprintf(msgbuf, "THERE IS A CAR!!!");
-            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+            //sprintf(msgbuf, "THERE IS A CAR!!!");
+            //ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
