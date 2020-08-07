@@ -123,8 +123,11 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(a_motor);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
+    float instructions[3] = {0,0,0};//1 = red, 2 = yellow
+    int index = 0;
+    int isReading = 0;
     ev3_motor_steer(left_motor,right_motor,10,0);
-    while(wheelDistance < 40){
+    while(wheelDistance < 85){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
@@ -134,13 +137,24 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55){
+        if(index == 0 && rgb.g > 100){
+            index += 1;
+            instructions[0] = 2;
+        }
+        else if(index == 0 && rgb.r > 100){
+            index += 1;
+            instructions[0] = 1;
+        }
+        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-            
+            isReading = 1;
+            instructions[index] = wheelDistance;
+            index += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else{
+            isReading = 0;
             sprintf(msgbuf, "what??            ");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }
@@ -190,7 +204,7 @@ void main_task(intptr_t unused) {
         assert(val);
         /*sprintf(msgbuf, "Red:   %-4d", rgb.r);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, "Green: %-4d", rgb.g);
+        sprintf(msgbuf, "Green: %-4d", rgb.g); 
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);*/
