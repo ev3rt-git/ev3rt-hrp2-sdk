@@ -106,6 +106,7 @@ void main_task(intptr_t unused) {
     int dashes = 0;
     int isWhite = 1;
     int lastDash = 0;
+    int hi = 0;
 	char msgbuf[100];
     rgb_raw_t rgb;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
@@ -137,8 +138,12 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, "123 %9f                   " ,wheelDistance);
+        sprintf(msgbuf, "123 %9f          " ,wheelDistance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
+        sprintf(msgbuf, "haha %9f         " ,isReading);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 8);
+        sprintf(msgbuf, "aqweg %9f         " ,hi);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(indexx == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 2;
@@ -149,34 +154,27 @@ void main_task(intptr_t unused) {
             instructions[0] = 1;
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
-        else if(rgb.r > 55 && isReading <0 && wheelDistance > 31){
-            sprintf(msgbuf, "THERE IS A CAR!!!");
-            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+        else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31){
             isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31){
-            sprintf(msgbuf, "THERE IS A CAR!!!");
-            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31){
-            sprintf(msgbuf, "THERE IS A CAR!!!");
-            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else{
-            isReading -= 1;
-            sprintf(msgbuf, "what??            ");
-            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+            isReading = isReading - 1;
+            hi += 1;
         }
         tslp_tsk(10);
     }
