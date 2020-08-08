@@ -46,45 +46,45 @@ void display_values() {
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
     sprintf(msg, "L: %d   ", value);
-    ev3_lcd_draw_string(msg, 12*0, 15*0);
+    ev3_lcd_draw_string(msg, 8*0, 15*0);
     value = ev3_motor_get_counts(right_motor);
     sprintf(msg, "R: %d   ", value);
-    ev3_lcd_draw_string(msg, 12*8, 15*0);
+    ev3_lcd_draw_string(msg, 8*8, 15*0);
 
     //read sensor rgb1
     bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb1);
     assert(val1);
     sprintf(msg, "RGB1:");
-    ev3_lcd_draw_string(msg, 12*0, 15*2);
+    ev3_lcd_draw_string(msg, 8*0, 15*2);
     sprintf(msg, "R: %d", rgb1.r);
-    ev3_lcd_draw_string(msg, 12*0, 15*3);
+    ev3_lcd_draw_string(msg, 8*0, 15*3);
     sprintf(msg, "G: %d", rgb1.g);
-    ev3_lcd_draw_string(msg, 12*7, 15*3);
+    ev3_lcd_draw_string(msg, 8*7, 15*3);
     sprintf(msg, "B: %d", rgb1.b);
-    ev3_lcd_draw_string(msg, 12*14, 15*3);
+    ev3_lcd_draw_string(msg, 8*14, 15*3);
 
     //read sensor rgb4
     bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb4);
     assert(val4);
     sprintf(msg, "RGB4:");
-    ev3_lcd_draw_string(msg, 12*0, 15*4);
+    ev3_lcd_draw_string(msg, 8*0, 15*4);
     sprintf(msg, "R: %d  ", rgb4.r);
-    ev3_lcd_draw_string(msg, 12*0, 15*5);
+    ev3_lcd_draw_string(msg, 8*0, 15*5);
     sprintf(msg, "G: %d  ", rgb4.g);
-    ev3_lcd_draw_string(msg, 12*7, 15*5);
+    ev3_lcd_draw_string(msg, 8*7, 15*5);
     sprintf(msg, "B: %d  ", rgb4.b);
-    ev3_lcd_draw_string(msg, 12*14, 15*5);
+    ev3_lcd_draw_string(msg, 8*14, 15*5);
     }
 
     //read linefollow sensors
     sprintf(msg, "Light2 & Light3:");
-    ev3_lcd_draw_string(msg, 12*0, 15*7);
+    ev3_lcd_draw_string(msg, 8*0, 15*7);
     value = ev3_color_sensor_get_reflect(color_sensor2);
     sprintf(msg, "L: %d  ", value);
-    ev3_lcd_draw_string(msg, 12*0, 15*8);
+    ev3_lcd_draw_string(msg, 8*0, 15*8);
     value = ev3_color_sensor_get_reflect(color_sensor3);
     sprintf(msg, "L: %d  ", value);
-    ev3_lcd_draw_string(msg, 12*7, 15*8);
+    ev3_lcd_draw_string(msg, 8*7, 15*8);
 }
 
 static void button_clicked_handler(intptr_t button) {
