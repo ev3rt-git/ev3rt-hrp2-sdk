@@ -150,19 +150,19 @@ void main_task(intptr_t unused) {
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 25;
+            isReading = 50;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 25;
+            isReading = 50;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 25;
+            isReading = 50;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
