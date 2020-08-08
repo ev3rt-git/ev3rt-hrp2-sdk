@@ -16,6 +16,7 @@
 #endif
 
 
+position pos = {-1, -1, -1, 0, 0};
 const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
 static void button_clicked_handler(intptr_t button) {
