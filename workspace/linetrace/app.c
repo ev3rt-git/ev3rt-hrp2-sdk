@@ -143,15 +143,11 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, "1 %9f          " ,detected[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        sprintf(msgbuf, "2 %9f          " ,detected[1]);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, "3 %9f          " ,detected[2]);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
         sprintf(msgbuf, "2r %9f          " ,round((detected[1] - 26) / 5));
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
         sprintf(msgbuf, "3r %9f          " ,round((detected[2] - 26) / 5));
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        sprintf(msgbuf, "3r %9f          " ,instructions);
+        sprintf(msgbuf, " %9f          " ,instructions);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(err){
             sprintf(msgbuf, "ERROR ERROR WRONG STATE!!!!!!!!!!!!!!!!!!");
