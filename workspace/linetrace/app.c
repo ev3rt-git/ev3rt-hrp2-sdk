@@ -121,13 +121,13 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * ((3.1415926535 * 9.5) / 360;
     float lasterror = 0, integral = 0;
     float instructions[3] = {0,0,0};//1 = red, 2 = yellow
     int indexx = 0;
     int isReading = 0;
     ev3_motor_steer(left_motor,right_motor,10,0);
-    while(wheelDistance < 850000000000){
+    while(wheelDistance < 85){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
@@ -137,17 +137,17 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, "123 %-4d                            " ,wheelDistance);
+        sprintf(msgbuf, "123 %9f                   " ,wheelDistance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        if(indexx == 0 && rgb.g > 100){
+        if(indexx == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 2;
         }
-        else if(indexx == 0 && rgb.r > 100){
+        else if(indexx == 0 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 1;
         }
-        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0){
+        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0 && wheelDistance < 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             isReading = 1;
@@ -162,7 +162,7 @@ void main_task(intptr_t unused) {
         }
         tslp_tsk(10);
     }
-    /*while (wheelDistance < 1000) {
+    while (wheelDistance < 1000) {
         /*if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
@@ -180,7 +180,7 @@ void main_task(intptr_t unused) {
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
         }*/
-        /*if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
+        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
             isWhite = 1;
             ev3_speaker_play_tone(NOTE_C5, 100);
 
@@ -210,7 +210,7 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);*/
-        /*if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55){
+        if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55){
             //sprintf(msgbuf, "THERE IS A CAR!!!");
             //ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             
@@ -220,7 +220,7 @@ void main_task(intptr_t unused) {
             sprintf(msgbuf, "what??            ");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }*/
-    //}
+    }
     /*wheelDistance = 0;
     ev3_motor_steer(left_motor, right_motor, 15, 15);
     tslp_tsk(1000);
