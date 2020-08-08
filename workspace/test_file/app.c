@@ -49,7 +49,7 @@ void readCode() {
     ev3_motor_steer(left_motor, right_motor, 20, 1);
     while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 200) {
         display_values();
-        tslp_tsk(5);
+        tslp_tsk(2);
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
@@ -59,7 +59,7 @@ void readCode() {
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (rgb4.g > 30 && rgb4.b > 25) {
         display_values();
-        tslp_tsk(5);
+        tslp_tsk(2);
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
@@ -78,7 +78,7 @@ void readCode() {
         ev3_motor_steer(left_motor, right_motor, 10, 1);
         while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
             display_values();
-            tslp_tsk(5);
+            tslp_tsk(2);
         }
         ev3_motor_stop(left_motor, true);
         ev3_motor_stop(right_motor, true);
@@ -92,7 +92,7 @@ void readCode() {
         ev3_motor_steer(left_motor, right_motor, 10, 1);
         while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
             display_values();
-            tslp_tsk(5);
+            tslp_tsk(2);
         }
         ev3_motor_stop(left_motor, true);
         ev3_motor_stop(right_motor, true);
