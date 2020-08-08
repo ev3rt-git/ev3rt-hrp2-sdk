@@ -142,12 +142,30 @@ void main_task(intptr_t unused) {
         if(indexx == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 2;
+            ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(indexx == 0 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 1;
+            ev3_speaker_play_tone(NOTE_A5, 60);
         }
-        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0 && wheelDistance > 31){
+        else if(rgb.r > 55 && isReading == 0 && wheelDistance > 31){
+            sprintf(msgbuf, "THERE IS A CAR!!!");
+            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+            isReading = 1;
+            instructions[indexx] = wheelDistance;
+            indexx += 1;
+            ev3_speaker_play_tone(NOTE_C5, 60);
+        }
+        else if(rgb.g > 55 && isReading == 0 && wheelDistance > 31){
+            sprintf(msgbuf, "THERE IS A CAR!!!");
+            ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+            isReading = 1;
+            instructions[indexx] = wheelDistance;
+            indexx += 1;
+            ev3_speaker_play_tone(NOTE_C5, 60);
+        }
+        else if(rgb.b > 55 && isReading == 0 && wheelDistance > 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             isReading = 1;
