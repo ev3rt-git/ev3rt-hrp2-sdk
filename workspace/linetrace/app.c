@@ -132,12 +132,16 @@ void main_task(intptr_t unused) {
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
         sprintf(msgbuf, "Red:   %-4d", rgb.r);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
         sprintf(msgbuf, "Green: %-4d", rgb.g);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        sprintf(msgbuf, "1 %9f          " ,instructions[0]);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+        sprintf(msgbuf, "2 %9f          " ,instructions[1]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, "123 %9f          " ,wheelDistance);
+        sprintf(msgbuf, "3 %9f          " ,instructions[2]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
         if(indexx == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
