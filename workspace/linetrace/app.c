@@ -121,7 +121,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * ((3.1415926535 * 9.5) / 360;
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     float lasterror = 0, integral = 0;
     float instructions[3] = {0,0,0};//1 = red, 2 = yellow
     int indexx = 0;
@@ -147,7 +147,7 @@ void main_task(intptr_t unused) {
             indexx += 1;
             instructions[0] = 1;
         }
-        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0 && wheelDistance < 31){
+        else if(rgb.r > 55 || rgb.g > 55 || rgb.b > 55 && isReading == 0 && wheelDistance > 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
             isReading = 1;
