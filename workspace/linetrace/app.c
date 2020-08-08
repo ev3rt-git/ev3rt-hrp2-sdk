@@ -135,22 +135,28 @@ void main_task(intptr_t unused) {
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
-        sprintf(msgbuf, "Red:   %-4d", rgb.r);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        sprintf(msgbuf, "Green: %-4d", rgb.g);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-        sprintf(msgbuf, "Blue:  %-4d", rgb.b);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        //sprintf(msgbuf, "Red:   %-4d", rgb.r);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+        //sprintf(msgbuf, "Green: %-4d", rgb.g);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+        //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, "1 %9f          " ,detected[0]);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
         sprintf(msgbuf, "2r %9f          " ,round((detected[1] - 26) / 5));
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         sprintf(msgbuf, "3r %9f          " ,round((detected[2] - 26) / 5));
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        sprintf(msgbuf, " %9f          " ,instructions[0]);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+        sprintf(msgbuf, " %9f          " ,instructions[1]);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+        sprintf(msgbuf, " %9f          " ,instructions[2]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        sprintf(msgbuf, " %9f          " ,instructions);
+        sprintf(msgbuf, " %9f          " ,instructions[3]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(err){
-            sprintf(msgbuf, "ERROR ERROR WRONG STATE!!!!!!!!!!!!!!!!!!");
+            sprintf(msgbuf, "ERROR ERROR WRONG STATE ERROR ERROR ERROR HI?!!!!!!!!!!!!!!!!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
             ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
             ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
@@ -191,11 +197,11 @@ void main_task(intptr_t unused) {
         else{
             isReading = isReading - 1;
         }
-        int sddsfsd = round((detected[1] - 21) / 5);
-        int sddsfsd2 = round((detected[2] - 21) / 5);
+        int sddsfsd = round((detected[1] - 31) / 5);
+        int sddsfsd2 = round((detected[2] - 31) / 5);
         values[sddsfsd] = 1;
         values[sddsfsd2] = 1;
-        for(int i = 0; i < 4; i +=2){
+        for(int i = 0; i < 7; i +=2){
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
