@@ -142,44 +142,46 @@ void main_task(intptr_t unused) {
         if(indexx == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 2;
-            ev3_speaker_play_tone(NOTE_A4, 60);
+            ev3_speaker_play_tone(NOTE_A6, 60);
         }
         else if(indexx == 0 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
             instructions[0] = 1;
-            ev3_speaker_play_tone(NOTE_A5, 60);
+            ev3_speaker_play_tone(NOTE_A4, 60);
         }
-        else if(rgb.r > 55 && isReading == 0 && wheelDistance > 31){
+        else if(rgb.r > 55 && isReading <0 && wheelDistance > 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-            isReading = 1;
+            isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb.g > 55 && isReading == 0 && wheelDistance > 31){
+        else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-            isReading = 1;
+            isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb.b > 55 && isReading == 0 && wheelDistance > 31){
+        else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31){
             sprintf(msgbuf, "THERE IS A CAR!!!");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-            isReading = 1;
+            isReading = 5;
             instructions[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else{
-            isReading = 0;
+            isReading -= 1;
             sprintf(msgbuf, "what??            ");
             ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         }
         tslp_tsk(10);
     }
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
     while (wheelDistance < 1000) {
         /*if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
             isTurning = 1;
