@@ -32,7 +32,7 @@ void main_task(intptr_t unused) {
     // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
     ev3_sensor_config(color_sensor3, COLOR_SENSOR);
-    //ev3_sensor_config(color_sensor1, HT_NXT_COLOR_SENSOR);
+    ev3_sensor_config(color_sensor1, HT_NXT_COLOR_SENSOR);
     ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
 
     //todo run2020
@@ -46,45 +46,46 @@ void display_values() {
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
     sprintf(msg, "L: %d   ", value);
-    ev3_lcd_draw_string(msg, 8*0, 15*0);
+    ev3_lcd_draw_string(msg, 10*0, 15*0);
     value = ev3_motor_get_counts(right_motor);
     sprintf(msg, "R: %d   ", value);
-    ev3_lcd_draw_string(msg, 8*8, 15*0);
+    ev3_lcd_draw_string(msg, 10*8, 15*0);
 
     //read sensor rgb1
+/*
     bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb1);
     assert(val1);
     sprintf(msg, "RGB1:");
-    ev3_lcd_draw_string(msg, 8*0, 15*2);
+    ev3_lcd_draw_string(msg, 10*0, 15*1.5);
     sprintf(msg, "R: %d", rgb1.r);
-    ev3_lcd_draw_string(msg, 8*0, 15*3);
+    ev3_lcd_draw_string(msg, 10*0, /15*2.5);
     sprintf(msg, "G: %d", rgb1.g);
-    ev3_lcd_draw_string(msg, 8*7, 15*3);
+    ev3_lcd_draw_string(msg, 10*7, 15*2.5);
     sprintf(msg, "B: %d", rgb1.b);
-    ev3_lcd_draw_string(msg, 8*14, 15*3);
+    ev3_lcd_draw_string(msg, 10*14, 15*2.5);
+*/
 
     //read sensor rgb4
     bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb4);
     assert(val4);
     sprintf(msg, "RGB4:");
-    ev3_lcd_draw_string(msg, 8*0, 15*4);
+    ev3_lcd_draw_string(msg, 10*0, 15*4);
     sprintf(msg, "R: %d  ", rgb4.r);
-    ev3_lcd_draw_string(msg, 8*0, 15*5);
+    ev3_lcd_draw_string(msg, 10*0, 15*5);
     sprintf(msg, "G: %d  ", rgb4.g);
-    ev3_lcd_draw_string(msg, 8*7, 15*5);
+    ev3_lcd_draw_string(msg, 10*7, 15*5);
     sprintf(msg, "B: %d  ", rgb4.b);
-    ev3_lcd_draw_string(msg, 8*14, 15*5);
-    }
+    ev3_lcd_draw_string(msg, 10*14, 15*5);
 
     //read linefollow sensors
     sprintf(msg, "Light2 & Light3:");
-    ev3_lcd_draw_string(msg, 8*0, 15*7);
+    ev3_lcd_draw_string(msg, 10*0, 15*6.5);
     value = ev3_color_sensor_get_reflect(color_sensor2);
     sprintf(msg, "L: %d  ", value);
-    ev3_lcd_draw_string(msg, 8*0, 15*8);
+    ev3_lcd_draw_string(msg, 10*0, 15*7.5);
     value = ev3_color_sensor_get_reflect(color_sensor3);
     sprintf(msg, "L: %d  ", value);
-    ev3_lcd_draw_string(msg, 8*7, 15*8);
+    ev3_lcd_draw_string(msg, 10*7, 15*7.5);
 }
 
 static void button_clicked_handler(intptr_t button) {
