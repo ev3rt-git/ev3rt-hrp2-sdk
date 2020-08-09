@@ -127,7 +127,6 @@ void main_task(intptr_t unused) {
     float lasterror = 0, integral = 0;
     float detected[3] = {0,0,0};//1 = red, 2 = yellow
     float values[8] = {0,0,0,0,0,0,0,0};
-    float instructions[4] = {0,0,0,0};
     int indexx = 0;
     int err = 0;
     int isReading = 0;
@@ -148,13 +147,13 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         sprintf(msgbuf, "3r %9f          " ,round((detected[2] - 26) / 5));
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, " %9f          " ,instructions[0]);
+        sprintf(msgbuf, " %9f          " ,tasks[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        sprintf(msgbuf, " %9f          " ,instructions[1]);
+        sprintf(msgbuf, " %9f          " ,tasks[1]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, " %9f          " ,instructions[2]);
+        sprintf(msgbuf, " %9f          " ,tasks[2]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        sprintf(msgbuf, " %9f          " ,instructions[3]);
+        sprintf(msgbuf, " %9f          " ,tasks[3]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(err){
             sprintf(msgbuf, "ERROR ERROR WRONG STATE ERROR ERROR ERROR HI?!!!!!!!!!!!!!!!!!!");
@@ -178,19 +177,19 @@ void main_task(intptr_t unused) {
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 50;
+            isReading = 450;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 50;
+            isReading = 450;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31){
-            isReading = 50;
+            isReading = 450;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
@@ -205,23 +204,33 @@ void main_task(intptr_t unused) {
         for(int i = 0; i < 7; i +=2){
             if(values[i] == 0){
                 if(values[i + 1] == 0){
-                    instructions[i/2] = 0;
+                    tasks[i/2] = 0;
                 }
                 else{
-                    instructions[i/2] = 2;
+                    tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
-                    instructions[i/2] = 1;
+                    tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
                 }
             }
         }
+        if(detected[0] = 2){
+            pos.street = YELLOW_STREET;
+        }
+        if(detected[0] = 1){
+            pos.street = RED_STREET;
+        }
 
-        tslp_tsk(10);
+        pos.section = 1;
+        pos.distance = wheelDistance;
+        pos.dash = 0;
+        pos.facing = 0;
+        tslp_tsk(1);
     }
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
