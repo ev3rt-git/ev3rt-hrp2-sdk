@@ -16,7 +16,7 @@
 #endif
 
 
-//position pos = {-1, -1, -1, 0, 0};
+position pos = {-1, -1, -1, 0, 0};
 const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
 static void button_clicked_handler(intptr_t button) {
@@ -132,22 +132,22 @@ void main_task(intptr_t unused) {
     int err = 0;
     int isReading = 0;
     ev3_motor_steer(left_motor,right_motor,10,0);
-    while(wheelDistance < 85){
+    while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
-        sprintf(msgbuf, "Red:   %-4d", rgb.r);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        sprintf(msgbuf, "Green: %-4d", rgb.g);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+        //sprintf(msgbuf, "Red:   %-4d", rgb.r);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+        //sprintf(msgbuf, "Green: %-4d", rgb.g);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, " %9f          " ,detected[0]);
+        sprintf(msgbuf, "Color %9f          " ,detected[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        //sprintf(msgbuf, "2r %9f          " ,pos.street);
-        //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-        //sprintf(msgbuf, "3r %9f          " ,pos.distance);
-        //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        sprintf(msgbuf, "Street %d          " ,pos.street);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+        sprintf(msgbuf, "distance %d          " ,pos.distance);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, " %9f          " ,instructions[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, " %9f          " ,instructions[1]);
@@ -206,33 +206,45 @@ void main_task(intptr_t unused) {
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
-                    //tasks[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
                 else{
                     instructions[i/2] = 1;
-                    //tasks[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
                     instructions[i/2] = 2;
-                    //tasks[i/2] = 2;
+                    tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
                 }
             }
         }
-
-        //pos.section = 1;
-        //pos.distance = wheelDistance;
-        //pos.dash = 0;
-        //pos.facing = 0;
+        if(detected[0] = 2){
+            pos.street = 2;
+        }
+        if(detected[0] = 1){
+            pos.street = 3;
+        }
+        pos.section = 1;
+        pos.distance = wheelDistance;
+        pos.dash = 0;
+        pos.facing = 0;
         tslp_tsk(10);
     }
+    ev3_motor_steer(left_motor,right_motor,15,-45);
+    tslp_tsk(500);
+    ev3_motor_steer(left_motor,right_motor,15,45);
+    tslp_tsk(500);
+    ev3_motor_steer(left_motor,right_motor,0,0);
+    wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
+    pos.distance = wheelDistance;
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
-    while (wheelDistance < 1000) {
+    while (wheelDistance < 0) {
         /*if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
             isTurning = 1;
             turnReturn = snow1[index][1] * -1;
@@ -388,6 +400,7 @@ void main_task(intptr_t unused) {
     //rgb_raw_t rgb;
 
 }
+
 
 
 
