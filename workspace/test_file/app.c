@@ -18,6 +18,8 @@ position pos = {-1, -1, -1, 0, 0};
 
 void main_task(intptr_t unused) {
 
+    config();
+
     //run program
     readCode();
     tslp_tsk(50000000);
@@ -32,13 +34,12 @@ void readCode() {
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, 20, 1);
-    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 200) {
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 300) {
         display_values();
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    tslp_tsk(500);
-
+    
     //record instructions
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (rgb4.g > 30 && rgb4.b > 25) {
@@ -51,7 +52,14 @@ void readCode() {
     } else {
         pos.street = YELLOW_STREET;
     }
-    tslp_tsk(250);
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    ev3_motor_steer(left_motor, right_motor, -10, 0);
+    while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 20) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
 
     int index;
     for (index = 0; index < 4; index++) {
@@ -59,7 +67,7 @@ void readCode() {
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
         ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 57.5) {
             display_values();
         }
         ev3_motor_stop(left_motor, true);
@@ -72,7 +80,7 @@ void readCode() {
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
         ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 57.5) {
             display_values();
         }
         ev3_motor_stop(left_motor, true);
@@ -85,7 +93,11 @@ void readCode() {
 
         // decode instructions
         if (bit1 == 1) {
-            tasks[index] = BLACKMATERIAL;
+            if (bit2 == 1) {
+                tasks[index] = 3;
+            } else {
+                tasks[index] = BLACKMATERIAL;
+            }
         } else {
             if (bit2 == 1) {
                 tasks[index] = BLUEMATERIAL;
@@ -94,7 +106,6 @@ void readCode() {
             }
         }
     }
-    tslp_tsk(250);
 
     //detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
@@ -110,7 +121,7 @@ void readCode() {
     sprintf(lcdstr, "%d, %d", tasks[BLUE_STREET], tasks[GREEN_STREET]);
     ev3_lcd_draw_string(lcdstr, 0, 0);
     sprintf(lcdstr, "%d, %d", tasks[YELLOW_STREET], tasks[RED_STREET]);
-    ev3_lcd_draw_string(lcdstr, 0, 0);
+    ev3_lcd_draw_string(lcdstr, 0, 15);
 
     //record position
     pos.section = 1;
@@ -167,7 +178,7 @@ void display_values() {
     int value;
 
     //wait for values to be refreshed
-    tslp_tsk(1);
+    tslp_tsk(2);
 
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
