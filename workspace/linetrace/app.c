@@ -144,9 +144,9 @@ void main_task(intptr_t unused) {
         //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, "1 %9f          " ,detected[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        sprintf(msgbuf, "2r %9f          " ,round((detected[1] - 26) / 5));
+        sprintf(msgbuf, "2r %9f          " ,pos.street);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-        sprintf(msgbuf, "3r %9f          " ,round((detected[2] - 26) / 5));
+        sprintf(msgbuf, "3r %9f          " ,pos.distance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, " %9f          " ,instructions[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
@@ -206,21 +206,34 @@ void main_task(intptr_t unused) {
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
+                    tasks[i/2] = 1;
                 }
                 else{
-                    instructions[i/2] = 2;
+                    instructions[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
-                    instructions[i/2] = 1;
+                    instructions[i/2] = 2;
+                    tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
                 }
             }
         }
+        if(detected[0] = 2){
+            pos.street = 2;
+        }
+        if(detected[0] = 1){
+            pos.street = 3;
+        }
 
+        //pos.section = 1;
+        //pos.distance = wheelDistance;
+        //pos.dash = 0;
+        //pos.facing = 0;
         tslp_tsk(10);
     }
     ev3_motor_reset_counts(left_motor);
