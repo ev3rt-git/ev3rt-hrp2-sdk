@@ -174,7 +174,7 @@ void main_task(intptr_t unused) {
         }
         else if(indexx == 0 && rgb.r > 45 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
-            //detected[0] = 1;
+            detected[0] = 1;
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
