@@ -16,7 +16,7 @@
 #endif
 
 
-position pos = {-1, -1, -1, 0, 0};
+//position pos = {-1, -1, -1, 0, 0};
 const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
 static void button_clicked_handler(intptr_t button) {
@@ -136,18 +136,18 @@ void main_task(intptr_t unused) {
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
-        //sprintf(msgbuf, "Red:   %-4d", rgb.r);
-        //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        //sprintf(msgbuf, "Green: %-4d", rgb.g);
-        //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+        sprintf(msgbuf, "Red:   %-4d", rgb.r);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+        sprintf(msgbuf, "Green: %-4d", rgb.g);
+        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, "1 %9f          " ,detected[0]);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        sprintf(msgbuf, "2r %9f          " ,pos.street);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-        sprintf(msgbuf, "3r %9f          " ,pos.distance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+        //sprintf(msgbuf, "2r %9f          " ,pos.street);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+        //sprintf(msgbuf, "3r %9f          " ,pos.distance);
+        //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         sprintf(msgbuf, " %9f          " ,instructions[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
         sprintf(msgbuf, " %9f          " ,instructions[1]);
@@ -172,9 +172,9 @@ void main_task(intptr_t unused) {
             detected[0] = 2;
             ev3_speaker_play_tone(NOTE_A6, 60);
         }
-        else if(indexx == 0 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
+        else if(indexx == 0 && rgb.r > 45 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
-            detected[0] = 1;
+            //detected[0] = 1;
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31){
@@ -206,17 +206,17 @@ void main_task(intptr_t unused) {
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
-                    tasks[i/2] = 1;
+                    //tasks[i/2] = 1;
                 }
                 else{
                     instructions[i/2] = 1;
-                    tasks[i/2] = 1;
+                    //tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
                     instructions[i/2] = 2;
-                    tasks[i/2] = 2;
+                    //tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
@@ -224,10 +224,10 @@ void main_task(intptr_t unused) {
             }
         }
         if(detected[0] = 2){
-            pos.street = 2;
+            //pos.street = 2;
         }
         if(detected[0] = 1){
-            pos.street = 3;
+            //pos.street = 3;
         }
 
         //pos.section = 1;
