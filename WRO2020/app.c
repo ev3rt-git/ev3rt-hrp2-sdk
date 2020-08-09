@@ -27,6 +27,121 @@ void main_task(intptr_t unused) {
     //todo run2020
 }
 
+void readCode() {
+    //define variables
+    int bit1 = -1;
+    int bit2 = -1;
+
+    //leave start
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    ev3_motor_steer(left_motor, right_motor, 30, 1);
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 280) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
+
+    //record instructions
+    ev3_motor_steer(left_motor, right_motor, 10, 1);
+    while (rgb4.g > 30 && rgb4.b > 25) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
+    if (rgb4.g < 30) {
+        pos.street = RED_STREET;
+    } else {
+        pos.street = YELLOW_STREET;
+    }
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    ev3_motor_steer(left_motor, right_motor, -10, 0);
+    while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 20) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
+
+    int index;
+    for (index = 0; index < 4; index++) {
+        //read instructions
+        ev3_motor_reset_counts(EV3_PORT_B);
+        ev3_motor_reset_counts(EV3_PORT_C);
+        ev3_motor_steer(left_motor, right_motor, 10, 1);
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+            display_values();
+        }
+        ev3_motor_stop(left_motor, true);
+        ev3_motor_stop(right_motor, true);
+        if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
+            bit1 = 1;
+        } else {
+            bit1 = 0;
+        }
+        ev3_motor_reset_counts(EV3_PORT_B);
+        ev3_motor_reset_counts(EV3_PORT_C);
+        ev3_motor_steer(left_motor, right_motor, 10, 1);
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+            display_values();
+        }
+        ev3_motor_stop(left_motor, true);
+        ev3_motor_stop(right_motor, true);
+        if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
+            bit2 = 1;
+        } else {
+            bit2 = 0;
+        }
+
+        // decode instructions
+        if (bit1 == 1) {
+            if (bit2 == 1) {
+                exit(1);
+            } else {
+                tasks[index] = BLACKMATERIAL;
+            }
+        } else {
+            if (bit2 == 1) {
+                tasks[index] = BLUEMATERIAL;
+            } else {
+                tasks[index] = REMOVESNOW;
+            }
+        }
+    }
+
+    //detect line
+    ev3_motor_steer(left_motor, right_motor, 10, 1);
+    while (ev3_color_sensor_get_reflect(color_sensor2) > 15 && ev3_color_sensor_get_reflect(color_sensor3) > 15) {
+        display_values();
+    }
+    ev3_motor_stop(left_motor, true);
+    ev3_motor_stop(right_motor, true);
+
+    //align robot
+    ev3_motor_rotate(left_motor, -100, 15, true);
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
+    ev3_motor_steer(left_motor, right_motor, 10, 0);
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 140) {
+        display_values();
+    }
+    ev3_motor_rotate(right_motor, -100, 15, true);
+
+    //display things in a very small font
+    ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
+    char lcdstr[100];
+    sprintf(lcdstr, "%d, %d", tasks[BLUE_STREET], tasks[GREEN_STREET]);
+    ev3_lcd_draw_string(lcdstr, 0, 0);
+    sprintf(lcdstr, "%d, %d", tasks[YELLOW_STREET], tasks[RED_STREET]);
+    ev3_lcd_draw_string(lcdstr, 0, 15);
+
+    //record position
+    pos.section = 1;
+    pos.distance = 51;
+    pos.dash = 0;
+    pos.facing = 0;
+}
+
 void display_values() {
     //declare variables
     char msg[100];

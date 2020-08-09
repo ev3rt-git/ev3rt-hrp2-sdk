@@ -33,13 +33,13 @@ void readCode() {
     //leave start
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
-    ev3_motor_steer(left_motor, right_motor, 20, 1);
-    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 300) {
+    ev3_motor_steer(left_motor, right_motor, 30, 1);
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 280) {
         display_values();
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    
+
     //record instructions
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (rgb4.g > 30 && rgb4.b > 25) {
@@ -67,7 +67,7 @@ void readCode() {
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
         ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 57.5) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
             display_values();
         }
         ev3_motor_stop(left_motor, true);
@@ -80,7 +80,7 @@ void readCode() {
         ev3_motor_reset_counts(EV3_PORT_B);
         ev3_motor_reset_counts(EV3_PORT_C);
         ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 57.5) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
             display_values();
         }
         ev3_motor_stop(left_motor, true);
@@ -94,7 +94,7 @@ void readCode() {
         // decode instructions
         if (bit1 == 1) {
             if (bit2 == 1) {
-                tasks[index] = 3;
+                exit(1);
             } else {
                 tasks[index] = BLACKMATERIAL;
             }
@@ -114,6 +114,16 @@ void readCode() {
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
+
+    //align robot
+    ev3_motor_rotate(left_motor, -100, 15, true);
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
+    ev3_motor_steer(left_motor, right_motor, 10, 0);
+    while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 140) {
+        display_values();
+    }
+    ev3_motor_rotate(right_motor, -100, 15, true);
 
     //display things in a very small font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
