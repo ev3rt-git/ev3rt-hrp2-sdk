@@ -37,8 +37,6 @@ void readCode() {
     while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 280) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
 
     //record instructions
     ev3_motor_steer(left_motor, right_motor, 10, 1);
@@ -61,30 +59,25 @@ void readCode() {
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
 
+    ev3_motor_reset_counts(EV3_PORT_B);
+    ev3_motor_reset_counts(EV3_PORT_C);
+    ev3_motor_steer(left_motor, right_motor, 10, 1);
+
     int index;
     for (index = 0; index < 4; index++) {
+
         //read instructions
-        ev3_motor_reset_counts(EV3_PORT_B);
-        ev3_motor_reset_counts(EV3_PORT_C);
-        ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < ((index+1) * 55)) {
             display_values();
         }
-        ev3_motor_stop(left_motor, true);
-        ev3_motor_stop(right_motor, true);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit1 = 1;
         } else {
             bit1 = 0;
         }
-        ev3_motor_reset_counts(EV3_PORT_B);
-        ev3_motor_reset_counts(EV3_PORT_C);
-        ev3_motor_steer(left_motor, right_motor, 10, 1);
-        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < 55) {
+        while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < ((index + 2) * 55)) {
             display_values();
         }
-        ev3_motor_stop(left_motor, true);
-        ev3_motor_stop(right_motor, true);
         if (((rgb4.r + rgb4.g + rgb4.b) / 3) > 25) {
             bit2 = 1;
         } else {
