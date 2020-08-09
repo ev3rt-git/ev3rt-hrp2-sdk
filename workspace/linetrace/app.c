@@ -142,7 +142,7 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
         //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, "1 %9f          " ,detected[0]);
+        sprintf(msgbuf, " %9f          " ,detected[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
         //sprintf(msgbuf, "2r %9f          " ,pos.street);
         //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
@@ -174,22 +174,22 @@ void main_task(intptr_t unused) {
         }
         else if(indexx == 0 && rgb.r > 45 && wheelDistance > 25 && wheelDistance < 31){
             indexx += 1;
-            //detected[0] = 1;
+            detected[0] = 1;
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
-        else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31){
+        else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
             isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31){
+        else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
             isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31){
+        else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
             isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
@@ -222,12 +222,6 @@ void main_task(intptr_t unused) {
                     err = 1;
                 }
             }
-        }
-        if(detected[0] = 2){
-            //pos.street = 2;
-        }
-        if(detected[0] = 1){
-            //pos.street = 3;
         }
 
         //pos.section = 1;
@@ -394,3 +388,6 @@ void main_task(intptr_t unused) {
     //rgb_raw_t rgb;
 
 }
+
+
+
