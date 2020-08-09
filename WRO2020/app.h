@@ -10,7 +10,6 @@
 #ifndef STACK_SIZE
 #define	STACK_SIZE		4096
 #endif
-
 #ifndef LOOP_REF
 #define LOOP_REF		ULONG_C(1000000)
 #endif
