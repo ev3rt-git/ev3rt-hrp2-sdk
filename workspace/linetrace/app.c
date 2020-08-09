@@ -127,6 +127,7 @@ void main_task(intptr_t unused) {
     float lasterror = 0, integral = 0;
     float detected[3] = {0,0,0};//1 = red, 2 = yellow
     float values[8] = {0,0,0,0,0,0,0,0};
+    float instructions[4] = {0,0,0,0};
     int indexx = 0;
     int err = 0;
     int isReading = 0;
@@ -147,13 +148,13 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         sprintf(msgbuf, "3r %9f          " ,pos.distance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, " %9i          " ,tasks[0]);
+        sprintf(msgbuf, " %9i          " ,instructions[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        sprintf(msgbuf, " %9i          " ,tasks[1]);
+        sprintf(msgbuf, " %9i          " ,instructions[1]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, " %9i          " ,tasks[2]);
+        sprintf(msgbuf, " %9i          " ,instructions[2]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        sprintf(msgbuf, " %9i          " ,tasks[3]);
+        sprintf(msgbuf, " %9i          " ,instructions[3]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(err){
             sprintf(msgbuf, "ERROR ERROR WRONG STATE ERROR ERROR ERROR HI?!!!!!!!!!!!!!!!!!!");
@@ -204,14 +205,17 @@ void main_task(intptr_t unused) {
         for(int i = 0; i < 7; i +=2){
             if(values[i] == 0){
                 if(values[i + 1] == 0){
-                    tasks[i/2] = 0;
+                    instructions[i/2] = 0;
+                    tasks[i/2] = 1;
                 }
                 else{
+                    instructions[i/2] = 1;
                     tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
+                    instructions[i/2] = 2;
                     tasks[i/2] = 2;
                 }
                 else{
