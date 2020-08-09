@@ -148,13 +148,13 @@ void main_task(intptr_t unused) {
         ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
         sprintf(msgbuf, "3r %9f          " ,pos.distance);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, " %9i          " ,instructions[0]);
+        sprintf(msgbuf, " %9f          " ,instructions[0]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        sprintf(msgbuf, " %9i          " ,instructions[1]);
+        sprintf(msgbuf, " %9f          " ,instructions[1]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        sprintf(msgbuf, " %9i          " ,instructions[2]);
+        sprintf(msgbuf, " %9f          " ,instructions[2]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        sprintf(msgbuf, " %9i          " ,instructions[3]);
+        sprintf(msgbuf, " %9f          " ,instructions[3]);
         ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
         if(err){
             sprintf(msgbuf, "ERROR ERROR WRONG STATE ERROR ERROR ERROR HI?!!!!!!!!!!!!!!!!!!");
@@ -230,10 +230,10 @@ void main_task(intptr_t unused) {
             pos.street = 3;
         }
 
-        pos.section = 1;
-        pos.distance = wheelDistance;
-        pos.dash = 0;
-        pos.facing = 0;
+        //pos.section = 1;
+        //pos.distance = wheelDistance;
+        //pos.dash = 0;
+        //pos.facing = 0;
         tslp_tsk(10);
     }
     ev3_motor_reset_counts(left_motor);
