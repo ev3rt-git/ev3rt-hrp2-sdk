@@ -113,7 +113,7 @@ void main_task(intptr_t unused) {
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
-                    tasks[i/2] = 1;
+                    tasks[i/2] = 0;
                 }
                 else{
                     instructions[i/2] = 1;
@@ -156,8 +156,76 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     tslp_tsk(2000);
+    
+    
+    //0:b,1:g,2:y,3:r
+    if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 2){
+        
+    }
+    if(tasks[0] == 0 && tasks[2] == 0 && pos.street == 2){
+        
+    }
+    if(tasks[0] == 0 && tasks[3] == 0 && pos.street == 2){
+        
+    }
+    if(tasks[1] == 0 && tasks[2] == 0 && pos.street == 2){
+        
+    }
+    if(tasks[1] == 0 && tasks[3] == 0 && pos.street == 2){
+        
+    }
+    if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
+        
+    }
+    //red
+    if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
+        
+    }
+    if(tasks[0] == 0 && tasks[2] == 0 && pos.street == 3){
+        
+    }
+    if(tasks[0] == 0 && tasks[3] == 0 && pos.street == 3){
+        
+    }
+    if(tasks[1] == 0 && tasks[2] == 0 && pos.street == 3){
+        
+    }
+    if(tasks[1] == 0 && tasks[3] == 0 && pos.street == 3){
+        
+    }
+    if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
+        
+    }
+}
+
+void displayValues(){
+    //sprintf(msgbuf, "Red:   %-4d", rgb.r);
+    //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+    //sprintf(msgbuf, "Green: %-4d", rgb.g);
+    //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+    //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+    //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+    sprintf(msgbuf, "Color %9f          " ,detected[0]);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+    sprintf(msgbuf, "Street %d          " ,pos.street);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+    sprintf(msgbuf, "distance %d          " ,pos.distance);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+    sprintf(msgbuf, " %9f          " ,instructions[0]);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+    sprintf(msgbuf, " %9f          " ,instructions[1]);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+    sprintf(msgbuf, " %9f          " ,instructions[2]);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
+    sprintf(msgbuf, " %9f          " ,instructions[3]);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+}
+void dashPID(int distance,int[4] snow1){
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
+    ev3_motor_reset_counts(a_motor);
     while (wheelDistance < 160) {
-        if((wheelDistance >= snow1[index1][0] - 3) && (isTurning == 0) && index1 < 2){
+        if((wheelDistance >= snow1[index1][0] - 3) && (isTurning == 0) && index1 < 4){
             isTurning = 1;
             turnReturn = snow1[index1][1] * -1;
             ev3_motor_rotate(a_motor,snow1[index1][1],50,false);
@@ -198,115 +266,6 @@ void main_task(intptr_t unused) {
         tslp_tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
-        /*sprintf(msgbuf, "Red:   %-4d", rgb.r);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        sprintf(msgbuf, "Green: %-4d", rgb.g); 
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        sprintf(msgbuf, "Blue:  %-4d", rgb.b);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);*/
-    }
-    /*
-    int color1 = 0;
-    int color2 = 0;
-    //1:r,2:y,3:g,4:b
-    if(color1 == 1){
-        if(color2 == 2){
-            //collect snow from yellow
-            //collect 4 snow from red on way to snow containers
-        }
-        if(color2 == 3){
-            
-        }
-        if(color2 == 4){
-            
-        }
-    }
-    if(color1 == 2){
-        if(color2 == 1){
-            //collect snow from yellow
-            //collect 4 snow from red on way to snow containers
-        }
-        if(color2 == 3){
-            //collect snow from yellow
-            //collect snow from green
-        }
-        if(color2 == 4){
-            //collect snow from yellow
-        }
-    }
-    if(color1 == 3){
-        if(color2 == 1){
-            
-        }
-        if(color2 == 2){
-            //collect snow from yellow
-            //collect snow from green
-        }
-        if(color2 == 4){
-            
-        }
-    }
-    if(color1 == 4){
-        if(color2 == 1){
-            
-        }
-        if(color2 == 2){
-            
-        }
-        if(color2 == 3){
-            
-        }
-    }*/
-	//char msgbuf[100];
-    //rgb_raw_t rgb;
-
-}
-
-void displayValues(){
-    //sprintf(msgbuf, "Red:   %-4d", rgb.r);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    //sprintf(msgbuf, "Green: %-4d", rgb.g);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, "Color %9f          " ,detected[0]);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, "Street %d          " ,pos.street);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    sprintf(msgbuf, "distance %d          " ,pos.distance);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, " %9f          " ,instructions[0]);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-    sprintf(msgbuf, " %9f          " ,instructions[1]);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-    sprintf(msgbuf, " %9f          " ,instructions[2]);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-    sprintf(msgbuf, " %9f          " ,instructions[3]);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-}
-void dashPID(int distance){
-    ev3_motor_reset_counts(left_motor);
-    ev3_motor_reset_counts(right_motor);
-    ev3_motor_reset_counts(a_motor);
-    ev3_motor_rotate(a_motor,-500,15,true);
-    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
-    float lasterror = 0, integral = 0;
-    while (wheelDistance < distance) {
-        if(ev3_motor_get_counts(a_motor) > 490){
-            ev3_motor_reset_counts(a_motor);
-            ev3_motor_rotate(a_motor,-500,13,false);
-        }
-        if(ev3_motor_get_counts(a_motor) < -490){
-            ev3_motor_reset_counts(a_motor);
-            ev3_motor_rotate(a_motor,500,13,false);
-        }
-        wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
-        float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
-        integral = error + integral * 0.5;
-        float steer = 0.05 * error + 0.5 * integral + 0.25 * (error - lasterror);
-        ev3_motor_steer(left_motor, right_motor, 30, steer);
-        lasterror = error;
-        tslp_tsk(1);
     }
     
     ev3_motor_steer(left_motor, right_motor, 0, 0);
