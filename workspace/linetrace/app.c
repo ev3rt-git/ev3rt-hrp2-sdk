@@ -30,9 +30,9 @@ static void button_clicked_handler(intptr_t button) {
 
 //int snow1[4][2] = {{7,-300},{34,300},{96,-300},{110,300}};
 //int snow1[4][2] = {{8,-300},{38,300},{109,-300},{131,300}};
-//int snow1[4][2] = {{11,150},{17,-150},{121,-150},{139,150}};
+int snow1[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
 //int snow1[4][2] = {{17,-300},{70,-350}};
-int snow1[1][2] = {{17,-300}};
+//int snow1[1][2] = {{17,-300}};
 int index1 = 0;
 int isTurning = 0;
 int turnReturn = 0;
@@ -142,7 +142,7 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,15,-45);
     tslp_tsk(700);
     ev3_motor_steer(left_motor,right_motor,15,45);
-    tslp_tsk(775);
+    tslp_tsk(700);
     ev3_motor_steer(left_motor,right_motor,0,0);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
@@ -189,7 +189,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        
+        dashPID(160,snow1);
     }
 }
 
@@ -215,24 +215,24 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void dashPID(int distance,int[4] snow1){
+void dashPID(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    while (wheelDistance < 160) {
-        if((wheelDistance >= snow1[index1][0] - 3) && (isTurning == 0) && index1 < 4){
+    while (wheelDistance < distance) {
+        if((wheelDistance >= snow[index1][0] - 3) && (isTurning == 0) && index1 < 6){
             isTurning = 1;
-            turnReturn = snow1[index1][1] * -1;
-            ev3_motor_rotate(a_motor,snow1[index1][1],50,false);
+            turnReturn = snow[index1][1] * -1;
+            ev3_motor_rotate(a_motor,snow[index1][1],50,false);
             ev3_speaker_play_tone(NOTE_C4, 60);
-            if(index1 == 4){
+            if(index1 == 6){
 
             }
             else{
                 index1 = index1 + 1;
             }
         }
-        if((isTurning == 1) && wheelDistance >= snow1[index1 - 1][0] + 3){
+        if((isTurning == 1) && wheelDistance >= snow[index1 - 1][0] + 3){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
@@ -255,7 +255,7 @@ void dashPID(int distance,int[4] snow1){
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
-        float steer = 0.04 * error + 0.55 * integral + 0.2 * (error - lasterror);
+        float steer = 0.04 * error + 0.5 * integral + 0.2 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
