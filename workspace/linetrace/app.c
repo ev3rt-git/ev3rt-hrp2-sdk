@@ -16,7 +16,7 @@
 #endif
 
 
-//position pos = {-1, -1, -1, 0, 0};
+position pos = {-1, -1, -1, 0, 0};
 const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
 static void button_clicked_handler(intptr_t button) {
@@ -125,7 +125,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_steer(left_motor,right_motor,10,0);
-    while(wheelDistance < 85){
+    while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
@@ -169,28 +169,33 @@ void main_task(intptr_t unused) {
             if(values[i] == 0){
                 if(values[i + 1] == 0){
                     instructions[i/2] = 0;
-                    //tasks[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
                 else{
                     instructions[i/2] = 1;
-                    //tasks[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
             }
             else{
                 if(values[i + 1] == 0){
                     instructions[i/2] = 2;
-                    //tasks[i/2] = 2;
+                    tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
                 }
             }
         }
-
-        //pos.section = 1;
-        //pos.distance = wheelDistance;
-        //pos.dash = 0;
-        //pos.facing = 0;
+        if(detected[0] = 2){
+            pos.street = 2;
+        }
+        if(detected[0] = 1){
+            pos.street = 3;
+        }
+        pos.section = 1;
+        pos.distance = wheelDistance;
+        pos.dash = 0;
+        pos.facing = 0;
         tslp_tsk(10);
     }
     ev3_motor_steer(left_motor,right_motor,15,-90);
@@ -332,4 +337,5 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
+
 
