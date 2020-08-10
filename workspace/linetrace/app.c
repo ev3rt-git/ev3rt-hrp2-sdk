@@ -256,7 +256,8 @@ void dashPID(int distance,int snow[6][2]){
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
-        float steer = 0.06 * error + 0.5 * integral + 0.3 * (error - lasterror);
+        //float steer = 0.07 * error + 0.5 * integral + 0.3 * (error - lasterror);
+        float steer = 1 * error + 0 * integral + 1 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
