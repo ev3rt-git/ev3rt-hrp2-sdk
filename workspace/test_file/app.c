@@ -105,7 +105,7 @@ void readCode() {
 
     //detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
-    while (ev3_color_sensor_get_reflect(color_sensor2) > 15 && ev3_color_sensor_get_reflect(color_sensor3) > 15) {
+    while (ev3_color_sensor_get_reflect(color_sensor2) > 20 && ev3_color_sensor_get_reflect(color_sensor3) > 20) {
         display_values();
     }
     ev3_motor_stop(left_motor, true);
@@ -193,7 +193,7 @@ void display_values() {
     int value;
 
     //wait for values to be refreshed
-    tslp_tsk(2);
+    tslp_tsk(3);
 
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
