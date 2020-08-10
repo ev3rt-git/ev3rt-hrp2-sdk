@@ -21,10 +21,6 @@ int ready = true;
 void main_task(intptr_t unused) {
 
     config();
-    while (ev3_button_is_pressed(ENTER_BUTTON) == false) {
-        tslp_tsk(15);
-    }
-    tslp_tsk(250);
 
     //run program
     readCode();
@@ -135,7 +131,7 @@ void readCode() {
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
 
-    //display things in a very small font
+    //display things in a very medium font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
     char lcdstr[100];
     sprintf(lcdstr, "%d, %d", tasks[BLUE_STREET], tasks[GREEN_STREET]);
@@ -159,6 +155,10 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
+static void on_ready_run(intptr_t button) {
+    ready = false;
+}
+
 /*
 static void exit_program_with_exception() {
     ev3_motor_steer(left_motor, right_motor, 0, 0);
@@ -167,8 +167,13 @@ static void exit_program_with_exception() {
 */
 
 void config() {
+    //declare/define variables
+    char thing[100];
+    int la = 0;
+
     // Register button handlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
+    ev3_button_set_on_clicked(ENTER_BUTTON, on_ready_run, ENTER_BUTTON);
 
     // Configure motors
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -190,6 +195,17 @@ void config() {
 
     // Configure brick
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
+
+    //wait for button press
+    sprintf(thing, "Press OK to run", la);
+    ev3_lcd_draw_string(thing, 14, 45);
+    ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
+    sprintf(thing, "OK", la);
+    ev3_lcd_draw_string(thing, 79, 90);
+    while (ready) {
+        tslp_tsk(50);
+    }
+    ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
 }
 
 void display_values() {
