@@ -100,10 +100,10 @@ ER ev3_sensor_config(sensor_port_t port, sensor_type_t type) {
         // It seems analog sensor can't work correctly in I2C mode
     	ercd = uart_sensor_config(port, 0);
     	assert(ercd == E_OK);
-        /* Busy wait 10ms to ensure that sensor value is updated */
+        /* Busy wait 2ms to ensure that sensor value is updated */
         SYSTIM start, now;
         get_tim(&start);
-        do { get_tim(&now); } while (now - start < 10);
+        do { get_tim(&now); } while (now - start < 2);
         }
         break;
 
@@ -483,9 +483,38 @@ error_exit:
 bool_t ht_nxt_color_sensor_measure_rgb(sensor_port_t port, rgb_raw_t *val) {
 	ER ercd;
 
-	CHECK_PORT(port);
-	CHECK_COND(ev3_sensor_get_type(port) == HT_NXT_COLOR_SENSOR, E_OBJ);
-	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+	if (has_inited) {
+		API_ERROR("Sensor ports already initialized");
+		return;
+	} else
+		has_inited = true;
+
+	sensors[Port1] = type1;
+	sensors[Port2] = type2;
+	sensors[Port3] = type3;
+	sensors[Port4] = type4;
+
+	for (int i = Port1; i < TNUM_SENSOR_PORT; ++i) {
+		switch (sensors[i]) {
+		case NONE_SENSOR:
+		case TOUCH_SENSOR:
+			// Do nothing for analog sensor or no sensor
+			break;
+
+	    case ULTRASONIC_SENSOR:
+	    case INFRARED_SENSOR:
+	    case GYRO_SENSOR:
+	    case COLOR_SENSOR:
+	        // Configure UART sensor
+	    	ercd = uart_sensor_config(i, 0);
+	    	assert(ercd == E_OK);
+			break;
+
+		default:
+			API_ERROR("Invalid sensor type %d", sensors[i]);
+			return;
+		}
+	}
 
     val->r = pI2CSensorData[port].raw[0];
     val->g = pI2CSensorData[port].raw[1];
@@ -504,9 +533,36 @@ error_exit:
 bool_t nxt_temp_sensor_measure(sensor_port_t port, float *temp) {
 	ER ercd;
 
-	CHECK_PORT(port);
-	CHECK_COND(ev3_sensor_get_type(port) == NXT_TEMP_SENSOR, E_OBJ);
-	CHECK_COND(*pI2CSensorData[port].status == I2C_TRANS_IDLE, E_OBJ);
+	if (!has_inited) {
+		API_ERROR("Sensor ports must be initialized before reconfiguration");
+		return;
+	}
+
+	sensors[port] = type;
+
+	switch (type) {
+	case NONE_SENSOR:
+	case TOUCH_SENSOR:
+		// Do nothing for analog sensor or no sensor
+		break;
+
+    case ULTRASONIC_SENSOR:
+    case INFRARED_SENSOR:
+    case GYRO_SENSOR:
+    case COLOR_SENSOR:
+        // Configure UART sensor
+    	ercd = uart_sensor_config(port, 0);
+    	assert(ercd == E_OK);
+        // Wait UART sensor to finish initialization
+    	while(!uart_sensor_data_ready(port));
+		break;
+
+	default:
+		API_ERROR("Invalid sensor type %d", type);
+		return;
+	}
+}
+
 
     //syslog(LOG_EMERG, "TEMP RAW: 0x%x 0x%x", pI2CSensorData[port].raw[0], pI2CSensorData[port].raw[1]);
     int16_t raw = pI2CSensorData[port].raw[0];
