@@ -22,11 +22,6 @@ const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
     case BACK_BUTTON:
-#if !defined(BUILD_MODULE)
-        syslog(LOG_NOTICE, "Back button clicked.");
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
-        exit(0);
-#endif
         ev3_motor_steer(left_motor, right_motor, 0, 0);
         exit(0);
         break;
