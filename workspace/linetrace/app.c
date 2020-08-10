@@ -198,17 +198,20 @@ void main_task(intptr_t unused) {
         pos.facing = 0;
         tslp_tsk(10);
     }
-    ev3_motor_steer(left_motor,right_motor,15,-90);
-    tslp_tsk(500);
-    ev3_motor_steer(left_motor,right_motor,15,90);
-    tslp_tsk(500);
+    ev3_motor_steer(left_motor,right_motor,15,0);
+    tslp_tsk(775);
+    ev3_motor_steer(left_motor,right_motor,15,-45);
+    tslp_tsk(750);
+    ev3_motor_steer(left_motor,right_motor,15,45);
+    tslp_tsk(775);
     ev3_motor_steer(left_motor,right_motor,0,0);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
     displayValues();
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
-    tslp_tsk(750);
+    wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
+    tslp_tsk(2000);
     while (wheelDistance < 160) {
         if((wheelDistance >= snow1[index1][0] - 3) && (isTurning == 0) && index1 < 2){
             isTurning = 1;
