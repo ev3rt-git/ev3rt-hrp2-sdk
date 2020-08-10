@@ -283,7 +283,6 @@ typedef struct {
 /**
  * \~English
  * \brief      Get the distance using the infrared sensor.
- * \details    Always returns 0 (error log is outputted) when an invalid sensor number is specified.
  * \param port Sensor port to be inquired.
  * \return     Distance in percentage (0-100).
  *
@@ -298,9 +297,8 @@ int8_t ev3_infrared_sensor_get_distance(sensor_port_t port);
 /**
  * \~English
  * \brief      Gets values to seek a remote controller in beacon mode.
- * \details    When an invalid sensor support number is specified, always return 0 direction and distance of -128 (error log is output).
  * \param port Sensor port to be inquired.
- * \return     Struct with heading/distance for all (4) channels.
+ * \return     Struct with heading/distance for all channels.
  *
  * \~Japanese
  * \brief      IRセンサでIRビーコンの方位と距離を測定する． 
@@ -312,8 +310,7 @@ ir_seek_t ev3_infrared_sensor_seek(sensor_port_t port);
 
 /**
  * \~English
- * \brief      Gets commands from IR remote controllers. 
- * \details    When an invalid sensor support number is specified, always return 0 pattern (error log is output).
+ * \brief      Gets commands from IR remote controllers.
  * \param port Sensor port to be inquired.
  * \return     Struct with details of the IR remote buttons pressed.
  *
@@ -327,11 +324,9 @@ ir_remote_t ev3_infrared_sensor_get_remote(sensor_port_t port);
 
 /**
  * \~English
- * \brief 	     Get the status of a touch sensor.
- * \details      When an invalid sensor support number is specified, always returns false (error log is output)
- * \param port   Sensor port to be inquired
- * \retval true  Pressed  pressed
- * \retval false Unpressed pressed
+ * \brief 	   Get the status of a touch sensor.
+ * \param port Sensor port to be inquired
+ * \return     \a true (Touch sensor is being pressed), \a false (Touch sensor is not being pressed)
  *
  * \~Japanese
  * \brief 	     タッチセンサの状態を検出する．
