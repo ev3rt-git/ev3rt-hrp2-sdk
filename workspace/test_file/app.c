@@ -148,15 +148,19 @@ void readCode() {
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
-    case BACK_BUTTON:
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
-        exit(0);
-        break;
+        case BACK_BUTTON:
+            ev3_motor_steer(left_motor, right_motor, 0, 0);
+            exit(0);
+            break;
     }
 }
 
 static void on_ready_run(intptr_t button) {
-    ready = false;
+    switch (button) {
+        case ENTER_BUTTON:
+            ready = false;
+            break;
+    }
 }
 
 /*
