@@ -16,10 +16,15 @@ const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_P
 rgb_raw_t rgb4;
 position pos = {-1, -1, -1, 0, 0};
 
+int ready = true;
+
 void main_task(intptr_t unused) {
 
     config();
-    tslp_tsk(10);
+    while (ev3_button_is_pressed(ENTER_BUTTON) == false) {
+        tslp_tsk(15);
+    }
+    tslp_tsk(250);
 
     //run program
     readCode();
