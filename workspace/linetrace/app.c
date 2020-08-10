@@ -89,22 +89,28 @@ void linePID(int distance){
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;
 }
-
+//int snow1[4][2] = {{7,-300},{34,300},{96,-300},{110,300}};
+//int snow1[4][2] = {{8,-300},{38,300},{109,-300},{131,300}};
+//int snow1[4][2] = {{11,150},{17,-150},{121,-150},{139,150}};
+//int snow1[4][2] = {{17,-300},{70,-350}};
+int snow1[1][2] = {{17,-300}};
+int index1 = 0;
+int isTurning = 0;
+int turnReturn = 0;
+int dashes = 0;
+int isWhite = 1;
+int lastDash = 0;
+char msgbuf[100];
+rgb_raw_t rgb;
+float wheelDistance = 1;
+float lasterror = 0, integral = 0;
+float detected[3] = {0,0,0};//1 = red, 2 = yellow
+float values[8] = {0,0,0,0,0,0,0,0};
+float instructions[4] = {0,0,0,0};
+int indexx = 0;
+int err = 0;
+int isReading = 0;
 void main_task(intptr_t unused) {
-    //int snow1[4][2] = {{7,-300},{34,300},{96,-300},{110,300}};
-    //int snow1[4][2] = {{8,-300},{38,300},{109,-300},{131,300}};
-
-    //int snow1[4][2] = {{11,150},{17,-150},{121,-150},{139,150}};
-    //int snow1[4][2] = {{17,-300},{70,-350}};
-    int snow1[1][2] = {{17,-300}};
-    int index = 0;
-    int isTurning = 0;
-    int turnReturn = 0;
-    int dashes = 0;
-    int isWhite = 1;
-    int lastDash = 0;
-	char msgbuf[100];
-    rgb_raw_t rgb;
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -118,14 +124,6 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
-    float lasterror = 0, integral = 0;
-    float detected[3] = {0,0,0};//1 = red, 2 = yellow
-    float values[8] = {0,0,0,0,0,0,0,0};
-    float instructions[4] = {0,0,0,0};
-    int indexx = 0;
-    int err = 0;
-    int isReading = 0;
     ev3_motor_steer(left_motor,right_motor,10,0);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
@@ -200,30 +198,31 @@ void main_task(intptr_t unused) {
         pos.facing = 0;
         tslp_tsk(10);
     }
-    ev3_motor_steer(left_motor,right_motor,15,-45);
-    tslp_tsk(1000);
-    ev3_motor_steer(left_motor,right_motor,15,45);
-    tslp_tsk(1000);
+    ev3_motor_steer(left_motor,right_motor,15,-90);
+    tslp_tsk(500);
+    ev3_motor_steer(left_motor,right_motor,15,90);
+    tslp_tsk(500);
     ev3_motor_steer(left_motor,right_motor,0,0);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
     displayValues();
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
-    while (wheelDistance < 0) {
-        if((wheelDistance >= snow1[index][0] - 3) && (isTurning == 0) && index < 2){
+    tslp_tsk(750);
+    while (wheelDistance < 160) {
+        if((wheelDistance >= snow1[index1][0] - 3) && (isTurning == 0) && index1 < 2){
             isTurning = 1;
-            turnReturn = snow1[index][1] * -1;
-            ev3_motor_rotate(a_motor,snow1[index][1],50,false);
+            turnReturn = snow1[index1][1] * -1;
+            ev3_motor_rotate(a_motor,snow1[index1][1],50,false);
             ev3_speaker_play_tone(NOTE_C4, 60);
-            if(index == 4){
+            if(index1 == 4){
 
             }
             else{
-                index = index + 1;
+                index1 = index1 + 1;
             }
         }
-        if((isTurning == 1) && wheelDistance >= snow1[index - 1][0] + 3){
+        if((isTurning == 1) && wheelDistance >= snow1[index1 - 1][0] + 3){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
@@ -337,17 +336,6 @@ void displayValues(){
     ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-    if(err){
-        sprintf(msgbuf, "ERROR ERROR WRONG STATE ERROR ERROR ERROR HI?!!!!!!!!!!!!!!!!!!");
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
-        ev3_lcd_draw_string(msgbuf, 0, 15 * 8);
-    }
 }
 
 
