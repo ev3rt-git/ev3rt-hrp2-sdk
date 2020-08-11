@@ -146,6 +146,42 @@ void readCode() {
     pos.facing = 0;
 }
 
+void init() {
+    // Register button handlers
+    ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
+    
+    // Configure motors
+    ev3_motor_config(left_motor, LARGE_MOTOR);
+    ev3_motor_config(right_motor, LARGE_MOTOR);
+    //ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    
+    // Configure sensors
+    ev3_sensor_config(color_sensor2, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor3, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
+    
+    // Set up sensors
+    ev3_color_sensor_get_reflect(color_sensor2);
+    ev3_color_sensor_get_reflect(color_sensor3);
+    //bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor1, &rgb1);
+    //assert(val1);
+    bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb4);
+    assert(val4);
+
+    // Configure brick
+    ev3_lcd_set_font(EV3_FONT_MEDIUM);
+
+    //wait for button press
+    ev3_lcd_draw_string("Press ENTER to run", 14, 45);
+    while (1) {
+        if (ev3_button_is_pressed(ENTER_BUTTON)) {
+            while (ev3_button_is_pressed(ENTER_BUTTON));
+            break;
+        }
+    }
+    ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
+}
+
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
         case BACK_BUTTON:
@@ -161,54 +197,6 @@ static void exit_program_with_exception() {
     exit(1);
 }
 */
-
-void init() {
-    //declare/define variables
-    char msg[100];
-    int unneccesary = 0;
-    bool_t ready = false;
-
-    // Register button handlers
-    ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
-    ev3_button_set_on_clicked(ENTER_BUTTON, on_ready_run, ENTER_BUTTON);
-
-    // Configure motors
-    ev3_motor_config(left_motor, LARGE_MOTOR);
-    ev3_motor_config(right_motor, LARGE_MOTOR);
-    //ev3_motor_config(a_motor, MEDIUM_MOTOR);
-
-    // Configure sensors
-    ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
-    ev3_sensor_config(color_sensor2, COLOR_SENSOR);
-    ev3_sensor_config(color_sensor3, COLOR_SENSOR);
-
-    // Set up sensors
-    ev3_color_sensor_get_reflect(color_sensor2);
-    ev3_color_sensor_get_reflect(color_sensor3);
-    //bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor1, &rgb1);
-    //assert(val1);
-    bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb4);
-    assert(val4);
-
-    // Configure brick
-    ev3_lcd_set_font(EV3_FONT_MEDIUM);
-
-    //wait for button press
-    sprintf(msg, "Press OK to run", unneccesary);
-    ev3_lcd_draw_string(msg, 14, 45);
-    ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
-    sprintf(msg, "OK", unneccesary);
-    ev3_lcd_draw_string(msg, 79, 90);
-    while (!ready) {
-        while (1) {
-            if (ev3_button_is_pressed(ENTER_BUTTON)) {
-                while (ev3_button_is_pressed(ENTER_BUTTON));
-                break;
-            }
-        }
-    }
-    ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
-}
 
 void display_values() {
     //declare variables
