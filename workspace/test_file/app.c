@@ -22,15 +22,8 @@ void main_task(intptr_t unused) {
 
     init();
 
-    char blablablabutwithonlytwoblas;
-    int blablabla;
     //run program
-    while (1) {
-        blablabla = (ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3));
-        sprintf(blablablabutwithonlytwoblas, "Delta: %d  ", blablabla);
-        ev3_lcd_draw_string(blablablabutwithonlytwoblas, 0, 0);
-        tslp_tsk(5);
-    }
+    readCode();
     tslp_tsk(50000000);
 }
 
