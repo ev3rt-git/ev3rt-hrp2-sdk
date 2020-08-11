@@ -264,6 +264,6 @@ void tslp_tok(int time){
     ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 7)j;
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 8);
 }
