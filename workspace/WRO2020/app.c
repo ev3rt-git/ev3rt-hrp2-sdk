@@ -22,8 +22,9 @@ rgb_raw_t rgb4;
 position pos = {-1, -1, -1, 0, 0};
 
 void main_task(intptr_t unused) {
-    config();
+    init();
 
+    readCode();
     //todo run2020
 }
 
@@ -172,7 +173,7 @@ void init() {
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
 
     //wait for button press
-    ev3_lcd_draw_string("Press ENTER to run", 14, 45);
+    ev3_lcd_draw_string("Press OK to run", 14, 45);
     while (1) {
         if (ev3_button_is_pressed(ENTER_BUTTON)) {
             while (ev3_button_is_pressed(ENTER_BUTTON));
