@@ -52,7 +52,7 @@ void readCode() {
     } else {
         pos.street = YELLOW_STREET;
     }
-    tslp_tsk(5);
+    tslp_tok(5);
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, -10, 0);
@@ -61,7 +61,7 @@ void readCode() {
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    tslp_tsk(5);
+    tslp_tok(5);
 
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
@@ -111,7 +111,7 @@ void readCode() {
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    tslp_tsk(5);
+    tslp_tok(5);
 
     //align robot
     ev3_motor_rotate(left_motor, -100, 15, true);
@@ -208,7 +208,7 @@ void display_values() {
     int value;
 
     //wait for values to be refreshed
-    tslp_tsk(3);
+    tslp_tok(3);
 
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
@@ -253,4 +253,17 @@ void display_values() {
     value = ev3_color_sensor_get_reflect(color_sensor3);
     sprintf(msg, "L: %d  ", value);
     ev3_lcd_draw_string(msg, 10*7, 15*7.5);
+}
+
+void tslp_tok(int time){
+    char oof_how_did_you_find_this[100];
+    sprintf(oof_how_did_you_find_this,"The time is %d",time);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 8);
 }
