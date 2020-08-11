@@ -136,9 +136,9 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,15,0);
     tslp_tsk(900);
     ev3_motor_steer(left_motor,right_motor,15,-45);
-    tslp_tsk(700);
+    tslp_tsk(730);
     ev3_motor_steer(left_motor,right_motor,15,45);
-    tslp_tsk(700);
+    tslp_tsk(750);
     ev3_motor_steer(left_motor,right_motor,0,0);
     ev3_motor_rotate(a_motor,300,50,false);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
@@ -187,7 +187,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{27,150},{70,150},{100,150},{1000,0},{1000,0},{1000,0}};
+        int snowValues[6][2] = {{30,150},{70,150},{100,150},{1000,0},{1000,0},{1000,0}};
         dashPID(160,snowValues);
     }
 }
@@ -199,7 +199,7 @@ void displayValues(){
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
     //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, "Error %9f          " ,steer);
+    sprintf(msgbuf, "Error %9f          " ,dashes % 2);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
     sprintf(msgbuf, "Street %d          " ,pos.street);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
@@ -254,7 +254,10 @@ void dashPID(int distance,int snow[6][2]){
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
-        steer = 1 * error + 0 * integral + 0.5 * (error - lasterror);
+        steer = 0.55 * error + 0.02 * integral + 0.4 * (error - lasterror);
+        if(dashes % 2 == 1){
+            steer = 0;
+        }
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
