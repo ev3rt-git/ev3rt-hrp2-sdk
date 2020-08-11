@@ -20,7 +20,7 @@ int ready = true;
 
 void main_task(intptr_t unused) {
 
-    config();
+    init();
 
     //run program
     readCode();
@@ -155,14 +155,6 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
-static void on_ready_run(intptr_t button) {
-    switch (button) {
-        case ENTER_BUTTON:
-            ready = false;
-            break;
-    }
-}
-
 /*
 static void exit_program_with_exception() {
     ev3_motor_steer(left_motor, right_motor, 0, 0);
@@ -170,10 +162,11 @@ static void exit_program_with_exception() {
 }
 */
 
-void config() {
+void init() {
     //declare/define variables
-    char thing[100];
-    int la = 0;
+    char msg[100];
+    int unneccesary = 0;
+    bool_t ready = false;
 
     // Register button handlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
@@ -201,13 +194,18 @@ void config() {
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
 
     //wait for button press
-    sprintf(thing, "Press OK to run", la);
-    ev3_lcd_draw_string(thing, 14, 45);
+    sprintf(msg, "Press OK to run", unneccesary);
+    ev3_lcd_draw_string(msg, 14, 45);
     ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
-    sprintf(thing, "OK", la);
-    ev3_lcd_draw_string(thing, 79, 90);
-    while (ready) {
-        tslp_tsk(50);
+    sprintf(msg, "OK", unneccesary);
+    ev3_lcd_draw_string(msg, 79, 90);
+    while (!ready) {
+        while (1) {
+            if (ev3_button_is_pressed(ENTER_BUTTON)) {
+                while (ev3_button_is_pressed(ENTER_BUTTON));
+                break;
+            }
+        }
     }
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
 }
