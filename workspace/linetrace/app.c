@@ -45,6 +45,7 @@ int indexx = 0;
 int err = 0;
 int isReading = 0;
 float steer = 0;
+int snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
 void main_task(intptr_t unused) {
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
@@ -167,7 +168,8 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
-        dashPID(160,{{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}});
+        snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
+        dashPID(160,snowValues);
     }
     //red
     if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
@@ -186,7 +188,8 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        dashPID(160,{{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}});
+        snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
+        dashPID(160,snowValues);
     }
 }
 
