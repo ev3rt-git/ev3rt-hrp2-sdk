@@ -13,6 +13,7 @@
 #define BLACKMATERIAL 2
 
 void readCode();
+void init();
 static void button_clicked_handler();
 void display_values();
 

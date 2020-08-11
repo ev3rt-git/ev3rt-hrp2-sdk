@@ -20,7 +20,7 @@
 void linePID();
 void dashPID();
 void readCode();
-void config();
+void init();
 void display_values();
 static void button_clicked_handler();
 
