@@ -134,11 +134,7 @@ void main_task(intptr_t unused) {
         tslp_tsk(10);
     }
     ev3_motor_steer(left_motor,right_motor,15,0);
-    tslp_tsk(900);
-    ev3_motor_steer(left_motor,right_motor,15,-45);
-    tslp_tsk(730);
-    ev3_motor_steer(left_motor,right_motor,15,45);
-    tslp_tsk(750);
+    tslp_tsk(1500);
     ev3_motor_steer(left_motor,right_motor,0,0);
     ev3_motor_rotate(a_motor,300,50,false);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
