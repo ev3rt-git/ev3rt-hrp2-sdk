@@ -24,7 +24,7 @@ void main_task(intptr_t unused) {
 
     //run program
     readCode();
-    tslp_tsk(50000000);
+    tslp_tok(50000000);
 }
 
 void readCode() {
