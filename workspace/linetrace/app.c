@@ -59,7 +59,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
-    ev3_motor_steer(left_motor,right_motor,10,1);
+    ev3_motor_steer(left_motor,right_motor,10,5);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
@@ -254,10 +254,11 @@ void dashPID(int distance,int snow[6][2]){
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
-        steer = 0.5 * error + 0.015 * integral + 0.5 * (error - lasterror);
+        steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
         if(dashes % 2 == 1){
             steer = 0;
         }
+        steer = 5;
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
