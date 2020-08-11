@@ -28,11 +28,6 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
-//int snow1[4][2] = {{7,-300},{34,300},{96,-300},{110,300}};
-//int snow1[4][2] = {{8,-300},{38,300},{109,-300},{131,300}};
-int snow1[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
-//int snow1[4][2] = {{17,-300},{70,-350}};
-//int snow1[1][2] = {{17,-300}};
 int index1 = 0;
 int isTurning = 0;
 int turnReturn = 0;
@@ -49,6 +44,7 @@ float instructions[4] = {0,0,0,0};
 int indexx = 0;
 int err = 0;
 int isReading = 0;
+float steer = 0;
 void main_task(intptr_t unused) {
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
@@ -138,7 +134,7 @@ void main_task(intptr_t unused) {
         tslp_tsk(10);
     }
     ev3_motor_steer(left_motor,right_motor,15,0);
-    tslp_tsk(800);
+    tslp_tsk(1000);
     ev3_motor_steer(left_motor,right_motor,15,-45);
     tslp_tsk(700);
     ev3_motor_steer(left_motor,right_motor,15,45);
@@ -171,11 +167,11 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
-        
+        dashPID(160,{{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}});
     }
     //red
     if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
-        dashPID(160,snow1);
+
     }
     if(tasks[0] == 0 && tasks[2] == 0 && pos.street == 3){
         
@@ -190,7 +186,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-
+        dashPID(160,{{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}});
     }
 }
 
@@ -201,7 +197,7 @@ void displayValues(){
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
     //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, "Color %9f          " ,detected[0]);
+    sprintf(msgbuf, "Error %9f          " ,steer);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
     sprintf(msgbuf, "Street %d          " ,pos.street);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
@@ -257,14 +253,14 @@ void dashPID(int distance,int snow[6][2]){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         integral = error + integral * 0.5;
         //float steer = 0.07 * error + 0.5 * integral + 0.3 * (error - lasterror);
-        float steer = 1 * error + 0 * integral + 1 * (error - lasterror);
+        steer = 1 * error + 0 * integral + 1 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         lasterror = error;
         tslp_tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
+        displayValues();
     }
-    
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;
 }
