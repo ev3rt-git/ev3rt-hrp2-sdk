@@ -258,12 +258,12 @@ void display_values() {
 void tslp_tok(int time){
     char oof_how_did_you_find_this[100];
     sprintf(oof_how_did_you_find_this,"The time is %d",time);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-    ev3_lcd_draw_string(msgbuf, 0, ;
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 8);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 1);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 2);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 3);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 4);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 5);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 6);
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 7;
+    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 8);
 }
