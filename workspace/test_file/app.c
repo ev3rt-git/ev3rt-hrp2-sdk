@@ -208,7 +208,7 @@ void display_values() {
     int value;
 
     //wait for values to be refreshed
-    tslp_tok(3);
+    tslp_tsk(3);
 
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
