@@ -52,7 +52,7 @@ void readCode() {
     } else {
         pos.street = YELLOW_STREET;
     }
-    tslp_tok(5);
+    tslp_tsk(5);
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, -10, 0);
@@ -61,7 +61,7 @@ void readCode() {
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    tslp_tok(5);
+    tslp_tsk(5);
 
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
@@ -111,7 +111,7 @@ void readCode() {
     }
     ev3_motor_stop(left_motor, true);
     ev3_motor_stop(right_motor, true);
-    tslp_tok(5);
+    tslp_tsk(5);
 
     //align robot
     ev3_motor_rotate(left_motor, -100, 15, true);
