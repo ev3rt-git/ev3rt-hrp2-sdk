@@ -154,7 +154,7 @@ void init() {
     // Configure motors
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
-    //ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(a_motor, MEDIUM_MOTOR);
     
     // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
@@ -171,6 +171,10 @@ void init() {
 
     // Configure brick
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
+    
+    //reset snow/car collector
+    ev3_motor_set_power(a_motor, -100);
+    ev3_motor_rotate(a_motor, 300, 50);
 
     //wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
