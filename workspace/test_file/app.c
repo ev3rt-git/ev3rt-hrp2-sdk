@@ -24,7 +24,7 @@ void main_task(intptr_t unused) {
 
     //run program
     readCode();
-    tslp_tok(50000000);
+    tslp_tsk(50000000);
 }
 
 void readCode() {
@@ -253,17 +253,4 @@ void display_values() {
     value = ev3_color_sensor_get_reflect(color_sensor3);
     sprintf(msg, "L: %d  ", value);
     ev3_lcd_draw_string(msg, 10*7, 15*7.5);
-}
-
-void tslp_tok(int time){
-    char oof_how_did_you_find_this[100];
-    sprintf(oof_how_did_you_find_this,"The time is %d",time);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 1);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 2);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 3);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 4);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 5);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 6);
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 7;
-    ev3_lcd_draw_string(oof_how_did_you_find_this, 0, 15 * 8);
 }
