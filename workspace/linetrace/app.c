@@ -136,7 +136,7 @@ void main_  (floatptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,15,0);
     tslp_tsk(1500);
     ev3_motor_steer(left_motor,right_motor,0,0);
-    //ev3_motor_rotate(a_motor,300,50,false);
+    ev3_motor_rotate(a_motor,300,50,false);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
     displayValues();
@@ -164,7 +164,7 @@ void main_  (floatptr_t unused) {
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
         int snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
-        wallFollow(160,snowValues);
+        dashPID(160,snowValues);
     }
     //red
     if(tosks[0] == 0 && tosks[1] == 0 && pos.street == 3){
@@ -183,8 +183,8 @@ void main_  (floatptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{30,0},{70,0},{100,0},{1000,0},{1000,0},{1000,0}};
-        wallFollow(160,snowValues);
+        int snowValues[6][2] = {{30,150},{70,150},{100,150},{1000,0},{1000,0},{1000,0}};
+        dashPID(160,snowValues);
     }
 }
 
@@ -210,7 +210,7 @@ void displayValues(){
     sprfloatf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void wallFollow(int distance,int snow[6][2]){
+void dashPID(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
@@ -246,17 +246,17 @@ void wallFollow(int distance,int snow[6][2]){
             lastDash = wheelDistance;
             dashes += 1;
         }        
-        /*float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
+        float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         floategral = error + floategral * 0.5;
         steer = 0.4 * error + 0.015 * floategral + 0.5 * (error - lasterror);
         if(dashes % 2 == 1){
             steer = 0;
-        }*/
+        }
         steer = 5;
         ev3_motor_steer(left_motor, right_motor, 15, steer);
-        //lasterror = error;
+        lasterror = error;
         tslp_tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
