@@ -136,14 +136,13 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,15,0);
     tslp_tsk(1500);
     ev3_motor_steer(left_motor,right_motor,0,0);
-    ev3_motor_rotate(a_motor,300,50,false);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
     displayValues();
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
-    tslp_tsk(2000);
+    tslp_tsk(1000);
     
     
     //0:b,1:g,2:y,3:r
@@ -183,7 +182,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{30,150},{70,150},{100,150},{1000,0},{1000,0},{1000,0}};
+        int snowValues[6][2] = {{30,0},{70,0},{100,0},{1000,0},{1000,0},{1000,0}};
         wallFollow(160,snowValues);
     }
 }
@@ -246,17 +245,17 @@ void wallFollow(int distance,int snow[6][2]){
             lastDash = wheelDistance;
             dashes += 1;
         }        
-        float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
+        //float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
-        integral = error + integral * 0.5;
-        steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
-        if(dashes % 2 == 1){
-            steer = 0;
-        }
+        //integral = error + integral * 0.5;
+        //steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
+        //if(dashes % 2 == 1){
+            //steer = 0;
+        //}
         steer = 5;
         ev3_motor_steer(left_motor, right_motor, 15, steer);
-        lasterror = error;
+        //lasterror = error;
         tslp_tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
