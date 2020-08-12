@@ -163,7 +163,7 @@ void main_task(intptr_t unused) {
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
         int snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
-        wallFollow(160,snowValues);
+        dashPID(160,snowValues);
     }
     //red
     if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
@@ -209,7 +209,7 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void wallFollow(int distance,int snow[6][2]){
+void dashPID(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
