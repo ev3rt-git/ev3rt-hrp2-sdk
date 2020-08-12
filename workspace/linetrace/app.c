@@ -17,9 +17,9 @@
 
 
 position pos = {-1, -1, -1, 0, 0};
-const float color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
+const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
 
-static void button_clicked_handler(floatptr_t button) {
+static void button_clicked_handler(intptr_t button) {
     switch(button) {
     case BACK_BUTTON:
         ev3_motor_steer(left_motor, right_motor, 0, 0);
@@ -28,24 +28,24 @@ static void button_clicked_handler(floatptr_t button) {
     }
 }
 
-float index1 = 0;
-float isTurning = 0;
-float turnReturn = 0;
-float dashes = 0;
-float isWhite = 1;
-float lastDash = 0;
+int index1 = 0;
+int isTurning = 0;
+int turnReturn = 0;
+int dashes = 0;
+int isWhite = 1;
+int lastDash = 0;
 char msgbuf[100];
 rgb_raw_t rgb;
-int wheelDistance = 1;
-int lasterror = 0, floategral = 0;
-int detected[3] = {0,0,0};//1 = red, 2 = yellow
-int valoes[8] = {0,0,0,0,0,0,0,0};
-int instructions[4] = {0,0,0,0};
-float indexx = 0;
-float err = 0;
-float isReading = 0;
-int steer = 0;
-void main_  (floatptr_t unused) {
+float wheelDistance = 1;
+float lasterror = 0, integral = 0;
+float detected[3] = {0,0,0};//1 = red, 2 = yellow
+float values[8] = {0,0,0,0,0,0,0,0};
+float instructions[4] = {0,0,0,0};
+int indexx = 0;
+int err = 0;
+int isReading = 0;
+float steer = 0;
+void main_task(intptr_t unused) {
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
@@ -96,25 +96,25 @@ void main_  (floatptr_t unused) {
         else{
             isReading = isReading - 1;
         }
-        float sddsfsd = round((detected[1] - 31) / 5);
-        float sddsfsd2 = round((detected[2] - 31) / 5);
-        valoes[sddsfsd] = 1;
-        valoes[sddsfsd2] = 1;
-        for(float i = 0; i < 7; i +=2){
-            if(valoes[i] == 0){
-                if(valoes[i + 1] == 0){
+        int sddsfsd = round((detected[1] - 31) / 5);
+        int sddsfsd2 = round((detected[2] - 31) / 5);
+        values[sddsfsd] = 1;
+        values[sddsfsd2] = 1;
+        for(int i = 0; i < 7; i +=2){
+            if(values[i] == 0){
+                if(values[i + 1] == 0){
                     instructions[i/2] = 0;
-                    tosks[i/2] = 0;
+                    tasks[i/2] = 0;
                 }
                 else{
                     instructions[i/2] = 1;
-                    tosks[i/2] = 1;
+                    tasks[i/2] = 1;
                 }
             }
             else{
-                if(valoes[i + 1] == 0){
+                if(values[i + 1] == 0){
                     instructions[i/2] = 2;
-                    tosks[i/2] = 2;
+                    tasks[i/2] = 2;
                 }
                 else{
                     err = 1;
@@ -147,19 +147,19 @@ void main_  (floatptr_t unused) {
     
     
     //0:b,1:g,2:y,3:r
-    if(tosks[0] == 0 && tosks[1] == 0 && pos.street == 2){
+    if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 2){
         
     }
-    if(tosks[0] == 0 && tosks[2] == 0 && pos.street == 2){
+    if(tasks[0] == 0 && tasks[2] == 0 && pos.street == 2){
         
     }
-    if(tosks[0] == 0 && tosks[3] == 0 && pos.street == 2){
+    if(tasks[0] == 0 && tasks[3] == 0 && pos.street == 2){
         
     }
-    if(tosks[1] == 0 && tosks[2] == 0 && pos.street == 2){
+    if(tasks[1] == 0 && tasks[2] == 0 && pos.street == 2){
         
     }
-    if(tosks[1] == 0 && tosks[3] == 0 && pos.street == 2){
+    if(tasks[1] == 0 && tasks[3] == 0 && pos.street == 2){
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
@@ -167,19 +167,19 @@ void main_  (floatptr_t unused) {
         wallFollow(160,snowValues);
     }
     //red
-    if(tosks[0] == 0 && tosks[1] == 0 && pos.street == 3){
+    if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
 
     }
-    if(tosks[0] == 0 && tosks[2] == 0 && pos.street == 3){
+    if(tasks[0] == 0 && tasks[2] == 0 && pos.street == 3){
         
     }
-    if(tosks[0] == 0 && tosks[3] == 0 && pos.street == 3){
+    if(tasks[0] == 0 && tasks[3] == 0 && pos.street == 3){
         
     }
-    if(tosks[1] == 0 && tosks[2] == 0 && pos.street == 3){
+    if(tasks[1] == 0 && tasks[2] == 0 && pos.street == 3){
         
     }
-    if(tosks[1] == 0 && tosks[3] == 0 && pos.street == 3){
+    if(tasks[1] == 0 && tasks[3] == 0 && pos.street == 3){
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
@@ -189,25 +189,25 @@ void main_  (floatptr_t unused) {
 }
 
 void displayValues(){
-    //sprfloatf(msgbuf, "Red:   %-4d", rgb.r);
+    //sprintf(msgbuf, "Red:   %-4d", rgb.r);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    //sprfloatf(msgbuf, "Green: %-4d", rgb.g);
+    //sprintf(msgbuf, "Green: %-4d", rgb.g);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    //sprfloatf(msgbuf, "Blue:  %-4d", rgb.b);
+    //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprfloatf(msgbuf, "Error %9f          " ,dashes % 2);
+    sprintf(msgbuf, "Error %9f          " ,dashes % 2);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    sprfloatf(msgbuf, "Street %d          " ,pos.street);
+    sprintf(msgbuf, "Street %d          " ,pos.street);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    sprfloatf(msgbuf, "distance %d          " ,pos.distance);
+    sprintf(msgbuf, "distance %d          " ,pos.distance);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprfloatf(msgbuf, " %9f          " ,instructions[0]);
+    sprintf(msgbuf, " %9f          " ,instructions[0]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
-    sprfloatf(msgbuf, " %9f          " ,instructions[1]);
+    sprintf(msgbuf, " %9f          " ,instructions[1]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
-    sprfloatf(msgbuf, " %9f          " ,instructions[2]);
+    sprintf(msgbuf, " %9f          " ,instructions[2]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 6);
-    sprfloatf(msgbuf, " %9f          " ,instructions[3]);
+    sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
 void wallFollow(int distance,int snow[6][2]){
@@ -249,8 +249,8 @@ void wallFollow(int distance,int snow[6][2]){
         /*float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
-        floategral = error + floategral * 0.5;
-        steer = 0.4 * error + 0.015 * floategral + 0.5 * (error - lasterror);
+        integral = error + integral * 0.5;
+        steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
         if(dashes % 2 == 1){
             steer = 0;
         }*/
@@ -265,13 +265,13 @@ void wallFollow(int distance,int snow[6][2]){
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;
 }
-void linePID(float distance){
+void linePID(int distance){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_rotate(a_motor,-500,15,true);
-    int wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
-    int lasterror = 0, floategral = 0;
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+    float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
             ev3_motor_reset_counts(a_motor);
@@ -283,9 +283,9 @@ void linePID(float distance){
             ev3_motor_rotate(a_motor,500,13,false);
         }
         wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
-        int error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
-        floategral = error + floategral * 0.5;
-        int steer = 0.04 * error + 0.5 * floategral + 0.25 * (error - lasterror);
+        float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
+        integral = error + integral * 0.5;
+        float steer = 0.04 * error + 0.5 * integral + 0.25 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 30, steer);
         lasterror = error;  
         tslp_tsk(1);
