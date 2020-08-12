@@ -76,19 +76,19 @@ void main_task(intptr_t unused) {
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 50;
+            isReading = 65;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 50;
+            isReading = 65;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 50;
+            isReading = 65;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
@@ -163,7 +163,7 @@ void main_task(intptr_t unused) {
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
         int snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
-        dashPID(160,snowValues);
+        wallFollow(160,snowValues);
     }
     //red
     if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 3){
@@ -231,14 +231,14 @@ void wallFollow(int distance,int snow[6][2]){
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && ev3_color_sensor_get_reflect(color_sensor3) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
+        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
             isWhite = 1;
             ev3_speaker_play_tone(NOTE_C5, 100);
 
             dashes += 1;
             lastDash = wheelDistance;
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) < 60 && ev3_color_sensor_get_reflect(color_sensor3) < 60 && isWhite == 1 && wheelDistance > lastDash + 3){
+        if(ev3_color_sensor_get_reflect(color_sensor2) < 60 && isWhite == 1 && wheelDistance > lastDash + 3){
             isWhite = 0;
             ev3_speaker_play_tone(NOTE_C4, 100);
 
