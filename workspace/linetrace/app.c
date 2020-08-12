@@ -76,19 +76,19 @@ void main_task(intptr_t unused) {
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 65;
+            isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 65;
+            isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
         else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31 && indexx > 0){
-            isReading = 65;
+            isReading = 50;
             detected[indexx] = wheelDistance;
             indexx += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
@@ -144,7 +144,6 @@ void main_task(intptr_t unused) {
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     tslp_tsk(1000);
     
-    
     //0:b,1:g,2:y,3:r
     if(tasks[0] == 0 && tasks[1] == 0 && pos.street == 2){
         
@@ -162,7 +161,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
-        int snowValues[6][2] = {{11,150},{17,-150},{121,-150},{139,150},{1000,0},{1000,0}};
+        int snowValues[6][2] = {{17,-300},{121,-300},{139,0},{1000,0},{1000,0},{1000,0}};
         wallFollow(160,snowValues);
     }
     //red
@@ -194,9 +193,9 @@ void displayValues(){
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
     //sprintf(msgbuf, "Blue:  %-4d", rgb.b);
     //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    sprintf(msgbuf, "Error %9f          " ,dashes % 2);
+    sprintf(msgbuf, "isTurning %9f          " ,isTurning);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    sprintf(msgbuf, "Street %d          " ,pos.street);
+    sprintf(msgbuf, "wheelDistance %d          " ,wheelDistance);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
     sprintf(msgbuf, "distance %d          " ,pos.distance);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
@@ -213,8 +212,9 @@ void wallFollow(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    index1 = 0;
     while (wheelDistance < distance) {
-        if((wheelDistance >= snow[index1][0] - 3) && (isTurning == 0) && index1 < 6){
+        if(wheelDistance >= snow[index1][0] - 5 && isTurning == 0 && index1 < 6){
             isTurning = 1;
             turnReturn = snow[index1][1] * -1;
             ev3_motor_rotate(a_motor,snow[index1][1],50,false);
@@ -226,12 +226,12 @@ void wallFollow(int distance,int snow[6][2]){
                 index1 = index1 + 1;
             }
         }
-        if((isTurning == 1) && wheelDistance >= snow[index1 - 1][0] + 3){
+        if((isTurning == 1) && wheelDistance >= snow[index1 - 1][0] + 50){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
+        /*if(ev3_color_sensor_get_reflect(color_sensor2) > 60 && isWhite == 0 && wheelDistance > lastDash + 3){
             isWhite = 1;
             ev3_speaker_play_tone(NOTE_C5, 100);
 
@@ -244,10 +244,11 @@ void wallFollow(int distance,int snow[6][2]){
 
             lastDash = wheelDistance;
             dashes += 1;
-        }        
+        }*/
         //float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
+        wheelDistance = ev3_motor_get_counts(left_motor) / 2;
         //integral = error + integral * 0.5;
         //steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
         //if(dashes % 2 == 1){
