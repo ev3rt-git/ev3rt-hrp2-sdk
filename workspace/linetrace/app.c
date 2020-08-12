@@ -36,18 +36,6 @@ int isWhite = 1;
 int lastDash = 0;
 char msgbuf[100];
 rgb_raw_t rgb;
-<<<<<<< HEAD
-int wheelDistance = 1;
-int lasterror = 0, floategral = 0;
-int detected[3] = {0,0,0};//1 = red, 2 = yellow
-int valoes[8] = {0,0,0,0,0,0,0,0};
-int instructions[4] = {0,0,0,0};
-float indexx = 0;
-float err = 0;
-float isReading = 0;
-int steer = 0;
-void main_  (floatptr_t unused) {
-=======
 float wheelDistance = 1;
 float lasterror = 0, integral = 0;
 float detected[3] = {0,0,0};//1 = red, 2 = yellow
@@ -58,7 +46,6 @@ int err = 0;
 int isReading = 0;
 float steer = 0;
 void main_task(intptr_t unused) {
->>>>>>> parent of b9deb21... TESTFILE UPDATE NOTHING TO SEE HERE
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
