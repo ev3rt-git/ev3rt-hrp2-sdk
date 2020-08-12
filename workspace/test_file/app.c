@@ -90,7 +90,7 @@ void readCode() {
         // decode instructions
         if (bit1 == 1) {
             if (bit2 == 1) {
-                ev3_motor_steer(left_motor, left_motor, 100, 0);
+                ev3_motor_steer(left_motor, left_motor, 0, 0);
             } else {
                 tasks[index] = BLACKMATERIAL;
             }
