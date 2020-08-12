@@ -45,7 +45,7 @@ float indexx = 0;
 float err = 0;
 float isReading = 0;
 int steer = 0;
-void main_task(floatptr_t unused) {
+void main_  (floatptr_t unused) {
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
 
     ev3_motor_config(left_motor, LARGE_MOTOR);
