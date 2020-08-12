@@ -177,8 +177,6 @@ void init() {
 
     //wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
-    ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
-    ev3_lcd_draw_string("OK", 79, 90);
     while (1) {
         if (ev3_button_is_pressed(ENTER_BUTTON)) {
             while (ev3_button_is_pressed(ENTER_BUTTON));
