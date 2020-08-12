@@ -45,8 +45,7 @@ void readCode() {
     while (rgb4.g > 30 && rgb4.b > 25) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
     if (rgb4.g < 30) {
         pos.street = RED_STREET;
     } else {
@@ -59,8 +58,8 @@ void readCode() {
     while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 20) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+
     tslp_tsk(5);
 
     ev3_motor_reset_counts(EV3_PORT_B);
@@ -109,8 +108,7 @@ void readCode() {
     while (ev3_color_sensor_get_reflect(color_sensor2) > 20 && ev3_color_sensor_get_reflect(color_sensor3) > 20) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
     tslp_tsk(5);
 
     //align robot
@@ -128,8 +126,7 @@ void readCode() {
     while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 10) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
 
     //display things in a very medium font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
@@ -177,6 +174,8 @@ void init() {
 
     //wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
+    ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
+    ev3_lcd_draw_string("OK", 79, 90);
     while (1) {
         if (ev3_button_is_pressed(ENTER_BUTTON)) {
             while (ev3_button_is_pressed(ENTER_BUTTON));
