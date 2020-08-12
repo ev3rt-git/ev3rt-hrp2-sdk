@@ -46,8 +46,7 @@ void readCode() {
     while (rgb4.g > 30 && rgb4.b > 25) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
     if (rgb4.g < 30) {
         pos.street = RED_STREET;
     } else {
@@ -60,8 +59,8 @@ void readCode() {
     while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 20) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+
     tslp_tsk(5);
 
     ev3_motor_reset_counts(EV3_PORT_B);
@@ -92,7 +91,7 @@ void readCode() {
         // decode instructions
         if (bit1 == 1) {
             if (bit2 == 1) {
-                exit(1);
+                ev3_motor_steer(left_motor, left_motor, 100, 0);
             } else {
                 tasks[index] = BLACKMATERIAL;
             }
@@ -107,13 +106,13 @@ void readCode() {
 
     //detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
-    while (ev3_color_sensor_get_reflect(color_sensor2) > 20 && ev3_color_sensor_get_reflect(color_sensor3) > 20) {
+    while (ev3_color_sensor_get_reflect(color_sensor3) > 20) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
     tslp_tsk(5);
 
+/*
     //align robot
     ev3_motor_rotate(left_motor, -100, 15, true);
     ev3_motor_reset_counts(left_motor);
@@ -129,8 +128,8 @@ void readCode() {
     while (((abs(ev3_motor_get_counts(EV3_PORT_B)) + abs(ev3_motor_get_counts(EV3_PORT_C))) / 2) < 10) {
         display_values();
     }
-    ev3_motor_stop(left_motor, true);
-    ev3_motor_stop(right_motor, true);
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+*/
 
     //display things in a very medium font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
@@ -154,7 +153,7 @@ void init() {
     // Configure motors
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
-    ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    //ev3_motor_config(a_motor, MEDIUM_MOTOR);
     
     // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
@@ -171,13 +170,16 @@ void init() {
 
     // Configure brick
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
-    
+
     //reset snow/car collector
-    ev3_motor_set_power(a_motor, -100);
-    ev3_motor_rotate(a_motor, 300, 50);
+    //ev3_motor_set_power(a_motor, -100);
+    //ev3_motor_rotate(a_motor, 300, 50);
 
     //wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
+    ev3_lcd_fill_rect(77, 87, 24, 20, EV3_LCD_BLACK);
+    ev3_lcd_fill_rect(79, 89, 20, 1, EV3_LCD_WHITE);
+    ev3_lcd_draw_string("OK", 79, 90);
     while (1) {
         if (ev3_button_is_pressed(ENTER_BUTTON)) {
             while (ev3_button_is_pressed(ENTER_BUTTON));
