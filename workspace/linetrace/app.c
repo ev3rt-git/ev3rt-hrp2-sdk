@@ -209,7 +209,7 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void dashPID(int distance,int snow[6][2]){
+void wallFollow(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
