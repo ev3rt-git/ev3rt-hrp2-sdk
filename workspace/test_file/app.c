@@ -197,13 +197,6 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
-/*
-static void exit_program_with_exception() {
-    ev3_motor_steer(left_motor, right_motor, 0, 0);
-    exit(1);
-}
-*/
-
 void display_values() {
     //declare variables
     char msg[100];

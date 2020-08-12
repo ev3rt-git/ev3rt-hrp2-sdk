@@ -131,10 +131,10 @@ void main_task(intptr_t unused) {
         pos.distance = wheelDistance;
         pos.dash = 0;
         pos.facing = 0;
-        tslp_tsk(10);
+        tslp-tsk(10);
     }
     ev3_motor_steer(left_motor,right_motor,15,0);
-    tslp_tsk(1500);
+    tslp-tsk(1500);
     ev3_motor_steer(left_motor,right_motor,0,0);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
     pos.distance = wheelDistance;
@@ -142,7 +142,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2 * (3.1415926535 * 9.5) / 360;
-    tslp_tsk(1000);
+    tslp-tsk(1000);
     
     
     //0:b,1:g,2:y,3:r
@@ -256,7 +256,7 @@ void wallFollow(int distance,int snow[6][2]){
         steer = 5;
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         //lasterror = error;
-        tslp_tsk(1);
+        tslp-tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
         displayValues();
@@ -287,7 +287,7 @@ void linePID(int distance){
         float steer = 0.04 * error + 0.5 * integral + 0.25 * (error - lasterror);
         ev3_motor_steer(left_motor, right_motor, 30, steer);
         lasterror = error;  
-        tslp_tsk(1);
+        tslp-tsk(1);
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;

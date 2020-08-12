@@ -194,6 +194,9 @@ void display_values() {
     char msg[100];
     int value;
 
+    //wait for values to be refreshed
+    tslp_tsk(3);
+
     //read motor counts
     value = ev3_motor_get_counts(left_motor);
     sprintf(msg, "L: %d   ", value);
