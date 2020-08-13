@@ -90,7 +90,7 @@ void readCode() {
         // decode instructions
         if (bit1 == 1) {
             if (bit2 == 1) {
-                exit(1);
+                ev3_motor_steer(left_motor, left_motor, 0, 0);
             } else {
                 tasks[index] = BLACKMATERIAL;
             }
@@ -105,12 +105,13 @@ void readCode() {
 
     //detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
-    while (ev3_color_sensor_get_reflect(color_sensor2) > 20 && ev3_color_sensor_get_reflect(color_sensor3) > 20) {
+    while (ev3_color_sensor_get_reflect(color_sensor3) > 20) {
         display_values();
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     tslp_tsk(5);
 
+/*
     //align robot
     ev3_motor_rotate(left_motor, -100, 15, true);
     ev3_motor_reset_counts(left_motor);
@@ -127,6 +128,7 @@ void readCode() {
         display_values();
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
+*/
 
     //display things in a very medium font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
@@ -174,7 +176,8 @@ void init() {
 
     //wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
-    ev3_lcd_fill_rect(77, 88, 24, 19, EV3_LCD_BLACK);
+    ev3_lcd_fill_rect(77, 87, 24, 20, EV3_LCD_BLACK);
+    ev3_lcd_fill_rect(79, 89, 20, 1, EV3_LCD_WHITE);
     ev3_lcd_draw_string("OK", 79, 90);
     while (1) {
         if (ev3_button_is_pressed(ENTER_BUTTON)) {
@@ -193,13 +196,6 @@ static void button_clicked_handler(intptr_t button) {
             break;
     }
 }
-
-/*
-static void exit_program_with_exception() {
-    ev3_motor_steer(left_motor, right_motor, 0, 0);
-    exit(1);
-}
-*/
 
 void display_values() {
     //declare variables
