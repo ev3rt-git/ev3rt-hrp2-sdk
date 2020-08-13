@@ -247,8 +247,7 @@ void wallFollow(int distance,int snow[6][2]){
         }*/
         //float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
 
-        wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
-        wheelDistance = ev3_motor_get_counts(left_motor) / 2;
+        wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.14 * 9.5) / 360);
         //integral = error + integral * 0.5;
         //steer = 0.4 * error + 0.015 * integral + 0.5 * (error - lasterror);
         //if(dashes % 2 == 1){
