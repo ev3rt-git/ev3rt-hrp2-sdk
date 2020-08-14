@@ -23,7 +23,7 @@ void main_task(intptr_t unused) {
     init();
 
     //run program
-    readCode();
+    
     tslp_tsk(50000000);
 }
 
