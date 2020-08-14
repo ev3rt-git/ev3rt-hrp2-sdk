@@ -14,7 +14,7 @@
 #define _debug(x)
 #endif
 
-//define motors and sensors
+// define motors and sensors
 const int color_sensor1 = EV3_PORT_2, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3, color_sensor4 = EV3_PORT_4, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A, d_motor = EV3_PORT_D;
 
 rgb_raw_t rgb1;
@@ -25,15 +25,15 @@ void main_task(intptr_t unused) {
     init();
 
     readCode();
-    //todo run2020
+    // TODO run2020
 }
 
 void readCode() {
-    //define variables
+    // define variables
     int bit1 = -1;
     int bit2 = -1;
 
-    //leave start
+    // leave start
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, 30, 1);
@@ -41,7 +41,7 @@ void readCode() {
         display_values();
     }
 
-    //record instructions
+    // detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (rgb4.g > 30 && rgb4.b > 25) {
         display_values();
@@ -62,15 +62,13 @@ void readCode() {
     ev3_motor_steer(left_motor, right_motor, 0, 0);
 
     tslp_tsk(5);
-
+    // record instructions
     ev3_motor_reset_counts(EV3_PORT_B);
     ev3_motor_reset_counts(EV3_PORT_C);
     ev3_motor_steer(left_motor, right_motor, 10, 1);
-
     int index;
     for (index = 0; index < 4; index++) {
-
-        //read instructions
+        // read instructions
         while (abs(((ev3_motor_get_counts(EV3_PORT_B) + ev3_motor_get_counts(EV3_PORT_C)) / 2)) < ((index+1) * 55)) {
             display_values();
         }
@@ -104,7 +102,7 @@ void readCode() {
         }
     }
 
-    //detect line
+    // detect line
     ev3_motor_steer(left_motor, right_motor, 10, 1);
     while (ev3_color_sensor_get_reflect(color_sensor3) > 20) {
         display_values();
@@ -113,7 +111,7 @@ void readCode() {
     tslp_tsk(5);
 
 /*
-    //align robot
+    // align robot
     ev3_motor_rotate(left_motor, -100, 15, true);
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
@@ -131,7 +129,7 @@ void readCode() {
     ev3_motor_steer(left_motor, right_motor, 0, 0);
 */
 
-    //display things in a very medium font
+    // display things in a very medium font
     ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
     char lcdstr[100];
     sprintf(lcdstr, "%d, %d", tasks[BLUE_STREET], tasks[GREEN_STREET]);
@@ -139,7 +137,7 @@ void readCode() {
     sprintf(lcdstr, "%d, %d", tasks[YELLOW_STREET], tasks[RED_STREET]);
     ev3_lcd_draw_string(lcdstr, 0, 15);
 
-    //record position
+    // record position
     pos.section = 1;
     pos.distance = 51;
     pos.dash = 0;
@@ -176,7 +174,7 @@ void init() {
     //ev3_motor_set_power(a_motor, -100);
     //ev3_motor_rotate(a_motor, 300, 50);
 
-    //wait for button press
+    // wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
     ev3_lcd_fill_rect(77, 87, 24, 20, EV3_LCD_BLACK);
     ev3_lcd_fill_rect(79, 89, 20, 1, EV3_LCD_WHITE);
@@ -191,14 +189,14 @@ void init() {
 }
 
 void display_values() {
-    //declare variables
+    // declare variables
     char msg[100];
     int value;
 
-    //wait for values to be refreshed
+    // wait for values to be refreshed
     tslp_tsk(3);
 
-    //read motor counts
+    // read motor counts
     value = ev3_motor_get_counts(left_motor);
     sprintf(msg, "L: %d   ", value);
     ev3_lcd_draw_string(msg, 10*0, 15*0);
@@ -206,7 +204,7 @@ void display_values() {
     sprintf(msg, "R: %d   ", value);
     ev3_lcd_draw_string(msg, 10*8, 15*0);
 
-    //read sensor rgb1
+    // read sensor rgb1
 /*
     bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor1, &rgb1);
     assert(val1);
@@ -220,7 +218,7 @@ void display_values() {
     ev3_lcd_draw_string(msg, 10*14, 15*2.5);
 */
 
-    //read sensor rgb4
+    // read sensor rgb4
     bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb4);
     assert(val4);
     sprintf(msg, "RGB4:");
@@ -232,7 +230,7 @@ void display_values() {
     sprintf(msg, "B: %d  ", rgb4.b);
     ev3_lcd_draw_string(msg, 10*14, 15*5);
 
-    //read linefollow sensors
+    // read linefollow sensors
     sprintf(msg, "Light2 & Light3:");
     ev3_lcd_draw_string(msg, 10*0, 15*6.5);
     value = ev3_color_sensor_get_reflect(color_sensor2);
