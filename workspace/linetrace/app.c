@@ -181,7 +181,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{30,0},{70,0},{100,0},{1000,0},{1000,0},{1000,0}};
+        int snowValues[6][2] = {{30,300},{70,300},{100,300},{1000,0},{1000,0},{1000,0}};
         wallFollow(160,snowValues);
     }
 }
@@ -226,7 +226,7 @@ void wallFollow(int distance,int snow[6][2]){
                 index1 = index1 + 1;
             }
         }
-        if((isTurning == 1) && wheelDistance >= snow[index1 - 1][0] + 50){
+        if(isTurning == 1 && wheelDistance >= snow[index1 - 1][0] + 5){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
