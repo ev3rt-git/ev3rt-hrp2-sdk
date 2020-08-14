@@ -15,7 +15,7 @@
 #endif
 
 //define motors and sensors
-const int color_sensor1 = EV3_PORT_2, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3, color_sensor4 = EV3_PORT_4, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
+const int color_sensor1 = EV3_PORT_2, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3, color_sensor4 = EV3_PORT_4, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A, d_motor = EV3_PORT_D;
 
 rgb_raw_t rgb1;
 rgb_raw_t rgb4;
@@ -153,7 +153,8 @@ void init() {
     // Configure motors
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
-    //ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(d_motor, MEDIUM_MOTOR);
     
     // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
