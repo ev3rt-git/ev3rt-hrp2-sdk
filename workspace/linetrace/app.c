@@ -183,9 +183,9 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{25,300},{70,300},{100,300},{1000,0},{1000,0},{1000,0}};
-        wallFollow(160,snowValues);
-        ev3_motor_rotate(a_motor,600,50,true);
+        int snowValues[6][2] = {{25,300,5},{70,300,10},{100,300,5},{1000,0,0},{1000,0,0},{1000,0,0}};
+        wallFollow(136,snowValues);
+        ev3_motor_rotate(a_motor,500,50,true);
         ev3_motor_steer(left_motor,right_motor,-15,0);
         tslp_tsk(1000);
         ev3_motor_steer(left_motor,right_motor,0,0);
@@ -214,14 +214,14 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void wallFollow(int distance,int snow[6][2]){
+void wallFollow(int distance,int snow[6][3]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_reset_counts(d_motor);
     index1 = 0;
     while (wheelDistance < distance) {
-        if(wheelDistance >= snow[index1][0] - 5 && isTurning == 0 && index1 < 6){
+        if(wheelDistance >= snow[index1][0] - snow[index1][2] && isTurning == 0 && index1 < 6){
             isTurning = 1;
             turnReturn = snow[index1][1] * -1;
             ev3_motor_rotate(a_motor,snow[index1][1],50,false);
@@ -233,7 +233,7 @@ void wallFollow(int distance,int snow[6][2]){
                 index1 = index1 + 1;
             }
         }
-        if(isTurning == 1 && wheelDistance >= snow[index1 - 1][0] + 5){
+        if(isTurning == 1 && wheelDistance >= snow[index1 - 1][0] + snow[index1 - 1][2]){
             isTurning = 0;
             ev3_motor_rotate(a_motor,turnReturn,50,false);
             ev3_speaker_play_tone(NOTE_C5, 60);
