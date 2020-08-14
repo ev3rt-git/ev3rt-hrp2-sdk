@@ -11,7 +11,7 @@
 #define _debug(x)
 #endif
 
-const int left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3;
+const int d_motor = EV3_PORT_D, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, color_sensor4=EV3_PORT_4, color_sensor2 = EV3_PORT_2, color_sensor3 = EV3_PORT_3;
 
 rgb_raw_t rgb4;
 position pos = {-1, -1, -1, 0, 0};
@@ -153,6 +153,7 @@ void init() {
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
     //ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(d_motor, MEDIUM_MOTOR);
     
     // Configure sensors
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
