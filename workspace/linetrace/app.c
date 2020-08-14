@@ -17,7 +17,7 @@
 
 
 position pos = {-1, -1, -1, 0, 0};
-const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A;
+const int color_sensor2 = EV3_PORT_2, color_sensor4 = EV3_PORT_4, color_sensor3 = EV3_PORT_3, left_motor = EV3_PORT_B, right_motor = EV3_PORT_C, a_motor = EV3_PORT_A, d_motor = EV3_PORT_D;
 
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
@@ -51,6 +51,7 @@ void main_task(intptr_t unused) {
     ev3_motor_config(left_motor, LARGE_MOTOR);
     ev3_motor_config(right_motor, LARGE_MOTOR);
     ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(d_motor, MEDIUM_MOTOR);
 
     ev3_sensor_config(color_sensor2, COLOR_SENSOR);
     ev3_sensor_config(color_sensor3, COLOR_SENSOR);
@@ -59,6 +60,7 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    ev3_motor_reset_counts(d_motor);
     ev3_motor_steer(left_motor,right_motor,10,5);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
@@ -181,7 +183,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{30,300},{70,300},{100,300},{1000,0},{1000,0},{1000,0}};
+        int snowValues[6][2] = {{27,300},{70,300},{100,300},{1000,0},{1000,0},{1000,0}};
         wallFollow(160,snowValues);
     }
 }
@@ -212,6 +214,7 @@ void wallFollow(int distance,int snow[6][2]){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    ev3_motor_reset_counts(d_motor);
     index1 = 0;
     while (wheelDistance < distance) {
         if(wheelDistance >= snow[index1][0] - 5 && isTurning == 0 && index1 < 6){
@@ -268,6 +271,7 @@ void linePID(int distance){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
+    ev3_motor_reset_counts(d_motor);
     ev3_motor_rotate(a_motor,-500,15,true);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
