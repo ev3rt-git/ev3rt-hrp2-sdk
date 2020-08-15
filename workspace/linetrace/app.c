@@ -183,14 +183,20 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][3] = {{25,300,5},{70,300,10},{100,250,5},{1000,0,0},{1000,0,0},{1000,0,0}};
-        wallFollow(136,snowValues);
+        int snowValues[6][3] = {{25,350,5},{70,275,10},{100,350,6},{1000,0,0},{1000,0,0},{1000,0,0}};
+        wallFollow(136,snowValues,3);
         ev3_motor_rotate(a_motor,500,50,true);
         ev3_motor_steer(left_motor,right_motor,-15,0);
         tslp_tsk(1000);
-        ev3_motor_steer(left_motor,right_motor,-15,45);
-        tslp_tsk(1000);
         ev3_motor_steer(left_motor,right_motor,0,0);
+        tslp_tsk(1000);
+        ev3_motor_steer(left_motor,right_motor,-15,90);
+        tslp_tsk(900);
+        ev3_motor_steer(left_motor,right_motor,0,0);
+        ev3_motor_rotate(a_motor,-500,50,true);
+        tslp_tsk(1000);
+        int snowValues1[6][3] = {{17,300,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
+        wallFollow(60,snowValues1,0);
     }
 }
 
@@ -216,7 +222,7 @@ void displayValues(){
     sprintf(msgbuf, " %9f          " ,instructions[3]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 7);
 }
-void wallFollow(int distance,int snow[6][3]){
+void wallFollow(int distance,int snow[6][3],int steer1){
     ev3_motor_reset_counts(left_motor);
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
@@ -262,7 +268,7 @@ void wallFollow(int distance,int snow[6][3]){
         //if(dashes % 2 == 1){
             //steer = 0;
         //}
-        steer = 3;
+        steer = steer1;
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         //lasterror = error;
         tslp_tsk(1);
