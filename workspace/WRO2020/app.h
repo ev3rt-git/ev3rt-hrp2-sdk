@@ -18,7 +18,7 @@
 #define _TEST_FILE_H_
 
 void linePID();
-void dashPID();
+void wallFollow();
 void readCode();
 void init();
 void display_values();

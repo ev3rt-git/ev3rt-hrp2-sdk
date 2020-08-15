@@ -170,9 +170,15 @@ void init() {
     // Configure brick
     ev3_lcd_set_font(EV3_FONT_MEDIUM);
 
-    //reset snow/car collector
-    //ev3_motor_set_power(a_motor, -100);
-    //ev3_motor_rotate(a_motor, 300, 50);
+    // reset snow/car collector
+    ev3_motor_set_power(a_motor, -100);
+    tslp_tsk(3000);
+    ev3_motor_rotate(a_motor, 500, 50, true);
+
+    // reset abrasive material dispenser
+    ev3_motor_set_power(d_motor, 100);
+    tslp_tsk(3000);
+    ev3_motor_rotate(d_motor, -20, 20), true;
 
     // wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
