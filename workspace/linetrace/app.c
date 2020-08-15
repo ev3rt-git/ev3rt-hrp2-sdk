@@ -189,14 +189,22 @@ void main_task(intptr_t unused) {
         ev3_motor_steer(left_motor,right_motor,-15,0);
         tslp_tsk(1000);
         ev3_motor_steer(left_motor,right_motor,0,0);
-        tslp_tsk(1000);
+        tslp_tsk(1050);
         ev3_motor_steer(left_motor,right_motor,-15,90);
         tslp_tsk(900);
         ev3_motor_steer(left_motor,right_motor,0,0);
         ev3_motor_rotate(a_motor,-500,50,true);
         tslp_tsk(1000);
-        int snowValues1[6][3] = {{17,300,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
+        int snowValues1[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(60,snowValues1,0);
+        ev3_motor_steer(left_motor,right_motor,20,0);
+        tslp_tsk(2000);
+        ev3_motor_steer(left_motor,right_motor,0,0);
+        ev3_motor_steer(left_motor,right_motor,-15,90);
+        tslp_tsk(900);
+        ev3_motor_steer(left_motor,right_motor,0,0);
+        int snowValues2[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
+        wallFollow(160,snowValues2,0);
     }
 }
 
@@ -228,6 +236,7 @@ void wallFollow(int distance,int snow[6][3],int steer1){
     ev3_motor_reset_counts(a_motor);
     ev3_motor_reset_counts(d_motor);
     index1 = 0;
+    wheelDistance = 0;
     while (wheelDistance < distance) {
         if(wheelDistance >= snow[index1][0] - snow[index1][2] && isTurning == 0 && index1 < 6){
             isTurning = 1;
