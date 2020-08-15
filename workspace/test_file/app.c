@@ -24,14 +24,14 @@ void main_task(intptr_t unused) {
 
     // run program
     int i;
-    for (i = 0;, i < 3, i++) {
+    for (i = 0; i < 3; i++) {
         while (1) {
             if (ev3_button_is_pressed(ENTER_BUTTON)) {
                 while (ev3_button_is_pressed(ENTER_BUTTON));
                 break;
             }
         }
-        ev3_motor_rotate(d_motor, -350, 20);
+        ev3_motor_rotate(d_motor, -350, 20, true);
     }
 
     tslp_tsk(50000000);
