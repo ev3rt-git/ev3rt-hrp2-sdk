@@ -222,7 +222,7 @@ void main_task(intptr_t unused) {
     ev3_motor_rotate(a_motor,-500,50,true);
     tslp_tsk(1000);
     int snowValues1[6][3] = {{23,500,10},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
-    wallFollow(60,snowValues1,-1);
+    wallFollow(60,snowValues1,0);
     ev3_motor_steer(left_motor,right_motor,20,0);
     tslp_tsk(2000);
     ev3_motor_steer(left_motor,right_motor,0,0);
@@ -312,7 +312,6 @@ void linePID(int distance){
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_reset_counts(d_motor);
-    ev3_motor_rotate(a_motor,-500,15,true);
     float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
