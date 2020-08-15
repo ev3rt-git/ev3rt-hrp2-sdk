@@ -163,7 +163,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 2){
-        int snowValues[6][2] = {{17,-300},{121,-300},{139,0},{1000,0},{1000,0},{1000,0}};
+        int snowValues[6][3] = {{17,-300},{121,-300},{139,0},{1000,0},{1000,0},{1000,0}};
         wallFollow(160,snowValues);
     }
     //red
@@ -183,7 +183,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][2] = {{25,300,5},{70,300,10},{100,300,5},{1000,0,0},{1000,0,0},{1000,0,0}};
+        int snowValues[6][3] = {{25,300,2},{70,300,5},{100,300,2},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(136,snowValues);
         ev3_motor_rotate(a_motor,500,50,true);
         ev3_motor_steer(left_motor,right_motor,-15,0);
