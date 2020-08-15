@@ -178,7 +178,7 @@ void init() {
     // reset abrasive material dispenser
     ev3_motor_set_power(d_motor, 100);
     tslp_tsk(1500);
-    ev3_motor_rotate(d_motor, -20, 20), true;
+    ev3_motor_stop(d_motor, true);
 
     // wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
@@ -250,7 +250,10 @@ void display_values() {
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
     case BACK_BUTTON:
-        ev3_motor_steer(left_motor, right_motor, 0, 0);
+            ev3_motor_stop(left_motor, false);
+            ev3_motor_stop(right_motor, false);
+            ev3_motor_stop(a_motor, false);
+            ev3_motor_stop(d_motor, false);
         exit(0);
         break;
     }

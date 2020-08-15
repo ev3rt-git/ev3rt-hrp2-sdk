@@ -207,7 +207,10 @@ void init() {
 static void button_clicked_handler(intptr_t button) {
     switch(button) {
         case BACK_BUTTON:
-            ev3_motor_steer(left_motor, right_motor, 0, 0);
+            ev3_motor_stop(left_motor, false);
+            ev3_motor_stop(right_motor, false);
+            //ev3_motor_stop(a_motor, false);
+            ev3_motor_stop(d_motor, false);
             exit(0);
             break;
     }
