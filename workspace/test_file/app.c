@@ -24,7 +24,7 @@ void main_task(intptr_t unused) {
 
     // run program
     int i;
-    for (i = 1; i < 5; i++) {
+    for (i = 2; i < 5; i++) {
         while (1) {
             if (ev3_button_is_pressed(ENTER_BUTTON)) {
                 while (ev3_button_is_pressed(ENTER_BUTTON));
