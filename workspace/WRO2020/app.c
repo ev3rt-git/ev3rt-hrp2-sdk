@@ -172,12 +172,12 @@ void init() {
 
     // reset snow/car collector
     ev3_motor_set_power(a_motor, -100);
-    tslp_tsk(3000);
+    tslp_tsk(1500);
     ev3_motor_rotate(a_motor, 500, 50, true);
 
     // reset abrasive material dispenser
     ev3_motor_set_power(d_motor, 100);
-    tslp_tsk(3000);
+    tslp_tsk(1500);
     ev3_motor_rotate(d_motor, -20, 20), true;
 
     // wait for button press
