@@ -198,13 +198,13 @@ void main_task(intptr_t unused) {
         int snowValues1[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(60,snowValues1,0);
         ev3_motor_steer(left_motor,right_motor,20,0);
-        tslp_tsk(2000);
+        tslp_tsk(2150);
         ev3_motor_steer(left_motor,right_motor,0,0);
         ev3_motor_steer(left_motor,right_motor,-15,90);
-        tslp_tsk(900);
+        tslp_tsk(1800);
         ev3_motor_steer(left_motor,right_motor,0,0);
         int snowValues2[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
-        wallFollow(160,snowValues2,0);
+        wallFollow(160,snowValues2,3);
     }
 }
 
