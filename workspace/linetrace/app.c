@@ -226,7 +226,7 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,20,0);
     tslp_tsk(2000);
     ev3_motor_steer(left_motor,right_motor,0,0);
-    ev3_motor_steer(left_motor,right_motor,-10,45);
+    ev3_motor_steer(left_motor,right_motor,10,-45);
     tslp_tsk(2400);
     ev3_motor_steer(left_motor,right_motor,0,0);
     int snowValues2[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
