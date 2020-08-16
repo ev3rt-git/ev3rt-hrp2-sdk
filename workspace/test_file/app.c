@@ -24,7 +24,9 @@ void main_task(intptr_t unused) {
 
     // run program
 
-    
+    lineFollow(20);
+    ev3_motor_rotate(d_motor, -600, 50, true);
+    ev3_motor_rotate(d_motor, 600, 100, true);
 
 /*
     int i;
