@@ -50,8 +50,8 @@ int readIndex = 0;
 int isReading = 0;
 void main_task(intptr_t unused) {
     init();
-
     ev3_motor_steer(left_motor,right_motor,10,5);
+    ev3_speaker_play_tone(NOTE_C5, 60);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
@@ -60,12 +60,12 @@ void main_task(intptr_t unused) {
         if(readIndex == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             readIndex += 1;
             detected[0] = 2;
-            ev3_speaker_play_tone(NOTE_A6, 60);
+            //ev3_speaker_play_tone(NOTE_A6, 60);
         }
         else if(readIndex == 0 && rgb.r > 45 && wheelDistance > 25 && wheelDistance < 31){
             readIndex += 1;
             detected[0] = 1;
-            ev3_speaker_play_tone(NOTE_A4, 60);
+            //ev3_speaker_play_tone(NOTE_A4, 60);
         }
         else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
             isReading = 50;
@@ -208,11 +208,11 @@ void displayValues(){
     ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
     sprintf(msgbuf, "Blue:  %-4d", rgb.b);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
-    /*sprintf(msgbuf, "isTurning %9f          " ,isTurning);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+    sprintf(msgbuf, "readIndex %9f          " ,readIndex);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
     sprintf(msgbuf, "wheelDistance %9f          " ,wheelDistance);
-    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    sprintf(msgbuf, "distance %d          " ,pos.distance);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 5);
+    /*sprintf(msgbuf, "distance %d          " ,pos.distance);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
     sprintf(msgbuf, " %d          " ,instructions[0]);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 4);
@@ -279,7 +279,7 @@ void linePID(int distance){
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_reset_counts(d_motor);
-    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+    wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
     float lasterror = 0, integral = 0;
     while (wheelDistance < distance) {
         if(ev3_motor_get_counts(a_motor) > 490){
@@ -302,6 +302,7 @@ void linePID(int distance){
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;
 }
+
 void init() {
     // Register button handlers
     ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
