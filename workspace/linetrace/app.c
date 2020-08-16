@@ -49,21 +49,8 @@ int instructions[4] = {0,0,0,0};
 int readIndex = 0;
 int isReading = 0;
 void main_task(intptr_t unused) {
-    ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
+    init();
 
-    ev3_motor_config(left_motor, LARGE_MOTOR);
-    ev3_motor_config(right_motor, LARGE_MOTOR);
-    ev3_motor_config(a_motor, MEDIUM_MOTOR);
-    ev3_motor_config(d_motor, MEDIUM_MOTOR);
-
-    ev3_sensor_config(color_sensor2, COLOR_SENSOR);
-    ev3_sensor_config(color_sensor3, COLOR_SENSOR);
-    ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
-
-    ev3_motor_reset_counts(left_motor);
-    ev3_motor_reset_counts(right_motor);
-    ev3_motor_reset_counts(a_motor);
-    ev3_motor_reset_counts(d_motor);
     ev3_motor_steer(left_motor,right_motor,10,5);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
@@ -314,4 +301,53 @@ void linePID(int distance){
     }
     ev3_motor_steer(left_motor, right_motor, 0, 0);
     return;
+}
+void init() {
+    // Register button handlers
+    ev3_button_set_on_clicked(BACK_BUTTON, button_clicked_handler, BACK_BUTTON);
+    
+    // Configure motors
+    ev3_motor_config(left_motor, LARGE_MOTOR);
+    ev3_motor_config(right_motor, LARGE_MOTOR);
+    ev3_motor_config(a_motor, MEDIUM_MOTOR);
+    ev3_motor_config(d_motor, MEDIUM_MOTOR);
+    
+    // Configure sensors
+    ev3_sensor_config(color_sensor2, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor3, COLOR_SENSOR);
+    ev3_sensor_config(color_sensor4, HT_NXT_COLOR_SENSOR);
+    
+    // Set up sensors
+    ev3_color_sensor_get_reflect(color_sensor2);
+    ev3_color_sensor_get_reflect(color_sensor3);
+    //bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor1, &rgb1);
+    //assert(val1);
+    bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb);
+    assert(val4);
+
+    // Configure brick
+    ev3_lcd_set_font(EV3_FONT_MEDIUM);
+
+    // reset snow/car collector
+    //ev3_motor_set_power(a_motor, -100);
+    //tslp_tsk(1500);
+    //ev3_motor_rotate(a_motor, 500, 50, true);
+
+    // reset abrasive material dispenser
+    ev3_motor_set_power(d_motor, 100);
+    tslp_tsk(1500);
+    ev3_motor_stop(d_motor, true);
+
+    // Wait for button press
+    ev3_lcd_draw_string("Press OK to run", 14, 45);
+    ev3_lcd_fill_rect(77, 87, 24, 20, EV3_LCD_BLACK);
+    ev3_lcd_fill_rect(79, 89, 20, 1, EV3_LCD_WHITE);
+    ev3_lcd_draw_string("OK", 79, 90);
+    while (1) {
+        if (ev3_button_is_pressed(ENTER_BUTTON)) {
+            while (ev3_button_is_pressed(ENTER_BUTTON));
+            break;
+        }
+    }
+    ev3_lcd_fill_rect(0, 0, 178, 128, EV3_LCD_WHITE);
 }
