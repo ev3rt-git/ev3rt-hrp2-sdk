@@ -21,6 +21,353 @@ rgb_raw_t rgb1;
 rgb_raw_t rgb4;
 position pos = {-1, -1, -1, 0, 0};
 
+int allTasks[4][3][6][3] = {
+    //blue
+    {
+        //color_4
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //a_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //d_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+    },
+    //green
+    {
+        //color_4
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //a_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //d_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+    },
+    //yellow
+    {
+        //color_4
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //a_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //d_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+    },
+    //red
+    {
+        //color_4
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //a_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+        //d_motor
+        {
+            //index 0
+            {
+                0,0,0
+            },
+            //index 1
+            {
+                0,0,0
+            },
+            //index 2
+            {
+                0,0,0
+            },
+            //index 3
+            {
+                0,0,0
+            },
+            //index 4
+            {
+                0,0,0
+            },
+            //index 5
+            {
+                0,0,0
+            },
+        },
+    },
+}
+
+int color_4_index = 0;
+int next_color_4_task[3] = allTasks[pos.street][0][color_4_index];
+int a_motor_index = 0;
+int next_color_a_task[3] = allTasks[pos.street][0][a_motor_index];
+int d_motor_index = 0;
+int next_color_d_task[3] = allTasks[pos.street][0][s_motor_index];
+
+
 void main_task(intptr_t unused) {
     init();
 
@@ -448,7 +795,6 @@ void wallFollow(int distance,int snow[6][3],int steer){
 
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         ev3_motor_steer(left_motor, right_motor, 15, steer);
-        //lasterror = error;
         tslp_tsk(1);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb4);
         assert(val);
