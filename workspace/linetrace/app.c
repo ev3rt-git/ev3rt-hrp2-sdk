@@ -64,8 +64,8 @@ void main_task(intptr_t unused) {
     ev3_motor_reset_counts(right_motor);
     ev3_motor_reset_counts(a_motor);
     ev3_motor_reset_counts(d_motor);
-    //ev3_motor_steer(left_motor,right_motor,10,5);
-    /*while(wheelDistance < 70){
+    ev3_motor_steer(left_motor,right_motor,10,5);
+    while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
         bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb4);
         assert(val);
@@ -195,42 +195,22 @@ void main_task(intptr_t unused) {
         ev3_motor_steer(left_motor,right_motor,-15,90);
         tslp_tsk(900);
         ev3_motor_steer(left_motor,right_motor,0,0);
+        ev3_motor_steer(left_motor,right_motor,-15,0);
+        tslp_tsk(900);
+        ev3_motor_steer(left_motor,right_motor,0,0);
         ev3_motor_rotate(a_motor,-500,50,true);
         tslp_tsk(1000);
-        int snowValues1[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
+        int snowValues1[6][3] = {{23,500,10},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(60,snowValues1,0);
         ev3_motor_steer(left_motor,right_motor,20,0);
-        tslp_tsk(2150);
+        tslp_tsk(1600);
         ev3_motor_steer(left_motor,right_motor,0,0);
-        ev3_motor_steer(left_motor,right_motor,-15,90);
-        tslp_tsk(900);
+        ev3_motor_steer(left_motor,right_motor,10,-45);
+        tslp_tsk(2400);
         ev3_motor_steer(left_motor,right_motor,0,0);
         int snowValues2[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(160,snowValues2,3);
-    }*/
-    ev3_motor_rotate(a_motor,500,50,true);
-    ev3_motor_steer(left_motor,right_motor,-15,0);
-    tslp_tsk(1000);
-    ev3_motor_steer(left_motor,right_motor,0,0);
-    tslp_tsk(1050);
-    ev3_motor_steer(left_motor,right_motor,-15,90);
-    tslp_tsk(900);
-    ev3_motor_steer(left_motor,right_motor,0,0);
-    ev3_motor_steer(left_motor,right_motor,-15,0);
-    tslp_tsk(900);
-    ev3_motor_steer(left_motor,right_motor,0,0);
-    ev3_motor_rotate(a_motor,-500,50,true);
-    tslp_tsk(1000);
-    int snowValues1[6][3] = {{23,500,10},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
-    wallFollow(60,snowValues1,0);
-    ev3_motor_steer(left_motor,right_motor,20,0);
-    tslp_tsk(2000);
-    ev3_motor_steer(left_motor,right_motor,0,0);
-    ev3_motor_steer(left_motor,right_motor,10,-45);
-    tslp_tsk(2400);
-    ev3_motor_steer(left_motor,right_motor,0,0);
-    int snowValues2[6][3] = {{20,500,5},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0},{1000,0,0}};
-    wallFollow(160,snowValues2,3);
+    }
 
 }
 
