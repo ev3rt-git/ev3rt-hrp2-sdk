@@ -24,10 +24,9 @@ void main_task(intptr_t unused) {
 
     // run program
 
-    while (!(((ev3_motor_get_counts(left_motor) + ev3_motor_get_counts(right_motor)) / 2) < 749)) {
-        tslp_tsk(3);
-    }
+    
 
+/*
     int i;
     for (i = 2; i < 5; i++) {
         while (1) {
@@ -39,6 +38,7 @@ void main_task(intptr_t unused) {
         ev3_motor_rotate(d_motor, -300 * i, 50, true);
         ev3_motor_rotate(d_motor, 300 * i, 100, true);
     }
+*/
 
     tslp_tsk(50000000);
 }
