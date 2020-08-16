@@ -24,9 +24,16 @@ void main_task(intptr_t unused) {
 
     // run program
 
-    lineFollow(20);
+    linePID(20);
     ev3_motor_rotate(d_motor, -600, 50, true);
     ev3_motor_rotate(d_motor, 600, 100, true);
+    linePID(68);
+    ev3_motor_rotate(d_motor, -900, 50, true);
+    ev3_motor_rotate(d_motor, 900, 100, true);
+    //turn?
+    linePID(40);
+    ev3_motor_rotate(d_motor, -1200, 50, true);
+    ev3_motor_rotate(d_motor, 1200, 100, true);
 
 /*
     int i;
@@ -225,7 +232,7 @@ static void button_clicked_handler(intptr_t button) {
     }
 }
 
-void display_values() {
+void display_Sensors() {
     // declare variables
     char msg[100];
     int value;
@@ -276,4 +283,33 @@ void display_values() {
     value = ev3_color_sensor_get_reflect(color_sensor3);
     sprintf(msg, "L: %d  ", value);
     ev3_lcd_draw_string(msg, 10*7, 15*7.5);
+}
+
+void linePID(int distance){
+    ev3_motor_reset_counts(left_motor);
+    ev3_motor_reset_counts(right_motor);
+    ev3_motor_reset_counts(a_motor);
+    ev3_motor_reset_counts(d_motor);
+    float wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+    float lasterror = 0, integral = 0;
+    while (wheelDistance < distance) {
+        if(ev3_motor_get_counts(a_motor) > 490){
+            ev3_motor_reset_counts(a_motor);
+            ev3_motor_rotate(a_motor,-500,13,false);
+            
+        }
+        if(ev3_motor_get_counts(a_motor) < -490){
+            ev3_motor_reset_counts(a_motor);
+            ev3_motor_rotate(a_motor,500,13,false);
+        }
+        wheelDistance = ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2;
+        float error = ev3_color_sensor_get_reflect(color_sensor2) - ev3_color_sensor_get_reflect(color_sensor3);
+        integral = error + integral * 0.5;
+        float steer = 0.04 * error + 0.5 * integral + 0.25 * (error - lasterror);
+        ev3_motor_steer(left_motor, right_motor, 30, steer);
+        lasterror = error;  
+        tslp_tsk(1);
+    }
+    ev3_motor_steer(left_motor, right_motor, 0, 0);
+    return;
 }

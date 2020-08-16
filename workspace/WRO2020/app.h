@@ -21,7 +21,7 @@ void linePID();
 void wallFollow();
 void readCode();
 void init();
-void display_values();
+void display_Sensors();
 static void button_clicked_handler();
 
 
@@ -55,7 +55,7 @@ static void button_clicked_handler();
 typedef struct {
 	int street;
 	int section;
-	int distance;
+	float distance;
 	int dash;
 	int facing;
 } position;
