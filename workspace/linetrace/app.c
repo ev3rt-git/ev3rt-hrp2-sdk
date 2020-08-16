@@ -321,7 +321,7 @@ void init() {
     ev3_color_sensor_get_reflect(color_sensor2);
     ev3_color_sensor_get_reflect(color_sensor3);
     //bool_t val1 = ht_nxt_color_sensor_measure_rgb(color_sensor1, &rgb1);
-    //assert(val1);
+    //assert(val1); 
     bool_t val4 = ht_nxt_color_sensor_measure_rgb(color_sensor4, &rgb);
     assert(val4);
 
@@ -334,9 +334,9 @@ void init() {
     //ev3_motor_rotate(a_motor, 500, 50, true);
 
     // reset abrasive material dispenser
-    ev3_motor_set_power(d_motor, 100);
-    tslp_tsk(1500);
-    ev3_motor_stop(d_motor, true);
+    //ev3_motor_set_power(d_motor, 100);
+    //tslp_tsk(1500);
+    //ev3_motor_stop(d_motor, true);
 
     // Wait for button press
     ev3_lcd_draw_string("Press OK to run", 14, 45);
