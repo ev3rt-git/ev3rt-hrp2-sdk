@@ -39,7 +39,7 @@ int lastDash = 0;
 char msgbuf[100];
 //rgb
 rgb_raw_t rgb1;
-rgb_raw_t rgb4;
+rgb_raw_t rgb;
 //distance and PID
 float wheelDistance = 0;
 //read code
@@ -67,32 +67,32 @@ void main_task(intptr_t unused) {
     ev3_motor_steer(left_motor,right_motor,10,5);
     while(wheelDistance < 70){
         wheelDistance = (ev3_motor_get_counts(left_motor) / 2 + ev3_motor_get_counts(right_motor) / 2) * ((3.1415926535 * 9.5) / 360);
-        bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb4);
+        bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
         displayValues();
-        if(readIndex == 0 && rgb4.g > 40 && rgb4.r > 40 && wheelDistance > 25 && wheelDistance < 31){
+        if(readIndex == 0 && rgb.g > 40 && rgb.r > 40 && wheelDistance > 25 && wheelDistance < 31){
             readIndex += 1;
             detected[0] = 2;
             ev3_speaker_play_tone(NOTE_A6, 60);
         }
-        else if(readIndex == 0 && rgb4.r > 45 && wheelDistance > 25 && wheelDistance < 31){
+        else if(readIndex == 0 && rgb.r > 45 && wheelDistance > 25 && wheelDistance < 31){
             readIndex += 1;
             detected[0] = 1;
             ev3_speaker_play_tone(NOTE_A4, 60);
         }
-        else if(rgb4.r > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
+        else if(rgb.r > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
             isReading = 50;
             detected[readIndex] = wheelDistance;
             readIndex += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb4.g > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
+        else if(rgb.g > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
             isReading = 50;
             detected[readIndex] = wheelDistance;
             readIndex += 1;
             ev3_speaker_play_tone(NOTE_C5, 60);
         }
-        else if(rgb4.b > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
+        else if(rgb.b > 55 && isReading < 0 && wheelDistance > 31 && readIndex > 0){
             isReading = 50;
             detected[readIndex] = wheelDistance;
             readIndex += 1;
@@ -185,7 +185,7 @@ void main_task(intptr_t unused) {
         
     }
     if(tasks[2] == 0 && tasks[3] == 0 && pos.street == 3){
-        int snowValues[6][3] = {{25,350,5},{70,275,10},{100,350,6},{1000,0,0},{1000,0,0},{1000,0,0}};
+        int snowValues[6][3] = {{25,350,5},{70,275,10},{97,350,6},{1000,0,0},{1000,0,0},{1000,0,0}};
         wallFollow(136,snowValues,3);
         ev3_motor_rotate(a_motor,500,50,true);
         ev3_motor_steer(left_motor,right_motor,-15,0);
@@ -215,12 +215,12 @@ void main_task(intptr_t unused) {
 }
 
 void displayValues(){
-    //sprintf(msgbuf, "Red:   %-4d", rgb4.r);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
-    //sprintf(msgbuf, "Green: %-4d", rgb4.g);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
-    //sprintf(msgbuf, "Blue:  %-4d", rgb4.b);
-    //ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
+    sprintf(msgbuf, "Red:   %-4d", rgb.r);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
+    sprintf(msgbuf, "Green: %-4d", rgb.g);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 2);
+    sprintf(msgbuf, "Blue:  %-4d", rgb.b);
+    ev3_lcd_draw_string(msgbuf, 0, 15 * 3);
     /*sprintf(msgbuf, "isTurning %9f          " ,isTurning);
     ev3_lcd_draw_string(msgbuf, 0, 15 * 1);
     sprintf(msgbuf, "wheelDistance %9f          " ,wheelDistance);
@@ -280,7 +280,7 @@ void wallFollow(int distance,int snow[6][3],int steer){
         ev3_motor_steer(left_motor, right_motor, 15, steer);
         //lasterror = error;
         tslp_tsk(1);
-        bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb4);
+        bool_t val = ht_nxt_color_sensor_measure_rgb(color_sensor4,  &rgb);
         assert(val);
         displayValues();
     }
