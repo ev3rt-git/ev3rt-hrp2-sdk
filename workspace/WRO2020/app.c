@@ -499,3 +499,77 @@ static void button_clicked_handler(intptr_t button) {
         break;
     }
 }
+/*
+
+// task_4: read_color
+// task_a: cm, rotation_1, rotation_2
+// task_d: cm, rotation_1, rotation_2
+
+// all_tasks contains all tasks for all threets, some tasks will be wiped our after reading codes
+all_tasks[street][motor][index][task];
+all_tasks[4     ][3    ][6 / 3][3   ];
+
+street_tasks = all_tasks[street];
+c4_tasks = street_tasks[street];
+a_tasks = street_tasks[street];
+d_tasks = street_tasks[street];
+c4_task_index = 0;
+a_task_index = 0;
+d_task_index = 0;
+
+void main() {
+	init();
+
+	read_tasks();
+	
+	while (1) {
+		if (street = YELLOW) {
+			while (follow_wall()) { // turn, follow_wall, turn, go_to_line
+				do_tasks();
+			}
+			street = RED; // can be GREEN based on route plan
+		} else if (street = RED) {
+			while (follow_wall()) { // push_snow, back, turn, follow_wall (pick up abrasive material if applies), turn, go_to_line
+				do_tasks();
+			}
+			street = YELLOW; // can be BLUE based on route plan
+		} else if (street = BLUE) {
+			// follow wall, sharp turn
+			while (follow_line()) { // turn, go_to_line
+				do_tasks();
+			}
+			street = YELLOW;
+		} else if (street = BLUE) {
+			// follow wall, sharp turn
+			while (follow_line()) { // turn, go_to_line
+				do_tasks();
+			}
+			stree = RED;
+		}
+	}
+}
+
+void read_tasks() {
+	// read code 
+	// wipe out tasks no longer needed
+	// plan route
+}
+
+void do_tasks() {
+	if (distance between c4_tasks[cm_1] and c4_tasks[cm_2]) {
+		do_4_task();
+		// move to next task
+		c4_task_index++;
+	}
+	if (distance > a_tasks[a_task_index][cm]) {
+		do_a_task();
+		a_task_index++;
+	}
+	if (distance > d_tasks[d_task_index][cm]) {
+		do_d_task();
+		d_task_index++;
+	}
+}
+
+*/
+
